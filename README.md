@@ -2,7 +2,8 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- هاد السطر مهم بزاف باش التليفون يقرا الصفحة بعبار الشاشة الحقيقي -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تسيير السانديك - Syndic Management</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     
@@ -17,15 +18,22 @@
         }
 
         * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
-        body { margin: 0; padding: 0; background-color: var(--light); color: var(--dark); transition: 0.3s; overflow-x: hidden; }
+        
+        /* إصلاح مشكل الشاشة اللي كتهرب */
+        html, body { 
+            margin: 0; padding: 0; 
+            width: 100%; max-width: 100vw; 
+            overflow-x: hidden; /* هادي كتمنع الصفحة تمشي لليمين او اليسار */
+            background-color: var(--light); color: var(--dark); 
+        }
         
         /* Navbar */
-        .navbar { background: linear-gradient(90deg, var(--primary), var(--secondary)); padding: 15px 20px; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); flex-wrap: wrap; gap: 10px; }
+        .navbar { width: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); padding: 15px 20px; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); flex-wrap: wrap; gap: 10px; }
         .navbar-brand { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
         .navbar h2 { margin: 0; font-weight: 800; font-size: 22px; }
         
-        .nav-links { display: flex; gap: 5px; }
-        .nav-links button { background: rgba(255, 255, 255, 0.1); border: none; color: white; font-size: 15px; font-weight: 700; cursor: pointer; padding: 8px 15px; border-radius: 8px; transition: 0.3s; white-space: nowrap; }
+        .nav-links { display: flex; gap: 5px; width: 100%; max-width: 100%; }
+        .nav-links button { background: rgba(255, 255, 255, 0.1); border: none; color: white; font-size: 15px; font-weight: 700; cursor: pointer; padding: 8px 12px; border-radius: 8px; margin: 0; transition: 0.3s; white-space: nowrap; flex-shrink: 0; }
         .nav-links button:hover, .nav-links button.active { background-color: white; color: var(--primary); }
         
         select.lang-select { background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.5); padding: 8px 12px; border-radius: 8px; font-weight: bold; font-family: 'Tajawal', sans-serif; outline: none; cursor: pointer; }
@@ -38,38 +46,48 @@
         .btn-icon.unlocked { background: #10b981; border-color: #10b981; }
 
         /* Container & Pages */
-        .container { padding: 30px 20px; max-width: 1300px; margin: 0 auto; }
-        .page { display: none; animation: fadeIn 0.4s; }
+        .container { width: 100%; max-width: 1300px; margin: 0 auto; padding: 20px; }
+        .page { display: none; animation: fadeIn 0.4s; width: 100%; }
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
         /* Stats Grid */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .stat-card { background: var(--white); padding: 30px 20px; border-radius: 15px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); text-align: center; border-bottom: 5px solid transparent; transition: transform 0.3s ease; }
-        .stat-card:hover { transform: translateY(-5px); }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; width: 100%; }
+        .stat-card { background: var(--white); padding: 25px 20px; border-radius: 15px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); text-align: center; border-bottom: 5px solid transparent; }
         .stat-card.incomes { border-color: var(--success); }
         .stat-card.expenses { border-color: var(--danger); }
         .stat-card.balance { border-color: var(--secondary); }
-        .stat-icon { font-size: 40px; margin-bottom: 10px; line-height: 1; }
+        .stat-icon { font-size: 35px; margin-bottom: 10px; line-height: 1; }
         .stat-card h3 { margin: 0 0 10px 0; color: #6b7280; font-size: 16px; font-weight: 700; }
-        .stat-card .amount { font-size: 28px; font-weight: 800; }
+        .stat-card .amount { font-size: 24px; font-weight: 800; }
         .text-success { color: var(--success); }
         .text-danger { color: var(--danger); }
         .text-primary { color: var(--secondary); }
 
         /* Actions & Selects */
-        .header-action { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: white; padding: 15px 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); flex-wrap: wrap; gap: 15px; }
+        .header-action { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: white; padding: 15px 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); flex-wrap: wrap; gap: 15px; width: 100%; }
         .header-action h3 { margin: 0; font-size: 18px; color: var(--primary); }
-        select.modern-select { padding: 10px 20px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 15px; font-weight: bold; color: var(--dark); outline: none; cursor: pointer; transition: 0.3s; }
-        select.modern-select:focus { border-color: var(--secondary); }
+        select.modern-select { padding: 10px 15px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 15px; font-weight: bold; color: var(--dark); outline: none; cursor: pointer; }
 
-        /* Tables */
-        .table-wrapper { background: white; border-radius: 15px; padding: 0; box-shadow: 0 10px 20px rgba(0,0,0,0.05); overflow-x: auto; }
+        /* ========================================= */
+        /* Table Fix (هنا فين كان المشكل ديال الشاشة) */
+        /* ========================================= */
+        .table-wrapper { 
+            width: 100%; 
+            max-width: 100%; 
+            background: white; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05); 
+            overflow-x: auto; /* هادي كتخلي الطابلو بوحدو يدوز لليسار */
+            -webkit-overflow-scrolling: touch;
+            display: block; 
+        }
         table { width: 100%; border-collapse: collapse; min-width: 800px; }
         th, td { padding: 12px; text-align: center; border-bottom: 1px solid #f3f4f6; }
         th { background-color: #f8fafc; color: #475569; font-weight: 700; font-size: 14px; white-space: nowrap; }
-        html[dir="rtl"] th:first-child, html[dir="rtl"] td:first-child { position: sticky; right: 0; background-color: #ffffff; z-index: 2; box-shadow: -2px 0 5px rgba(0,0,0,0.03); text-align: right; padding-right: 20px; }
-        html[dir="ltr"] th:first-child, html[dir="ltr"] td:first-child { position: sticky; left: 0; background-color: #ffffff; z-index: 2; box-shadow: 2px 0 5px rgba(0,0,0,0.03); text-align: left; padding-left: 20px; }
+        
+        html[dir="rtl"] th:first-child, html[dir="rtl"] td:first-child { position: sticky; right: 0; background-color: #ffffff; z-index: 2; box-shadow: -2px 0 5px rgba(0,0,0,0.03); text-align: right; padding-right: 15px; }
+        html[dir="ltr"] th:first-child, html[dir="ltr"] td:first-child { position: sticky; left: 0; background-color: #ffffff; z-index: 2; box-shadow: 2px 0 5px rgba(0,0,0,0.03); text-align: left; padding-left: 15px; }
         th:first-child { background-color: #f8fafc !important; color: var(--primary); font-weight: 800; }
         td:first-child { font-weight: 800; color: var(--primary); }
         tbody tr:hover td { background-color: #f9fafb; }
@@ -78,126 +96,85 @@
         .badge-unpaid { background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
 
         /* Buttons & Inputs */
-        .form-group { margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-        input[type="text"], input[type="number"], input[type="date"], input[type="password"], textarea { padding: 12px 15px; border: 1px solid #d1d5db; border-radius: 8px; flex: 1; font-size: 15px; outline: none; transition: 0.3s; min-width: 150px; }
+        .form-group { margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; width: 100%; }
+        input[type="text"], input[type="number"], input[type="date"], input[type="password"], textarea { padding: 12px 15px; border: 1px solid #d1d5db; border-radius: 8px; flex: 1; font-size: 15px; outline: none; transition: 0.3s; min-width: 120px; width: 100%; }
         textarea { resize: vertical; min-height: 45px; }
         input:focus, textarea:focus { border-color: var(--secondary); box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
         button.btn { padding: 12px 20px; background-color: var(--success); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 14px; transition: 0.3s; box-shadow: 0 4px 6px rgba(16,185,129,0.2); white-space: nowrap; }
-        button.btn:hover { transform: translateY(-2px); box-shadow: 0 6px 8px rgba(16,185,129,0.3); }
         button.btn-danger { background-color: var(--danger); box-shadow: 0 4px 6px rgba(239,68,68,0.2); }
-        button.btn-danger:hover { background-color: #dc2626; }
         button.btn-primary { background-color: var(--primary); box-shadow: 0 4px 6px rgba(30,58,138,0.2); }
-        button.btn-primary:hover { background-color: #152c6b; }
         button.btn-warning { background-color: var(--warning); box-shadow: 0 4px 6px rgba(245,158,11,0.2); }
 
         /* Grids & Cards */
-        .grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; margin-top: 20px; }
-        .item-card { background: white; padding: 25px 10px 15px 10px; text-align: center; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); cursor: pointer; transition: 0.3s; border: 2px solid transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; position: relative; }
-        .item-card:hover { transform: translateY(-5px); border-color: var(--secondary); box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
-        .item-card .icon { font-size: 40px; line-height: 1; }
-        .item-card .name { font-size: 16px; font-weight: 800; color: var(--dark); }
-        
+        .grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; margin-top: 20px; width: 100%; }
+        .item-card { background: white; padding: 25px 10px 15px 10px; text-align: center; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); cursor: pointer; border: 2px solid transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; position: relative; }
+        .item-card .icon { font-size: 35px; line-height: 1; }
+        .item-card .name { font-size: 14px; font-weight: 800; color: var(--dark); }
         .card-actions { position: absolute; top: 5px; left: 5px; right: 5px; display: flex; justify-content: space-between; }
-        .card-action-btn { background: none; border: none; font-size: 14px; cursor: pointer; opacity: 0.5; transition: 0.2s; padding: 2px 5px; }
-        .card-action-btn:hover { opacity: 1; transform: scale(1.2); }
+        .card-action-btn { background: none; border: none; font-size: 14px; cursor: pointer; opacity: 0.6; padding: 2px; }
 
-        .months-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 15px; margin-top: 20px; }
-        .month-card { padding: 15px 10px; text-align: center; border-radius: 10px; cursor: pointer; font-weight: 700; border: 2px solid #e5e7eb; background: white; transition: 0.2s; display: flex; flex-direction: column; gap: 5px; }
-        .month-card:hover { border-color: var(--secondary); transform: scale(1.05); }
+        .months-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px; margin-top: 20px; width: 100%; }
+        .month-card { padding: 15px 5px; text-align: center; border-radius: 10px; cursor: pointer; font-weight: 700; border: 2px solid #e5e7eb; background: white; display: flex; flex-direction: column; gap: 5px; font-size: 13px; }
         .month-card.paid { background-color: #ecfdf5; border-color: var(--success); color: var(--success); }
-        .month-card.paid span { color: #065f46; font-size: 13px; font-weight: 800; }
         
-        .section-box { display: none; animation: fadeIn 0.3s; }
+        .section-box { display: none; width: 100%; }
         .section-box.active { display: block; }
 
         /* Communication Page */
-        .comm-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; align-items: start; }
-        .announcements-wrapper, .chat-wrapper { background: white; border-radius: 15px; padding: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .announce-list { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; max-height: 500px; overflow-y: auto; padding-right: 5px; }
+        .comm-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; align-items: start; width: 100%; }
+        .announcements-wrapper, .chat-wrapper { background: white; border-radius: 15px; padding: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); width: 100%; }
+        .announce-list { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; max-height: 400px; overflow-y: auto; }
         .announce-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 15px; position: relative; }
-        .announce-item h4 { margin: 0 0 5px 0; color: var(--primary); font-size: 16px; font-weight: 800; }
+        .announce-item h4 { margin: 0 0 5px 0; color: var(--primary); font-size: 16px; }
         .announce-item p { margin: 0; color: #475569; font-size: 14px; line-height: 1.5; }
         .announce-item .date { font-size: 11px; color: #94a3b8; margin-bottom: 8px; display: block; }
-        .announce-item .del-btn { position: absolute; top: 10px; cursor: pointer; color: var(--danger); font-size: 16px; background: none; border: none; padding: 5px; transition: 0.2s; }
+        .announce-item .del-btn { position: absolute; top: 10px; cursor: pointer; color: var(--danger); font-size: 16px; background: none; border: none; padding: 5px; }
         html[dir="rtl"] .announce-item .del-btn { left: 10px; } html[dir="ltr"] .announce-item .del-btn { right: 10px; }
         
-        .chat-box { flex: 1; min-height: 350px; max-height: 450px; background: #f1f5f9; border-radius: 10px; padding: 15px; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px; }
-        .chat-msg { background: white; padding: 10px 15px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); width: fit-content; max-width: 85%; position: relative; }
-        .chat-msg .sender { font-weight: bold; color: var(--secondary); font-size: 13px; margin-bottom: 3px; display: block; }
-        .chat-msg .text { margin: 0; font-size: 14px; color: var(--dark); line-height: 1.4; }
+        .chat-box { min-height: 300px; max-height: 400px; background: #f1f5f9; border-radius: 10px; padding: 15px; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px; }
+        .chat-msg { background: white; padding: 10px 15px; border-radius: 12px; width: fit-content; max-width: 90%; position: relative; word-break: break-word; }
+        .chat-msg .sender { font-weight: bold; color: var(--secondary); font-size: 13px; display: block; }
+        .chat-msg .text { margin: 3px 0 0 0; font-size: 14px; color: var(--dark); line-height: 1.4; }
         .chat-msg .time { font-size: 10px; color: #9ca3af; margin-top: 5px; display: block; text-align: right; }
         html[dir="rtl"] .chat-msg .time { text-align: left; }
-        .del-chat-btn { position: absolute; top: 5px; cursor: pointer; color: var(--danger); font-size: 12px; background: none; border: none; padding: 5px; opacity: 0.5; transition: 0.2s; }
-        .del-chat-btn:hover { opacity: 1; transform: scale(1.2); }
+        .del-chat-btn { position: absolute; top: 5px; cursor: pointer; color: var(--danger); font-size: 12px; background: none; border: none; padding: 5px; opacity: 0.6; }
         html[dir="rtl"] .del-chat-btn { left: 5px; } html[dir="ltr"] .del-chat-btn { right: 5px; }
 
         /* Modals & Loaders */
-        .modal-overlay { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(17,24,39,0.7); align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-        .modal-content { background-color: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 400px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); text-align: center; animation: fadeIn 0.3s; }
-        .modal-content h3 { margin-top: 0; color: var(--primary); font-size: 22px; font-weight: 800; }
-        .modal-content input { width: 100%; margin: 20px 0; font-size: 18px; text-align: center; padding: 15px; border-radius: 10px; background: #f9fafb; border: 2px solid #e5e7eb; }
-        .modal-content input:focus { border-color: var(--secondary); background: white; }
-        .modal-buttons { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
-        .modal-buttons button { flex: 1; min-width: 100px; }
-        
-        #loadingScreen { position: fixed; top:0; left:0; width: 100%; height: 100%; background: var(--light); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .spinner { border: 5px solid #f3f3f3; border-top: 5px solid var(--primary); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
+        .modal-overlay { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(17,24,39,0.7); align-items: center; justify-content: center; }
+        .modal-content { background-color: white; padding: 25px; border-radius: 20px; width: 95%; max-width: 350px; text-align: center; }
+        .modal-content h3 { margin-top: 0; font-size: 20px; }
+        .modal-content input { width: 100%; margin: 15px 0; padding: 12px; font-size: 16px; border-radius: 8px; }
+        .modal-buttons { display: flex; gap: 10px; flex-direction: column; }
+        .modal-buttons button { width: 100%; }
+
+        #loadingScreen { position: fixed; top:0; left:0; width: 100vw; height: 100vh; background: var(--light); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .spinner { border: 5px solid #e5e7eb; border-top: 5px solid var(--primary); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* ========================================== */
-        /* 📱 RESPONSIVE DESIGN FOR MOBILE (تنسيق الهاتف) */
-        /* ========================================== */
+        /* ================================================= */
+        /* 📱 RESPONSIVE DESIGN (تعديلات خاصة بالتليفون) */
+        /* ================================================= */
         @media (max-width: 768px) {
-            /* Navbar adjustments */
-            .navbar { flex-direction: column; align-items: stretch; padding: 15px; }
-            .navbar-brand { justify-content: space-between; margin-bottom: 10px; }
+            .navbar { padding: 15px 10px; flex-direction: column; align-items: stretch; }
+            .navbar-brand { justify-content: space-between; margin-bottom: 10px; width: 100%; }
             
-            /* Swipable Navigation Tabs */
-            .nav-links { 
-                display: flex; overflow-x: auto; padding-bottom: 5px; 
-                -webkit-overflow-scrolling: touch; scrollbar-width: none; /* Hide scrollbar for clear UI */
-            }
+            /* القائمة الفوقانية تولي تدوز بالصبع لليسار واليمين */
+            .nav-links { overflow-x: auto; padding-bottom: 5px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
             .nav-links::-webkit-scrollbar { display: none; }
-            .nav-links button { font-size: 14px; padding: 10px 15px; flex-shrink: 0; }
+            .nav-links button { flex-shrink: 0; }
 
             .container { padding: 15px 10px; }
-
-            /* Cards stacking */
-            .stats-grid { grid-template-columns: 1fr; gap: 15px; }
-            .stat-card { padding: 20px 15px; }
-            .stat-icon { font-size: 35px; }
-            .stat-card .amount { font-size: 24px; }
-
-            /* Header Actions Stacking */
-            .header-action { flex-direction: column; align-items: flex-start; padding: 15px; }
-            .header-action > div { width: 100%; display: flex; flex-direction: column; gap: 10px; }
-            .header-action h3 { margin-bottom: 5px; font-size: 16px; }
-            .header-action button, .header-action select { width: 100%; }
-
-            /* Form Groups Stacking on Mobile */
-            .form-group { flex-direction: column; align-items: stretch; }
-            .form-group input, .form-group select, .form-group button, .form-group textarea { width: 100%; margin-bottom: 5px; }
-
-            /* Adjust grids for mobile (2 items per row max, or 1 for very small screens) */
-            .grid-cards { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
-            .item-card { padding: 20px 5px 10px 5px; }
-            .item-card .icon { font-size: 30px; }
-            .item-card .name { font-size: 14px; }
-
-            /* Months Grid on Mobile */
-            .months-grid { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px; }
-            .month-card { padding: 10px 5px; font-size: 12px; }
-
-            /* Table Wrapper adjustments */
-            .table-wrapper { border-radius: 10px; }
-            th, td { padding: 10px; font-size: 13px; }
             
-            /* Modals for Mobile */
-            .modal-content { width: 95%; padding: 20px; }
-            .modal-buttons { flex-direction: column; }
-            .modal-buttons button { width: 100%; }
+            .header-action { flex-direction: column; align-items: flex-start; }
+            .header-action > div, .header-action select { width: 100%; }
+            
+            .form-group { flex-direction: column; align-items: stretch; }
+            .form-group input, .form-group button, .form-group select { width: 100%; }
 
-            .comm-grid { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .grid-cards { grid-template-columns: repeat(auto-fill, minmax(46%, 1fr)); }
+            .months-grid { grid-template-columns: repeat(auto-fill, minmax(30%, 1fr)); }
         }
     </style>
 </head>
@@ -265,7 +242,7 @@
             <div id="fullTableSection" class="section-box">
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f3f4f6; padding-bottom: 15px; margin-bottom: 20px;">
                     <h2 id="currentFullBldName" style="margin: 0; color: var(--primary); font-size: 18px;"></h2>
-                    <button class="btn btn-danger" onclick="closeFullTableBuilding()" data-i18n="btn_back_blds">🔙 رجوع للعمارات</button>
+                    <button class="btn btn-danger" onclick="closeFullTableBuilding()" data-i18n="btn_back_blds">🔙 رجوع</button>
                 </div>
                 <div class="table-wrapper">
                     <table id="fullTable"><thead><tr id="fullTableHead"></tr></thead><tbody id="fullTableBody"></tbody></table>
@@ -277,7 +254,7 @@
         <div id="apartments" class="page">
             <div id="bldListSection" class="section-box active">
                 <div class="header-action" style="padding: 20px; background: white; border-radius: 15px; margin-bottom: 20px;">
-                    <div class="form-group" style="margin: 0; width: 100%;">
+                    <div class="form-group" style="margin: 0;">
                         <input type="text" id="newBldName" data-i18n-placeholder="ph_bld_name" placeholder="مثال: العمارة أ...">
                         <button class="btn" onclick="addBuilding()" data-i18n="btn_add_bld">+ إضافة عمارة</button>
                     </div>
@@ -290,7 +267,7 @@
                     <button class="btn btn-danger" onclick="closeBuilding()" data-i18n="btn_back_blds">🔙 رجوع</button>
                 </div>
                 <div class="header-action" style="padding: 20px; background: white; border-radius: 15px; margin-bottom: 20px;">
-                    <div class="form-group" style="margin: 0; width: 100%;">
+                    <div class="form-group" style="margin: 0;">
                         <input type="text" id="newAptName" data-i18n-placeholder="ph_apt_name" placeholder="مثال: شقة 1...">
                         <button class="btn" onclick="addApartment()" data-i18n="btn_add_apt">+ إضافة شقة</button>
                     </div>
@@ -323,7 +300,7 @@
             </div>
             <div class="table-wrapper" style="margin-top: 20px;">
                 <table>
-                    <thead><tr><th data-i18n="th_date">التاريخ</th><th data-i18n="th_desc">البيان</th><th data-i18n="th_amount">المبلغ</th><th data-i18n="th_action">إجراء</th></tr></thead>
+                    <thead><tr><th data-i18n="th_date">التاريخ</th><th data-i18n="th_desc">البيان (السبب)</th><th data-i18n="th_amount">المبلغ</th><th data-i18n="th_action">إجراء</th></tr></thead>
                     <tbody id="expensesTableBody"></tbody>
                 </table>
             </div>
@@ -444,7 +421,7 @@
                 btn_locked: "مقفل", btn_unlocked: "مفتوح", auth_title: "أدخل كلمة المرور", auth_desc: "المرجو إدخال كلمة المرور لتأكيد التعديلات.", ph_pwd: "كلمة المرور...", btn_confirm: "تأكيد ✔️",
                 change_pwd_title: "تغيير كلمة المرور", ph_old_pwd: "كلمة المرور الحالية", ph_new_pwd: "كلمة المرور الجديدة", alert_wrong_pwd: "كلمة المرور غير صحيحة!", alert_pwd_changed: "تم تغيير كلمة المرور بنجاح!", alert_pwd_req: "المرجو إدخال كلمة مرور صالحة.",
                 modal_rename_title: "تغيير الاسم", ph_rename: "الاسم الجديد...",
-                msg_del_default: "هل أنت متأكد من المسح؟ (لا يمكن التراجع)", msg_del_bld: "تحذير: مسح العمارة سيؤدي إلى مسح جميع الشقق التابعة لها نهائياً!"
+                msg_del_default: "هل أنت متأكد من المسح؟", msg_del_bld: "تحذير: مسح العمارة سيمسح جميع شققها نهائياً!"
             },
             fr: {
                 app_title: "🏢 Gestion Syndic", nav_dashboard: "Tableau de bord", nav_apartments: "Immeubles & Appts", nav_expenses: "Dépenses", nav_comm: "Annonces & Chat", stat_incomes: "Total Revenus", stat_expenses: "Total Dépenses", stat_balance: "Caisse Syndic", dash_table_title: "📋 Paiements (10 derniers)", btn_view_all: "📄 Voir tous les appartements", full_table_title: "Tableau complet 🏢", btn_back_dash: "🔙 Retour", 
@@ -526,7 +503,7 @@
         function populateYears() { const currentYear = new Date().getFullYear(); let yearOptions = ""; for (let y = currentYear - 2; y <= currentYear + 5; y++) { yearOptions += `<option value="${y}" ${y === currentYear ? 'selected' : ''}>${t('year_word')} ${y}</option>`; } document.getElementById('dashboardYear').innerHTML = yearOptions; document.getElementById('paymentYear').innerHTML = yearOptions; document.getElementById('fullYear').innerHTML = yearOptions; }
 
         // ==========================================
-        // 🔴 التعديل الأساسي ديال المسح (التنظيف الشامل)
+        // 🔴 المسح (Delete Logic)
         // ==========================================
         function openDeleteModal(id, type) {
             requireAuth(() => {
@@ -603,7 +580,7 @@
         function renderChat() { const box = document.getElementById('chatBox'); if (data.chat.length === 0) { box.innerHTML = `<p style="text-align:center; color:#9ca3af; margin-top:auto; margin-bottom:auto;">ابدأ الدردشة الآن...</p>`; return; } box.innerHTML = data.chat.map(c => `<div class="chat-msg"><button class="del-chat-btn" onclick="openDeleteModal(${c.id}, 'chat')" title="مسح الرسالة">✖</button><span class="sender">${c.name}</span><p class="text">${c.msg}</p><span class="time">${c.time}</span></div>`).join(''); box.scrollTop = box.scrollHeight; }
 
         // ==========================================
-        // 🔴 التعديل الأساسي الثاني: تنظيف الخلاصات الميتة (Auto-cleanup)
+        // 🔴 تنظيف الخلاصات (Auto-cleanup) + الحسابات
         // ==========================================
         function updateDashboardStats() { 
             const validAptIds = new Set(data.apartments.map(a => a.id.toString()));
