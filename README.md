@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>تسيير السانديك - Syndic Management</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     
@@ -17,14 +17,15 @@
         }
 
         * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
-        body { margin: 0; padding: 0; background-color: var(--light); color: var(--dark); transition: 0.3s; }
+        body { margin: 0; padding: 0; background-color: var(--light); color: var(--dark); transition: 0.3s; overflow-x: hidden; }
         
         /* Navbar */
         .navbar { background: linear-gradient(90deg, var(--primary), var(--secondary)); padding: 15px 20px; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); flex-wrap: wrap; gap: 10px; }
         .navbar-brand { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
         .navbar h2 { margin: 0; font-weight: 800; font-size: 22px; }
         
-        .nav-links button { background: rgba(255, 255, 255, 0.1); border: none; color: white; font-size: 15px; font-weight: 700; cursor: pointer; padding: 8px 12px; border-radius: 8px; margin: 0 3px; transition: 0.3s; }
+        .nav-links { display: flex; gap: 5px; }
+        .nav-links button { background: rgba(255, 255, 255, 0.1); border: none; color: white; font-size: 15px; font-weight: 700; cursor: pointer; padding: 8px 15px; border-radius: 8px; transition: 0.3s; white-space: nowrap; }
         .nav-links button:hover, .nav-links button.active { background-color: white; color: var(--primary); }
         
         select.lang-select { background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.5); padding: 8px 12px; border-radius: 8px; font-weight: bold; font-family: 'Tajawal', sans-serif; outline: none; cursor: pointer; }
@@ -77,11 +78,11 @@
         .badge-unpaid { background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
 
         /* Buttons & Inputs */
-        .form-group { margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap; }
-        input[type="text"], input[type="number"], input[type="date"], input[type="password"], textarea { padding: 12px 15px; border: 1px solid #d1d5db; border-radius: 8px; flex: 1; font-size: 15px; outline: none; transition: 0.3s; }
+        .form-group { margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+        input[type="text"], input[type="number"], input[type="date"], input[type="password"], textarea { padding: 12px 15px; border: 1px solid #d1d5db; border-radius: 8px; flex: 1; font-size: 15px; outline: none; transition: 0.3s; min-width: 150px; }
         textarea { resize: vertical; min-height: 45px; }
         input:focus, textarea:focus { border-color: var(--secondary); box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
-        button.btn { padding: 10px 20px; background-color: var(--success); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 14px; transition: 0.3s; box-shadow: 0 4px 6px rgba(16,185,129,0.2); }
+        button.btn { padding: 12px 20px; background-color: var(--success); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 14px; transition: 0.3s; box-shadow: 0 4px 6px rgba(16,185,129,0.2); white-space: nowrap; }
         button.btn:hover { transform: translateY(-2px); box-shadow: 0 6px 8px rgba(16,185,129,0.3); }
         button.btn-danger { background-color: var(--danger); box-shadow: 0 4px 6px rgba(239,68,68,0.2); }
         button.btn-danger:hover { background-color: #dc2626; }
@@ -142,6 +143,62 @@
         #loadingScreen { position: fixed; top:0; left:0; width: 100%; height: 100%; background: var(--light); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .spinner { border: 5px solid #f3f3f3; border-top: 5px solid var(--primary); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* ========================================== */
+        /* 📱 RESPONSIVE DESIGN FOR MOBILE (تنسيق الهاتف) */
+        /* ========================================== */
+        @media (max-width: 768px) {
+            /* Navbar adjustments */
+            .navbar { flex-direction: column; align-items: stretch; padding: 15px; }
+            .navbar-brand { justify-content: space-between; margin-bottom: 10px; }
+            
+            /* Swipable Navigation Tabs */
+            .nav-links { 
+                display: flex; overflow-x: auto; padding-bottom: 5px; 
+                -webkit-overflow-scrolling: touch; scrollbar-width: none; /* Hide scrollbar for clear UI */
+            }
+            .nav-links::-webkit-scrollbar { display: none; }
+            .nav-links button { font-size: 14px; padding: 10px 15px; flex-shrink: 0; }
+
+            .container { padding: 15px 10px; }
+
+            /* Cards stacking */
+            .stats-grid { grid-template-columns: 1fr; gap: 15px; }
+            .stat-card { padding: 20px 15px; }
+            .stat-icon { font-size: 35px; }
+            .stat-card .amount { font-size: 24px; }
+
+            /* Header Actions Stacking */
+            .header-action { flex-direction: column; align-items: flex-start; padding: 15px; }
+            .header-action > div { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+            .header-action h3 { margin-bottom: 5px; font-size: 16px; }
+            .header-action button, .header-action select { width: 100%; }
+
+            /* Form Groups Stacking on Mobile */
+            .form-group { flex-direction: column; align-items: stretch; }
+            .form-group input, .form-group select, .form-group button, .form-group textarea { width: 100%; margin-bottom: 5px; }
+
+            /* Adjust grids for mobile (2 items per row max, or 1 for very small screens) */
+            .grid-cards { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
+            .item-card { padding: 20px 5px 10px 5px; }
+            .item-card .icon { font-size: 30px; }
+            .item-card .name { font-size: 14px; }
+
+            /* Months Grid on Mobile */
+            .months-grid { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px; }
+            .month-card { padding: 10px 5px; font-size: 12px; }
+
+            /* Table Wrapper adjustments */
+            .table-wrapper { border-radius: 10px; }
+            th, td { padding: 10px; font-size: 13px; }
+            
+            /* Modals for Mobile */
+            .modal-content { width: 95%; padding: 20px; }
+            .modal-buttons { flex-direction: column; }
+            .modal-buttons button { width: 100%; }
+
+            .comm-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -154,13 +211,13 @@
     <div class="navbar">
         <div class="navbar-brand">
             <h2 data-i18n="app_title">🏢 تسيير السانديك</h2>
-            <select id="langSelect" class="lang-select" onchange="changeLanguage()">
-                <option value="ar">العربية</option>
-                <option value="fr">Français</option>
-                <option value="en">English</option>
-            </select>
             <div class="auth-controls">
-                <button id="btn-lock" class="btn-icon" onclick="toggleAuth()">🔒 <span data-i18n="btn_locked">مقفل</span></button>
+                <select id="langSelect" class="lang-select" onchange="changeLanguage()">
+                    <option value="ar">العربية</option>
+                    <option value="fr">Français</option>
+                    <option value="en">English</option>
+                </select>
+                <button id="btn-lock" class="btn-icon" onclick="toggleAuth()">🔒</button>
                 <button class="btn-icon" onclick="openChangePwdModal()" title="تغيير كلمة المرور">🔑</button>
             </div>
         </div>
@@ -183,7 +240,7 @@
             <div class="header-action">
                 <div>
                     <h3 style="margin: 0; margin-bottom: 8px;" data-i18n="dash_table_title">📋 الأداء (آخر 10 شقق فقط)</h3>
-                    <button class="btn btn-primary" style="padding: 6px 15px; font-size: 13px;" onclick="changePage('full-payments')" data-i18n="btn_view_all">📄 عرض تفاصيل جميع الشقق</button>
+                    <button class="btn btn-primary" onclick="changePage('full-payments')" data-i18n="btn_view_all">📄 عرض تفاصيل جميع الشقق</button>
                 </div>
                 <select id="dashboardYear" class="modern-select" onchange="renderDashboardTable()"></select>
             </div>
@@ -195,7 +252,7 @@
         <!-- PAGE 4: FULL PAYMENTS -->
         <div id="full-payments" class="page">
             <div class="header-action">
-                <div style="display: flex; gap: 15px; align-items: center;">
+                <div style="display: flex; gap: 10px; align-items: center;">
                     <button class="btn btn-danger" onclick="changePage('dashboard')" data-i18n="btn_back_dash">🔙 رجوع</button>
                     <h3 style="margin: 0;" data-i18n="full_table_title">الجدول الكامل لجميع الشقق 🏢</h3>
                 </div>
@@ -207,7 +264,7 @@
             </div>
             <div id="fullTableSection" class="section-box">
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f3f4f6; padding-bottom: 15px; margin-bottom: 20px;">
-                    <h2 id="currentFullBldName" style="margin: 0; color: var(--primary);"></h2>
+                    <h2 id="currentFullBldName" style="margin: 0; color: var(--primary); font-size: 18px;"></h2>
                     <button class="btn btn-danger" onclick="closeFullTableBuilding()" data-i18n="btn_back_blds">🔙 رجوع للعمارات</button>
                 </div>
                 <div class="table-wrapper">
@@ -229,7 +286,7 @@
             </div>
             <div id="aptListSection" class="section-box">
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f3f4f6; padding-bottom: 15px; margin-bottom: 20px;">
-                    <h2 id="currentBldName" style="margin: 0; color: var(--primary);"></h2>
+                    <h2 id="currentBldName" style="margin: 0; color: var(--primary); font-size: 18px;"></h2>
                     <button class="btn btn-danger" onclick="closeBuilding()" data-i18n="btn_back_blds">🔙 رجوع</button>
                 </div>
                 <div class="header-action" style="padding: 20px; background: white; border-radius: 15px; margin-bottom: 20px;">
@@ -240,14 +297,14 @@
                 </div>
                 <div class="grid-cards" id="apartmentsGrid"></div>
             </div>
-            <div id="aptDetailsSection" class="section-box" style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.05);">
+            <div id="aptDetailsSection" class="section-box" style="background: white; padding: 20px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.05);">
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f3f4f6; padding-bottom: 15px; margin-bottom: 20px;">
-                    <h2 id="currentAptName" style="margin: 0; color: var(--primary);"></h2>
+                    <h2 id="currentAptName" style="margin: 0; color: var(--primary); font-size: 18px;"></h2>
                     <button class="btn btn-danger" onclick="closeAptDetails()" data-i18n="btn_back_apts">🔙 رجوع</button>
                 </div>
-                <div class="form-group" style="max-width: 250px;">
+                <div class="form-group">
                     <label style="font-weight: bold; color: #4b5563;" data-i18n="lbl_year">اختر السنة:</label>
-                    <select id="paymentYear" class="modern-select" style="width: 100%;" onchange="renderMonths()"></select>
+                    <select id="paymentYear" class="modern-select" onchange="renderMonths()"></select>
                 </div>
                 <div class="months-grid" id="monthsGrid"></div>
             </div>
@@ -266,7 +323,7 @@
             </div>
             <div class="table-wrapper" style="margin-top: 20px;">
                 <table>
-                    <thead><tr><th data-i18n="th_date">التاريخ</th><th data-i18n="th_desc">البيان (السبب)</th><th data-i18n="th_amount">المبلغ</th><th data-i18n="th_action">إجراء</th></tr></thead>
+                    <thead><tr><th data-i18n="th_date">التاريخ</th><th data-i18n="th_desc">البيان</th><th data-i18n="th_amount">المبلغ</th><th data-i18n="th_action">إجراء</th></tr></thead>
                     <tbody id="expensesTableBody"></tbody>
                 </table>
             </div>
@@ -277,7 +334,7 @@
             <div class="comm-grid">
                 <div class="announcements-wrapper">
                     <h3 style="margin-top: 0; color: var(--primary); font-size: 20px;" data-i18n="title_announcements">📢 إعلانات العمارة</h3>
-                    <div class="form-group" style="flex-direction: column; gap: 10px;">
+                    <div class="form-group" style="flex-direction: column; align-items: stretch; gap: 10px;">
                         <input type="text" id="announceTitle" data-i18n-placeholder="ph_announce_title" placeholder="عنوان الإعلان...">
                         <textarea id="announceMsg" data-i18n-placeholder="ph_announce_msg" placeholder="محتوى الإعلان..."></textarea>
                         <button class="btn" onclick="addAnnouncement()" data-i18n="btn_add_announce">نشر الإعلان ✔️</button>
@@ -288,8 +345,8 @@
                     <h3 style="margin-top: 0; color: var(--primary); font-size: 20px;" data-i18n="title_chat">💬 دردشة السكان</h3>
                     <div class="chat-box" id="chatBox"></div>
                     <div class="form-group" style="margin-bottom: 0;">
-                        <input type="text" id="chatName" data-i18n-placeholder="ph_chat_name" placeholder="الاسم" style="max-width: 100px;">
-                        <input type="text" id="chatMsg" data-i18n-placeholder="ph_chat_msg" placeholder="اكتب رسالتك..." onkeypress="handleChatKeyPress(event)">
+                        <input type="text" id="chatName" data-i18n-placeholder="ph_chat_name" placeholder="الاسم">
+                        <input type="text" id="chatMsg" data-i18n-placeholder="ph_chat_msg" placeholder="رسالتك..." onkeypress="handleChatKeyPress(event)">
                         <button class="btn btn-primary" onclick="sendChatMessage()" data-i18n="btn_send_chat">إرسال 🚀</button>
                     </div>
                 </div>
@@ -306,7 +363,7 @@
             <input type="password" id="authPwdInput" data-i18n-placeholder="ph_pwd" placeholder="كلمة المرور..." onkeypress="if(event.key==='Enter') verifyAuth()">
             <div class="modal-buttons">
                 <button class="btn" onclick="verifyAuth()" data-i18n="btn_confirm">تأكيد ✔️</button>
-                <button class="btn btn-danger" onclick="closeAuthModal()" data-i18n="btn_cancel">إلغاء ✖️</button>
+                <button class="btn btn-danger" onclick="closeAuthModal()" data-i18n="btn_cancel">إلغاء</button>
             </div>
         </div>
     </div>
@@ -319,7 +376,7 @@
             <input type="password" id="newPwdInput" data-i18n-placeholder="ph_new_pwd" placeholder="كلمة المرور الجديدة" onkeypress="if(event.key==='Enter') saveNewPassword()">
             <div class="modal-buttons">
                 <button class="btn" onclick="saveNewPassword()" data-i18n="btn_save">حفظ ✔️</button>
-                <button class="btn btn-danger" onclick="closeChangePwdModal()" data-i18n="btn_cancel">إلغاء ✖️</button>
+                <button class="btn btn-danger" onclick="closeChangePwdModal()" data-i18n="btn_cancel">إلغاء</button>
             </div>
         </div>
     </div>
@@ -349,7 +406,6 @@
         </div>
     </div>
 
-    <!-- النافذة ديال التأكيد (Delete Modal) -->
     <div id="deleteModal" class="modal-overlay">
         <div class="modal-content">
             <div class="stat-icon" style="font-size: 50px;">🗑️</div>
@@ -379,8 +435,8 @@
         const dict = {
             ar: {
                 app_title: "🏢 تسيير السانديك", nav_dashboard: "الرئيسية", nav_apartments: "العمارات والشقق", nav_expenses: "المصاريف", nav_comm: "الإعلانات والدردشة",
-                stat_incomes: "مجموع المداخيل", stat_expenses: "مجموع المصاريف", stat_balance: "صندوق السانديك", dash_table_title: "📋 الأداء (آخر 10 شقق فقط)", btn_view_all: "📄 عرض تفاصيل جميع الشقق", full_table_title: "الجدول الكامل لجميع الشقق 🏢", btn_back_dash: "🔙 رجوع للرئيسية", 
-                ph_bld_name: "مثال: العمارة A...", btn_add_bld: "+ إضافة عمارة", btn_back_blds: "🔙 رجوع للعمارات", alert_bld: "المرجو كتابة اسم العمارة", ph_apt_name: "مثال: شقة 1...", btn_add_apt: "+ إضافة شقة", btn_back_apts: "🔙 رجوع للشقق",
+                stat_incomes: "مجموع المداخيل", stat_expenses: "مجموع المصاريف", stat_balance: "صندوق السانديك", dash_table_title: "📋 الأداء (آخر 10 شقق فقط)", btn_view_all: "📄 عرض تفاصيل جميع الشقق", full_table_title: "الجدول الكامل لجميع الشقق 🏢", btn_back_dash: "🔙 رجوع", 
+                ph_bld_name: "مثال: العمارة A...", btn_add_bld: "+ إضافة عمارة", btn_back_blds: "🔙 رجوع للعمارات", alert_bld: "المرجو كتابة اسم العمارة", ph_apt_name: "مثال: شقة 1...", btn_add_apt: "+ إضافة شقة", btn_back_apts: "🔙 رجوع",
                 lbl_year: "اختر السنة:", title_new_exp: "تسجيل مصروف جديد 💸", ph_exp_desc: "فاش تخسرو لفلوس؟", ph_amount: "المبلغ", btn_add_exp: "+ إضافة مصروف", th_date: "التاريخ", th_desc: "البيان (السبب)", th_amount: "المبلغ", th_action: "إجراء",
                 title_announcements: "📢 إعلانات العمارة", ph_announce_title: "عنوان الإعلان...", ph_announce_msg: "محتوى الإعلان...", btn_add_announce: "نشر الإعلان ✔️", title_chat: "💬 دردشة السكان", ph_chat_name: "الاسم", ph_chat_msg: "اكتب رسالتك هنا...", btn_send_chat: "إرسال 🚀",
                 btn_save: "✔️ حفظ", btn_clear: "✖️ مسح", btn_cancel: "إلغاء", modal_del_title: "تأكيد المسح", btn_yes_del: "نعم، امسح", btn_undo: "تراجع", curr: "د.م", no_apts: "لا توجد شقق مسجلة بعد.", paid: "✔️", unpaid: "✖️ غير مؤدى", apt_month: "الشقة / الشهر", year_word: "سنة", btn_delete: "مسح 🗑️",
@@ -391,16 +447,16 @@
                 msg_del_default: "هل أنت متأكد من المسح؟ (لا يمكن التراجع)", msg_del_bld: "تحذير: مسح العمارة سيؤدي إلى مسح جميع الشقق التابعة لها نهائياً!"
             },
             fr: {
-                app_title: "🏢 Gestion Syndic", nav_dashboard: "Tableau de bord", nav_apartments: "Immeubles & Appts", nav_expenses: "Dépenses", nav_comm: "Annonces & Chat", stat_incomes: "Total Revenus", stat_expenses: "Total Dépenses", stat_balance: "Caisse Syndic", dash_table_title: "📋 Paiements (10 derniers)", btn_view_all: "📄 Voir tous les appartements", full_table_title: "Tableau complet 🏢", btn_back_dash: "🔙 Retour à l'accueil", 
-                ph_bld_name: "Ex: Bâtiment A...", btn_add_bld: "+ Ajouter Immeuble", btn_back_blds: "🔙 Retour aux immeubles", alert_bld: "Entrez le nom de l'immeuble", ph_apt_name: "Ex: Appt 1...", btn_add_apt: "+ Ajouter Appt", btn_back_apts: "🔙 Retour aux Appts", lbl_year: "Choisir l'année :", title_new_exp: "Nouvelle Dépense 💸", ph_exp_desc: "Description", ph_amount: "Montant", btn_add_exp: "+ Ajouter Dépense", th_date: "Date", th_desc: "Description", th_amount: "Montant", th_action: "Action",
-                title_announcements: "📢 Annonces", ph_announce_title: "Titre de l'annonce...", ph_announce_msg: "Contenu...", btn_add_announce: "Publier ✔️", title_chat: "💬 Chat des résidents", ph_chat_name: "Nom", ph_chat_msg: "Écrivez un message...", btn_send_chat: "Envoyer 🚀", btn_save: "✔️ Enregistrer", btn_clear: "✖️ Effacer", btn_cancel: "Annuler", modal_del_title: "Confirmation", btn_yes_del: "Oui", btn_undo: "Annuler", curr: "MAD", no_apts: "Aucun appartement enregistré.", paid: "✔️", unpaid: "✖️ Non payé", apt_month: "Appt / Mois", year_word: "Année", btn_delete: "Supprimer",
+                app_title: "🏢 Gestion Syndic", nav_dashboard: "Tableau de bord", nav_apartments: "Immeubles & Appts", nav_expenses: "Dépenses", nav_comm: "Annonces & Chat", stat_incomes: "Total Revenus", stat_expenses: "Total Dépenses", stat_balance: "Caisse Syndic", dash_table_title: "📋 Paiements (10 derniers)", btn_view_all: "📄 Voir tous les appartements", full_table_title: "Tableau complet 🏢", btn_back_dash: "🔙 Retour", 
+                ph_bld_name: "Ex: Bâtiment A...", btn_add_bld: "+ Ajouter Immeuble", btn_back_blds: "🔙 Retour aux immeubles", alert_bld: "Entrez le nom de l'immeuble", ph_apt_name: "Ex: Appt 1...", btn_add_apt: "+ Ajouter Appt", btn_back_apts: "🔙 Retour", lbl_year: "Choisir l'année :", title_new_exp: "Nouvelle Dépense 💸", ph_exp_desc: "Description", ph_amount: "Montant", btn_add_exp: "+ Ajouter Dépense", th_date: "Date", th_desc: "Description", th_amount: "Montant", th_action: "Action",
+                title_announcements: "📢 Annonces Immeuble", ph_announce_title: "Titre de l'annonce...", ph_announce_msg: "Contenu...", btn_add_announce: "Publier ✔️", title_chat: "💬 Chat des résidents", ph_chat_name: "Nom", ph_chat_msg: "Écrivez un message...", btn_send_chat: "Envoyer 🚀", btn_save: "✔️ Enregistrer", btn_clear: "✖️ Effacer", btn_cancel: "Annuler", modal_del_title: "Confirmation", btn_yes_del: "Oui", btn_undo: "Annuler", curr: "MAD", no_apts: "Aucun appartement enregistré.", paid: "✔️", unpaid: "✖️ Non payé", apt_month: "Appt / Mois", year_word: "Année", btn_delete: "Supprimer",
                 alert_apt: "Entrez le nom de l'appartement", alert_amt: "Montant invalide!", alert_fill: "Remplissez toutes les infos.", months:["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"], pay_title: "Paiement",
-                btn_locked: "Verrouillé", btn_unlocked: "Déverrouillé", auth_title: "Mot de passe requis", auth_desc: "Veuillez entrer le mot de passe.", ph_pwd: "Mot de passe...", btn_confirm: "Confirmer ✔️", change_pwd_title: "Changer mot de passe", ph_old_pwd: "Mot de passe actuel", ph_new_pwd: "Nouveau mot de passe", alert_wrong_pwd: "Mot de passe incorrect!", alert_pwd_changed: "Mot de passe changé avec succès!", alert_pwd_req: "Veuillez entrer un mot de passe valide.",
+                btn_locked: "Verrouillé", btn_unlocked: "Déverrouillé", auth_title: "Mot de passe requis", auth_desc: "Veuillez entrer le mot de passe pour modifier.", ph_pwd: "Mot de passe...", btn_confirm: "Confirmer ✔️", change_pwd_title: "Changer mot de passe", ph_old_pwd: "Mot de passe actuel", ph_new_pwd: "Nouveau mot de passe", alert_wrong_pwd: "Mot de passe incorrect!", alert_pwd_changed: "Mot de passe changé avec succès!", alert_pwd_req: "Veuillez entrer un mot de passe valide.",
                 modal_rename_title: "Changer le nom", ph_rename: "Nouveau nom...", msg_del_default: "Voulez-vous vraiment supprimer ?", msg_del_bld: "Attention : Supprimer l'immeuble supprimera tous ses appartements !"
             },
             en: {
-                app_title: "🏢 Syndic Manager", nav_dashboard: "Dashboard", nav_apartments: "Buildings & Appts", nav_expenses: "Expenses", nav_comm: "Announcements & Chat", stat_incomes: "Total Incomes", stat_expenses: "Total Expenses", stat_balance: "Syndic Balance", dash_table_title: "📋 Payments (Last 10)", btn_view_all: "📄 View all apartments", full_table_title: "Full Apartments Table 🏢", btn_back_dash: "🔙 Back to Dashboard", 
-                ph_bld_name: "E.g.: Building A...", btn_add_bld: "+ Add Building", btn_back_blds: "🔙 Back to Buildings", alert_bld: "Enter building name", ph_apt_name: "E.g.: Apt 1...", btn_add_apt: "+ Add Appt", btn_back_apts: "🔙 Back to Appts", lbl_year: "Select Year:", title_new_exp: "New Expense 💸", ph_exp_desc: "Description", ph_amount: "Amount", btn_add_exp: "+ Add Expense", th_date: "Date", th_desc: "Description", th_amount: "Amount", th_action: "Action",
+                app_title: "🏢 Syndic Manager", nav_dashboard: "Dashboard", nav_apartments: "Buildings & Appts", nav_expenses: "Expenses", nav_comm: "Announcements & Chat", stat_incomes: "Total Incomes", stat_expenses: "Total Expenses", stat_balance: "Syndic Balance", dash_table_title: "📋 Payments (Last 10)", btn_view_all: "📄 View all apartments", full_table_title: "Full Apartments Table 🏢", btn_back_dash: "🔙 Back", 
+                ph_bld_name: "E.g.: Building A...", btn_add_bld: "+ Add Building", btn_back_blds: "🔙 Back to Buildings", alert_bld: "Enter building name", ph_apt_name: "E.g.: Apt 1...", btn_add_apt: "+ Add Appt", btn_back_apts: "🔙 Back", lbl_year: "Select Year:", title_new_exp: "New Expense 💸", ph_exp_desc: "Description", ph_amount: "Amount", btn_add_exp: "+ Add Expense", th_date: "Date", th_desc: "Description", th_amount: "Amount", th_action: "Action",
                 title_announcements: "📢 Announcements", ph_announce_title: "Title...", ph_announce_msg: "Content...", btn_add_announce: "Publish ✔️", title_chat: "💬 Residents Chat", ph_chat_name: "Name", ph_chat_msg: "Type message...", btn_send_chat: "Send 🚀", btn_save: "✔️ Save", btn_clear: "✖️ Clear", btn_cancel: "Cancel", modal_del_title: "Confirm Deletion", btn_yes_del: "Yes", btn_undo: "Undo", curr: "MAD", no_apts: "No apartments registered yet.", paid: "✔️", unpaid: "✖️ Unpaid", apt_month: "Apt / Month", year_word: "Year", btn_delete: "Delete",
                 alert_apt: "Enter apartment name", alert_amt: "Invalid amount!", alert_fill: "Fill all information.", months:["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], pay_title: "Payment",
                 btn_locked: "Locked", btn_unlocked: "Unlocked", auth_title: "Password Required", auth_desc: "Please enter the password.", ph_pwd: "Password...", btn_confirm: "Confirm ✔️", change_pwd_title: "Change Password", ph_old_pwd: "Current Password", ph_new_pwd: "New Password", alert_wrong_pwd: "Incorrect password!", alert_pwd_changed: "Password changed successfully!", alert_pwd_req: "Please enter a valid password.",
@@ -446,7 +502,7 @@
         function verifyAuth() { const pwd = document.getElementById('authPwdInput').value, savedPwd = localStorage.getItem('syndicPassword') || '0000'; if (pwd === savedPwd) { isAuthenticated = true; updateAuthUI(); closeAuthModal(); if(pendingCallback) { pendingCallback(); pendingCallback = null; } } else { alert(t('alert_wrong_pwd')); } }
         function closeAuthModal() { document.getElementById('authModal').style.display = 'none'; pendingCallback = null; }
         function toggleAuth() { if(isAuthenticated) { isAuthenticated = false; updateAuthUI(); } else { requireAuth(() => {}); } }
-        function updateAuthUI() { const btn = document.getElementById('btn-lock'); if(isAuthenticated) { btn.classList.add('unlocked'); btn.innerHTML = `🔓 <span>${t('btn_unlocked')}</span>`; } else { btn.classList.remove('unlocked'); btn.innerHTML = `🔒 <span>${t('btn_locked')}</span>`; } }
+        function updateAuthUI() { const btn = document.getElementById('btn-lock'); if(isAuthenticated) { btn.classList.add('unlocked'); btn.innerHTML = `🔓`; } else { btn.classList.remove('unlocked'); btn.innerHTML = `🔒`; } }
         function openChangePwdModal() { document.getElementById('oldPwdInput').value = ""; document.getElementById('newPwdInput').value = ""; document.getElementById('changePwdModal').style.display = 'flex'; setTimeout(() => document.getElementById('oldPwdInput').focus(), 100); }
         function closeChangePwdModal() { document.getElementById('changePwdModal').style.display = 'none'; }
         function saveNewPassword() { const oldP = document.getElementById('oldPwdInput').value, newP = document.getElementById('newPwdInput').value, savedPwd = localStorage.getItem('syndicPassword') || '0000'; if(oldP !== savedPwd) return alert(t('alert_wrong_pwd')); if(!newP) return alert(t('alert_pwd_req')); localStorage.setItem('syndicPassword', newP); alert(t('alert_pwd_changed')); closeChangePwdModal(); }
@@ -489,18 +545,15 @@
                 else if (itemToDeleteType === 'announcement') { data.announcements = data.announcements.filter(a => a.id !== itemToDeleteId); renderAnnouncements(); } 
                 else if (itemToDeleteType === 'chat') { data.chat = data.chat.filter(c => c.id !== itemToDeleteId); renderChat(); }
                 else if (itemToDeleteType === 'building') { 
-                    // مسح الخلاصات ديال ݣاع الشقق لي كاينين فهاد العمارة
                     const aptsToDelete = data.apartments.filter(a => a.buildingId === itemToDeleteId);
                     aptsToDelete.forEach(apt => {
                         for(let key in data.payments) { if(key.startsWith(apt.id + "_")) delete data.payments[key]; }
                     });
-                    // مسح الشقق، ومن بعد مسح العمارة
                     data.apartments = data.apartments.filter(a => a.buildingId !== itemToDeleteId);
                     data.buildings = data.buildings.filter(b => b.id !== itemToDeleteId); 
                     renderBuildings(); 
                 }
                 else if (itemToDeleteType === 'apartment') { 
-                    // مسح الخلاصات ديال هاد الشقة بوحدها
                     for(let key in data.payments) { if(key.startsWith(itemToDeleteId + "_")) delete data.payments[key]; }
                     data.apartments = data.apartments.filter(a => a.id !== itemToDeleteId); 
                     renderApartments(); 
@@ -553,24 +606,15 @@
         // 🔴 التعديل الأساسي الثاني: تنظيف الخلاصات الميتة (Auto-cleanup)
         // ==========================================
         function updateDashboardStats() { 
-            // كنجمعو أرقام الشقق لي كاينين دابا وممامسوحينش
             const validAptIds = new Set(data.apartments.map(a => a.id.toString()));
-            let tin = 0;
-            let needsCleanup = false;
+            let tin = 0; let needsCleanup = false;
 
-            // كندوزو على كاع الخلاصات
             for(let key in data.payments) {
                 const aptId = key.split('_')[0];
-                if(validAptIds.has(aptId)) {
-                    tin += data.payments[key];
-                } else {
-                    // إذا لقينا خلاص ديال شي شقة ممسوحة، كنمسحوه نهائياً
-                    delete data.payments[key];
-                    needsCleanup = true;
-                }
+                if(validAptIds.has(aptId)) { tin += data.payments[key]; } 
+                else { delete data.payments[key]; needsCleanup = true; }
             }
 
-            // إلا نظفنا شي حاجة، كنسجلو التعديل الجديد باش ميأثرش مرة أخرى
             if (needsCleanup) {
                 localStorage.setItem('syndicLocalData', JSON.stringify(data));
                 db.collection("syndic_data").doc("main").set(data).catch(e => console.log(e));
