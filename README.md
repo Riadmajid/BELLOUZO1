@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -96,7 +96,6 @@
         .item-card .icon { font-size: 40px; line-height: 1; }
         .item-card .name { font-size: 16px; font-weight: 800; color: var(--dark); }
         
-        /* Card Action Buttons (Edit/Delete) */
         .card-actions { position: absolute; top: 5px; left: 5px; right: 5px; display: flex; justify-content: space-between; }
         .card-action-btn { background: none; border: none; font-size: 14px; cursor: pointer; opacity: 0.5; transition: 0.2s; padding: 2px 5px; }
         .card-action-btn:hover { opacity: 1; transform: scale(1.2); }
@@ -219,7 +218,6 @@
 
         <!-- PAGE 2: BUILDINGS & APTS -->
         <div id="apartments" class="page">
-            <!-- BUILDINGS -->
             <div id="bldListSection" class="section-box active">
                 <div class="header-action" style="padding: 20px; background: white; border-radius: 15px; margin-bottom: 20px;">
                     <div class="form-group" style="margin: 0; width: 100%;">
@@ -229,7 +227,6 @@
                 </div>
                 <div class="grid-cards" id="buildingsGrid"></div>
             </div>
-            <!-- APARTMENTS -->
             <div id="aptListSection" class="section-box">
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f3f4f6; padding-bottom: 15px; margin-bottom: 20px;">
                     <h2 id="currentBldName" style="margin: 0; color: var(--primary);"></h2>
@@ -243,7 +240,6 @@
                 </div>
                 <div class="grid-cards" id="apartmentsGrid"></div>
             </div>
-            <!-- PAYMENTS -->
             <div id="aptDetailsSection" class="section-box" style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.05);">
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f3f4f6; padding-bottom: 15px; margin-bottom: 20px;">
                     <h2 id="currentAptName" style="margin: 0; color: var(--primary);"></h2>
@@ -302,7 +298,6 @@
     </div>
 
     <!-- MODALS -->
-    <!-- 1. Password Auth Modal -->
     <div id="authModal" class="modal-overlay">
         <div class="modal-content">
             <div class="stat-icon" style="font-size: 50px;">🔒</div>
@@ -316,7 +311,6 @@
         </div>
     </div>
 
-    <!-- 2. Change Password Modal -->
     <div id="changePwdModal" class="modal-overlay">
         <div class="modal-content">
             <div class="stat-icon" style="font-size: 50px;">🔑</div>
@@ -330,7 +324,6 @@
         </div>
     </div>
 
-    <!-- 3. Payment Modal -->
     <div id="paymentModal" class="modal-overlay">
         <div class="modal-content">
             <div class="stat-icon" style="font-size: 50px;">💵</div>
@@ -344,7 +337,6 @@
         </div>
     </div>
 
-    <!-- 4. Rename Modal (NEW) -->
     <div id="renameModal" class="modal-overlay">
         <div class="modal-content">
             <div class="stat-icon" style="font-size: 50px;">✏️</div>
@@ -357,7 +349,7 @@
         </div>
     </div>
 
-    <!-- 5. Global Delete Confirm Modal -->
+    <!-- النافذة ديال التأكيد (Delete Modal) -->
     <div id="deleteModal" class="modal-overlay">
         <div class="modal-content">
             <div class="stat-icon" style="font-size: 50px;">🗑️</div>
@@ -371,7 +363,6 @@
     </div>
 
     <script>
-        // ================= FIREBASE INITIALIZATION =================
         const firebaseConfig = {
             apiKey: "AIzaSyDdIUHvUTRze0Pj8TqF36sKnlRUQcSCtUM",
             authDomain: "syndic-54327.firebaseapp.com",
@@ -385,7 +376,6 @@
         const db = firebase.firestore();
         db.enablePersistence().catch(function(err) { console.log("Offline mode warning: ", err.code); });
 
-        // --- TRANSLATION DICTIONARY ---
         const dict = {
             ar: {
                 app_title: "🏢 تسيير السانديك", nav_dashboard: "الرئيسية", nav_apartments: "العمارات والشقق", nav_expenses: "المصاريف", nav_comm: "الإعلانات والدردشة",
@@ -405,48 +395,44 @@
                 ph_bld_name: "Ex: Bâtiment A...", btn_add_bld: "+ Ajouter Immeuble", btn_back_blds: "🔙 Retour aux immeubles", alert_bld: "Entrez le nom de l'immeuble", ph_apt_name: "Ex: Appt 1...", btn_add_apt: "+ Ajouter Appt", btn_back_apts: "🔙 Retour aux Appts", lbl_year: "Choisir l'année :", title_new_exp: "Nouvelle Dépense 💸", ph_exp_desc: "Description", ph_amount: "Montant", btn_add_exp: "+ Ajouter Dépense", th_date: "Date", th_desc: "Description", th_amount: "Montant", th_action: "Action",
                 title_announcements: "📢 Annonces", ph_announce_title: "Titre de l'annonce...", ph_announce_msg: "Contenu...", btn_add_announce: "Publier ✔️", title_chat: "💬 Chat des résidents", ph_chat_name: "Nom", ph_chat_msg: "Écrivez un message...", btn_send_chat: "Envoyer 🚀", btn_save: "✔️ Enregistrer", btn_clear: "✖️ Effacer", btn_cancel: "Annuler", modal_del_title: "Confirmation", btn_yes_del: "Oui", btn_undo: "Annuler", curr: "MAD", no_apts: "Aucun appartement enregistré.", paid: "✔️", unpaid: "✖️ Non payé", apt_month: "Appt / Mois", year_word: "Année", btn_delete: "Supprimer",
                 alert_apt: "Entrez le nom de l'appartement", alert_amt: "Montant invalide!", alert_fill: "Remplissez toutes les infos.", months:["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"], pay_title: "Paiement",
-                btn_locked: "Verrouillé", btn_unlocked: "Déverrouillé", auth_title: "Mot de passe requis", auth_desc: "Veuillez entrer le mot de passe pour modifier.", ph_pwd: "Mot de passe...", btn_confirm: "Confirmer ✔️", change_pwd_title: "Changer le mot de passe", ph_old_pwd: "Mot de passe actuel", ph_new_pwd: "Nouveau mot de passe", alert_wrong_pwd: "Mot de passe incorrect!", alert_pwd_changed: "Mot de passe changé avec succès!", alert_pwd_req: "Veuillez entrer un mot de passe valide.",
-                modal_rename_title: "Changer le nom", ph_rename: "Nouveau nom...",
-                msg_del_default: "Voulez-vous vraiment supprimer ?", msg_del_bld: "Attention : Supprimer l'immeuble supprimera tous ses appartements !"
+                btn_locked: "Verrouillé", btn_unlocked: "Déverrouillé", auth_title: "Mot de passe requis", auth_desc: "Veuillez entrer le mot de passe.", ph_pwd: "Mot de passe...", btn_confirm: "Confirmer ✔️", change_pwd_title: "Changer mot de passe", ph_old_pwd: "Mot de passe actuel", ph_new_pwd: "Nouveau mot de passe", alert_wrong_pwd: "Mot de passe incorrect!", alert_pwd_changed: "Mot de passe changé avec succès!", alert_pwd_req: "Veuillez entrer un mot de passe valide.",
+                modal_rename_title: "Changer le nom", ph_rename: "Nouveau nom...", msg_del_default: "Voulez-vous vraiment supprimer ?", msg_del_bld: "Attention : Supprimer l'immeuble supprimera tous ses appartements !"
             },
             en: {
                 app_title: "🏢 Syndic Manager", nav_dashboard: "Dashboard", nav_apartments: "Buildings & Appts", nav_expenses: "Expenses", nav_comm: "Announcements & Chat", stat_incomes: "Total Incomes", stat_expenses: "Total Expenses", stat_balance: "Syndic Balance", dash_table_title: "📋 Payments (Last 10)", btn_view_all: "📄 View all apartments", full_table_title: "Full Apartments Table 🏢", btn_back_dash: "🔙 Back to Dashboard", 
                 ph_bld_name: "E.g.: Building A...", btn_add_bld: "+ Add Building", btn_back_blds: "🔙 Back to Buildings", alert_bld: "Enter building name", ph_apt_name: "E.g.: Apt 1...", btn_add_apt: "+ Add Appt", btn_back_apts: "🔙 Back to Appts", lbl_year: "Select Year:", title_new_exp: "New Expense 💸", ph_exp_desc: "Description", ph_amount: "Amount", btn_add_exp: "+ Add Expense", th_date: "Date", th_desc: "Description", th_amount: "Amount", th_action: "Action",
                 title_announcements: "📢 Announcements", ph_announce_title: "Title...", ph_announce_msg: "Content...", btn_add_announce: "Publish ✔️", title_chat: "💬 Residents Chat", ph_chat_name: "Name", ph_chat_msg: "Type message...", btn_send_chat: "Send 🚀", btn_save: "✔️ Save", btn_clear: "✖️ Clear", btn_cancel: "Cancel", modal_del_title: "Confirm Deletion", btn_yes_del: "Yes", btn_undo: "Undo", curr: "MAD", no_apts: "No apartments registered yet.", paid: "✔️", unpaid: "✖️ Unpaid", apt_month: "Apt / Month", year_word: "Year", btn_delete: "Delete",
                 alert_apt: "Enter apartment name", alert_amt: "Invalid amount!", alert_fill: "Fill all information.", months:["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], pay_title: "Payment",
-                btn_locked: "Locked", btn_unlocked: "Unlocked", auth_title: "Password Required", auth_desc: "Please enter the password to modify data.", ph_pwd: "Password...", btn_confirm: "Confirm ✔️", change_pwd_title: "Change Password", ph_old_pwd: "Current Password", ph_new_pwd: "New Password", alert_wrong_pwd: "Incorrect password!", alert_pwd_changed: "Password changed successfully!", alert_pwd_req: "Please enter a valid password.",
-                modal_rename_title: "Change Name", ph_rename: "New name...",
-                msg_del_default: "Are you sure you want to delete?", msg_del_bld: "Warning: Deleting the building will delete all its apartments!"
+                btn_locked: "Locked", btn_unlocked: "Unlocked", auth_title: "Password Required", auth_desc: "Please enter the password.", ph_pwd: "Password...", btn_confirm: "Confirm ✔️", change_pwd_title: "Change Password", ph_old_pwd: "Current Password", ph_new_pwd: "New Password", alert_wrong_pwd: "Incorrect password!", alert_pwd_changed: "Password changed successfully!", alert_pwd_req: "Please enter a valid password.",
+                modal_rename_title: "Change Name", ph_rename: "New name...", msg_del_default: "Are you sure you want to delete?", msg_del_bld: "Warning: Deleting the building will delete all its apartments!"
             }
         };
 
-        // --- 1. STATE & FIREBASE DATA SYNC ---
         let currentLang = localStorage.getItem('syndicLang') || 'ar';
         let data = JSON.parse(localStorage.getItem('syndicLocalData')) || { buildings: [], apartments:[], payments: {}, expenses:[], announcements:[], chat:[] };
-        let isDataLoaded = false;
-        let isAuthenticated = false; let pendingCallback = null; 
+        let isDataLoaded = false, isAuthenticated = false, pendingCallback = null; 
         let currentSelectedBuildingId = null, currentSelectedAptId = null, selectedMonthForPay = null, selectedYearForPay = null;
         let currentFullBuildingId = null; 
         let itemToDeleteId = null, itemToDeleteType = null; 
-        let itemToRenameId = null, itemToRenameType = null; // للمتغيرات ديال التعديل (Rename)
+        let itemToRenameId = null, itemToRenameType = null;
 
         db.collection("syndic_data").doc("main").onSnapshot((doc) => {
             if (doc.exists) {
                 const fetchedData = doc.data();
                 data.buildings = fetchedData.buildings ||[]; data.apartments = fetchedData.apartments ||[]; data.payments = fetchedData.payments || {}; data.expenses = fetchedData.expenses ||[]; data.announcements = fetchedData.announcements ||[]; data.chat = fetchedData.chat ||[];
                 localStorage.setItem('syndicLocalData', JSON.stringify(data)); 
-            } else { db.collection("syndic_data").doc("main").set(data).catch(e => console.log("Set failed", e)); }
+            } else { db.collection("syndic_data").doc("main").set(data).catch(e => console.log(e)); }
             if (!isDataLoaded) { isDataLoaded = true; document.getElementById('loadingScreen').style.display = 'none'; initApp(); } else { refreshUI(); }
         }, (error) => {
-            console.error("Firestore Error: ", error);
-            if (!isDataLoaded) { isDataLoaded = true; document.getElementById('loadingScreen').style.display = 'none'; alert("⚠️ لا يمكن الاتصال بقاعدة البيانات حالياً. التطبيق يعمل في وضع (Offline)."); initApp(); }
+            console.error(error);
+            if (!isDataLoaded) { isDataLoaded = true; document.getElementById('loadingScreen').style.display = 'none'; alert("⚠️ لا يمكن الاتصال بقاعدة البيانات. التطبيق يعمل Offline."); initApp(); }
         });
 
         setTimeout(() => { if(!isDataLoaded) { isDataLoaded = true; document.getElementById('loadingScreen').style.display = 'none'; initApp(); } }, 3000);
 
         function saveData() { 
             localStorage.setItem('syndicLocalData', JSON.stringify(data));
-            db.collection("syndic_data").doc("main").set(data).catch(e => console.log("Save error", e));
+            db.collection("syndic_data").doc("main").set(data).catch(e => console.log(e));
             updateDashboardStats(); 
         }
         function refreshUI() {
@@ -455,10 +441,8 @@
             renderExpenses(); renderAnnouncements(); renderChat();
         }
 
-        // --- AUTH LOGIC ---
-        function requireAuth(callback) {
-            if(isAuthenticated) { callback(); } else { pendingCallback = callback; document.getElementById('authPwdInput').value = ""; document.getElementById('authModal').style.display = 'flex'; setTimeout(() => document.getElementById('authPwdInput').focus(), 100); }
-        }
+        // Auth
+        function requireAuth(callback) { if(isAuthenticated) { callback(); } else { pendingCallback = callback; document.getElementById('authPwdInput').value = ""; document.getElementById('authModal').style.display = 'flex'; setTimeout(() => document.getElementById('authPwdInput').focus(), 100); } }
         function verifyAuth() { const pwd = document.getElementById('authPwdInput').value, savedPwd = localStorage.getItem('syndicPassword') || '0000'; if (pwd === savedPwd) { isAuthenticated = true; updateAuthUI(); closeAuthModal(); if(pendingCallback) { pendingCallback(); pendingCallback = null; } } else { alert(t('alert_wrong_pwd')); } }
         function closeAuthModal() { document.getElementById('authModal').style.display = 'none'; pendingCallback = null; }
         function toggleAuth() { if(isAuthenticated) { isAuthenticated = false; updateAuthUI(); } else { requireAuth(() => {}); } }
@@ -467,7 +451,7 @@
         function closeChangePwdModal() { document.getElementById('changePwdModal').style.display = 'none'; }
         function saveNewPassword() { const oldP = document.getElementById('oldPwdInput').value, newP = document.getElementById('newPwdInput').value, savedPwd = localStorage.getItem('syndicPassword') || '0000'; if(oldP !== savedPwd) return alert(t('alert_wrong_pwd')); if(!newP) return alert(t('alert_pwd_req')); localStorage.setItem('syndicPassword', newP); alert(t('alert_pwd_changed')); closeChangePwdModal(); }
 
-        // --- LANGUAGE LOGIC ---
+        // Language & Navigation
         function changeLanguage() { currentLang = document.getElementById('langSelect').value; localStorage.setItem('syndicLang', currentLang); applyLanguage(); }
         function t(key) { return dict[currentLang][key]; }
         function applyLanguage() {
@@ -478,7 +462,6 @@
             if (currentSelectedAptId) { document.getElementById('currentAptName').innerHTML = `🏠 ${data.apartments.find(a=>a.id===currentSelectedAptId).name}`; renderMonths(); }
         }
 
-        // --- NAVIGATION ---
         function showSection(sectionId) { document.querySelectorAll('.section-box').forEach(s => s.classList.remove('active')); document.getElementById(sectionId).classList.add('active'); }
         function changePage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active')); document.getElementById(pageId).classList.add('active'); const navBtn = document.getElementById('btn-' + pageId); if(navBtn) navBtn.classList.add('active');
@@ -486,7 +469,9 @@
         }
         function populateYears() { const currentYear = new Date().getFullYear(); let yearOptions = ""; for (let y = currentYear - 2; y <= currentYear + 5; y++) { yearOptions += `<option value="${y}" ${y === currentYear ? 'selected' : ''}>${t('year_word')} ${y}</option>`; } document.getElementById('dashboardYear').innerHTML = yearOptions; document.getElementById('paymentYear').innerHTML = yearOptions; document.getElementById('fullYear').innerHTML = yearOptions; }
 
-        // --- UNIFIED DELETE & RENAME LOGIC (تحديث جديد: مسح وتعديل العمارات والشقق) ---
+        // ==========================================
+        // 🔴 التعديل الأساسي ديال المسح (التنظيف الشامل)
+        // ==========================================
         function openDeleteModal(id, type) {
             requireAuth(() => {
                 itemToDeleteId = id; itemToDeleteType = type;
@@ -504,11 +489,19 @@
                 else if (itemToDeleteType === 'announcement') { data.announcements = data.announcements.filter(a => a.id !== itemToDeleteId); renderAnnouncements(); } 
                 else if (itemToDeleteType === 'chat') { data.chat = data.chat.filter(c => c.id !== itemToDeleteId); renderChat(); }
                 else if (itemToDeleteType === 'building') { 
+                    // مسح الخلاصات ديال ݣاع الشقق لي كاينين فهاد العمارة
+                    const aptsToDelete = data.apartments.filter(a => a.buildingId === itemToDeleteId);
+                    aptsToDelete.forEach(apt => {
+                        for(let key in data.payments) { if(key.startsWith(apt.id + "_")) delete data.payments[key]; }
+                    });
+                    // مسح الشقق، ومن بعد مسح العمارة
+                    data.apartments = data.apartments.filter(a => a.buildingId !== itemToDeleteId);
                     data.buildings = data.buildings.filter(b => b.id !== itemToDeleteId); 
-                    data.apartments = data.apartments.filter(a => a.buildingId !== itemToDeleteId); // كيمسح الشقق ديال العمارة
                     renderBuildings(); 
                 }
                 else if (itemToDeleteType === 'apartment') { 
+                    // مسح الخلاصات ديال هاد الشقة بوحدها
+                    for(let key in data.payments) { if(key.startsWith(itemToDeleteId + "_")) delete data.payments[key]; }
                     data.apartments = data.apartments.filter(a => a.id !== itemToDeleteId); 
                     renderApartments(); 
                 }
@@ -516,74 +509,39 @@
             }
         }
 
-        function openRenameModal(id, type, currentName) {
-            requireAuth(() => {
-                itemToRenameId = id; itemToRenameType = type;
-                document.getElementById('renameInput').value = currentName;
-                document.getElementById('renameModal').style.display = 'flex';
-                setTimeout(() => document.getElementById('renameInput').focus(), 100);
-            });
-        }
+        // Rename Logic
+        function openRenameModal(id, type, currentName) { requireAuth(() => { itemToRenameId = id; itemToRenameType = type; document.getElementById('renameInput').value = currentName; document.getElementById('renameModal').style.display = 'flex'; setTimeout(() => document.getElementById('renameInput').focus(), 100); }); }
         function closeRenameModal() { document.getElementById('renameModal').style.display = 'none'; itemToRenameId = null; itemToRenameType = null; }
-        
         function saveRename() {
-            const newName = document.getElementById('renameInput').value.trim();
-            if(!newName) return;
-            if (itemToRenameType === 'building') {
-                const b = data.buildings.find(b => b.id === itemToRenameId);
-                if(b) b.name = newName; renderBuildings();
-            } else if (itemToRenameType === 'apartment') {
-                const a = data.apartments.find(a => a.id === itemToRenameId);
-                if(a) a.name = newName; renderApartments();
-            }
+            const newName = document.getElementById('renameInput').value.trim(); if(!newName) return;
+            if (itemToRenameType === 'building') { const b = data.buildings.find(b => b.id === itemToRenameId); if(b) b.name = newName; renderBuildings(); } 
+            else if (itemToRenameType === 'apartment') { const a = data.apartments.find(a => a.id === itemToRenameId); if(a) a.name = newName; renderApartments(); }
             saveData(); closeRenameModal();
         }
 
-        // --- Buildings & Apts ---
+        // Buildings & Apts
         function addBuilding() { requireAuth(() => { const n = document.getElementById('newBldName').value.trim(); if(!n) return alert(t('alert_bld')); data.buildings.push({ id: Date.now(), name: n }); saveData(); document.getElementById('newBldName').value = ""; renderBuildings(); }); }
-        
-        function renderBuildings() { 
-            document.getElementById('buildingsGrid').innerHTML = data.buildings.map(b => `
-                <div class="item-card" onclick="openBuilding(${b.id}, '${b.name}')">
-                    <div class="card-actions">
-                        <button class="card-action-btn" style="color:var(--primary);" onclick="event.stopPropagation(); openRenameModal(${b.id}, 'building', '${b.name}')" title="تعديل">✏️</button>
-                        <button class="card-action-btn" style="color:var(--danger);" onclick="event.stopPropagation(); openDeleteModal(${b.id}, 'building')" title="مسح">🗑️</button>
-                    </div>
-                    <div class="icon">🏢</div><div class="name">${b.name}</div>
-                </div>`).join(''); 
-        }
-        
+        function renderBuildings() { document.getElementById('buildingsGrid').innerHTML = data.buildings.map(b => `<div class="item-card" onclick="openBuilding(${b.id}, '${b.name}')"><div class="card-actions"><button class="card-action-btn" style="color:var(--primary);" onclick="event.stopPropagation(); openRenameModal(${b.id}, 'building', '${b.name}')" title="تعديل">✏️</button><button class="card-action-btn" style="color:var(--danger);" onclick="event.stopPropagation(); openDeleteModal(${b.id}, 'building')" title="مسح">🗑️</button></div><div class="icon">🏢</div><div class="name">${b.name}</div></div>`).join(''); }
         function openBuilding(id, name) { currentSelectedBuildingId = id; document.getElementById('currentBldName').innerHTML = `🏢 ${name}`; showSection('aptListSection'); renderApartments(); }
         function closeBuilding() { currentSelectedBuildingId = null; showSection('bldListSection'); renderBuildings(); }
 
         function addApartment() { requireAuth(() => { if(!currentSelectedBuildingId) return; const n = document.getElementById('newAptName').value.trim(); if(!n) return alert(t('alert_apt')); data.apartments.push({ id: Date.now(), buildingId: currentSelectedBuildingId, name: n }); saveData(); document.getElementById('newAptName').value = ""; renderApartments(); }); }
-        
-        function renderApartments() { 
-            document.getElementById('apartmentsGrid').innerHTML = data.apartments.filter(a => a.buildingId === currentSelectedBuildingId).map(a => `
-                <div class="item-card" onclick="openAptDetails(${a.id}, '${a.name}')">
-                    <div class="card-actions">
-                        <button class="card-action-btn" style="color:var(--primary);" onclick="event.stopPropagation(); openRenameModal(${a.id}, 'apartment', '${a.name}')" title="تعديل">✏️</button>
-                        <button class="card-action-btn" style="color:var(--danger);" onclick="event.stopPropagation(); openDeleteModal(${a.id}, 'apartment')" title="مسح">🗑️</button>
-                    </div>
-                    <div class="icon">🏠</div><div class="name">${a.name}</div>
-                </div>`).join(''); 
-        }
-        
+        function renderApartments() { document.getElementById('apartmentsGrid').innerHTML = data.apartments.filter(a => a.buildingId === currentSelectedBuildingId).map(a => `<div class="item-card" onclick="openAptDetails(${a.id}, '${a.name}')"><div class="card-actions"><button class="card-action-btn" style="color:var(--primary);" onclick="event.stopPropagation(); openRenameModal(${a.id}, 'apartment', '${a.name}')" title="تعديل">✏️</button><button class="card-action-btn" style="color:var(--danger);" onclick="event.stopPropagation(); openDeleteModal(${a.id}, 'apartment')" title="مسح">🗑️</button></div><div class="icon">🏠</div><div class="name">${a.name}</div></div>`).join(''); }
         function openAptDetails(id, name) { currentSelectedAptId = id; document.getElementById('currentAptName').innerHTML = `🏠 ${name}`; showSection('aptDetailsSection'); renderMonths(); }
         function closeAptDetails() { currentSelectedAptId = null; showSection('aptListSection'); renderApartments(); }
 
-        // --- Payments ---
+        // Payments
         function renderMonths() { if(!currentSelectedAptId) return; const y = document.getElementById('paymentYear').value; let html = ""; for(let m = 1; m <= 12; m++) { const amt = data.payments[`${currentSelectedAptId}_${y}_${m}`] || 0; const isP = amt > 0; html += `<div class="${isP ? 'month-card paid' : 'month-card'}" onclick="openPaymentModal(${m}, '${y}')">${t('months')[m-1]}<br><span style="${!isP?'color:#ef4444;font-size:12px;':''}">${isP ? amt + ' ' + t('curr') : t('unpaid').replace('✖️ ', '')}</span></div>`; } document.getElementById('monthsGrid').innerHTML = html; }
         function openPaymentModal(m, y) { requireAuth(() => { selectedMonthForPay = m; selectedYearForPay = y; document.getElementById('modalTitle').innerText = `${t('pay_title')} ${t('months')[m-1]} - ${y}`; document.getElementById('modalAmountInput').value = data.payments[`${currentSelectedAptId}_${y}_${m}`] || ""; document.getElementById('paymentModal').style.display = 'flex'; setTimeout(() => document.getElementById('modalAmountInput').focus(), 100); }); }
         function closePaymentModal() { document.getElementById('paymentModal').style.display = 'none'; }
         function savePayment() { const amt = parseFloat(document.getElementById('modalAmountInput').value); if (isNaN(amt) || amt <= 0) return alert(t('alert_amt')); data.payments[`${currentSelectedAptId}_${selectedYearForPay}_${selectedMonthForPay}`] = amt; saveData(); renderMonths(); closePaymentModal(); }
         function clearPayment() { delete data.payments[`${currentSelectedAptId}_${selectedYearForPay}_${selectedMonthForPay}`]; saveData(); renderMonths(); closePaymentModal(); }
 
-        // --- Expenses ---
+        // Expenses
         function addExpense() { requireAuth(() => { const d = document.getElementById('expenseDesc').value, a = parseFloat(document.getElementById('expenseAmount').value), dt = document.getElementById('expenseDate').value; if(!d || isNaN(a) || a <= 0 || !dt) return alert(t('alert_fill')); data.expenses.push({ id: Date.now(), desc: d, amount: a, date: dt }); saveData(); document.getElementById('expenseDesc').value = ""; document.getElementById('expenseAmount').value = ""; renderExpenses(); }); }
         function renderExpenses() { document.getElementById('expensesTableBody').innerHTML =[...data.expenses].sort((a,b) => new Date(b.date) - new Date(a.date)).map(e => `<tr><td style="font-weight:bold; color:#4b5563;">${e.date}</td><td style="text-align:${currentLang==='ar'?'right':'left'}; font-weight:600;">${e.desc}</td><td class="text-danger" style="font-weight:800; font-size:16px;">${e.amount} ${t('curr')}</td><td><button class="btn btn-danger" style="padding: 8px 12px; font-size:12px;" onclick="openDeleteModal(${e.id}, 'expense')">${t('btn_delete')}</button></td></tr>`).join(''); }
 
-        // --- Announcements & Chat ---
+        // Announcements & Chat
         function addAnnouncement() { requireAuth(() => { const title = document.getElementById('announceTitle').value.trim(), msg = document.getElementById('announceMsg').value.trim(); if (!title || !msg) return alert(t('alert_fill')); const dateStr = new Date().toLocaleString(currentLang === 'ar' ? 'ar-MA' : 'fr-FR', { dateStyle: 'medium', timeStyle: 'short' }); data.announcements.unshift({ id: Date.now(), title, msg, date: dateStr }); saveData(); document.getElementById('announceTitle').value = ""; document.getElementById('announceMsg').value = ""; renderAnnouncements(); }); }
         function renderAnnouncements() { const list = document.getElementById('announcementsList'); if (data.announcements.length === 0) { list.innerHTML = `<p style="text-align:center; color:#9ca3af;">لا توجد إعلانات حالياً.</p>`; return; } list.innerHTML = data.announcements.map(ann => `<div class="announce-item"><button class="del-btn" onclick="openDeleteModal(${ann.id}, 'announcement')">✖</button><h4>${ann.title}</h4><span class="date">🕒 ${ann.date}</span><p>${ann.msg.replace(/\n/g, '<br>')}</p></div>`).join(''); }
 
@@ -591,21 +549,40 @@
         function handleChatKeyPress(e) { if(e.key === 'Enter') sendChatMessage(); }
         function renderChat() { const box = document.getElementById('chatBox'); if (data.chat.length === 0) { box.innerHTML = `<p style="text-align:center; color:#9ca3af; margin-top:auto; margin-bottom:auto;">ابدأ الدردشة الآن...</p>`; return; } box.innerHTML = data.chat.map(c => `<div class="chat-msg"><button class="del-chat-btn" onclick="openDeleteModal(${c.id}, 'chat')" title="مسح الرسالة">✖</button><span class="sender">${c.name}</span><p class="text">${c.msg}</p><span class="time">${c.time}</span></div>`).join(''); box.scrollTop = box.scrollHeight; }
 
-        // --- FULL TABLE & DASHBOARD ---
-        function updateDashboardStats() { const tin = Object.values(data.payments).reduce((a,b) => a+b, 0), tout = data.expenses.reduce((s, e) => s + e.amount, 0); document.getElementById('totalIncomes').innerText = `${tin.toLocaleString('en-US')} ${t('curr')}`; document.getElementById('totalExpenses').innerText = `${tout.toLocaleString('en-US')} ${t('curr')}`; document.getElementById('boxBalance').innerText = `${(tin - tout).toLocaleString('en-US')} ${t('curr')}`; }
-        
-        function buildTableHTML(yId, limit, bldId = null) { 
-            const y = document.getElementById(yId).value; let headHTML = `<th>${t('apt_month')}</th>`; t('months').forEach(m => headHTML += `<th>${m}</th>`); 
-            let apts = data.apartments; if (bldId) apts = apts.filter(a => a.buildingId === bldId); if (limit && apts.length > limit) apts = apts.slice(-limit); 
-            if(apts.length === 0) return { headHTML, bodyHTML: `<tr><td colspan="13" style="padding:30px; color:#9ca3af;">${t('no_apts')}</td></tr>` }; 
-            let bodyHTML = apts.map(a => { 
-                let b = data.buildings.find(bx => bx.id === a.buildingId); 
-                let r = `<tr><td><span style="color:#6b7280; font-size:12px;">${b ? `[${b.name}] - ` : ""}</span><br>${a.name}</td>`; 
-                for(let m = 1; m <= 12; m++) { const amt = data.payments[`${a.id}_${y}_${m}`]; r += amt > 0 ? `<td><span class="badge badge-paid">${t('paid')} ${amt}</span></td>` : `<td><span class="badge badge-unpaid">${t('unpaid')}</span></td>`; } 
-                return r + `</tr>`; 
-            }).join(''); return { headHTML, bodyHTML }; 
-        }
+        // ==========================================
+        // 🔴 التعديل الأساسي الثاني: تنظيف الخلاصات الميتة (Auto-cleanup)
+        // ==========================================
+        function updateDashboardStats() { 
+            // كنجمعو أرقام الشقق لي كاينين دابا وممامسوحينش
+            const validAptIds = new Set(data.apartments.map(a => a.id.toString()));
+            let tin = 0;
+            let needsCleanup = false;
 
+            // كندوزو على كاع الخلاصات
+            for(let key in data.payments) {
+                const aptId = key.split('_')[0];
+                if(validAptIds.has(aptId)) {
+                    tin += data.payments[key];
+                } else {
+                    // إذا لقينا خلاص ديال شي شقة ممسوحة، كنمسحوه نهائياً
+                    delete data.payments[key];
+                    needsCleanup = true;
+                }
+            }
+
+            // إلا نظفنا شي حاجة، كنسجلو التعديل الجديد باش ميأثرش مرة أخرى
+            if (needsCleanup) {
+                localStorage.setItem('syndicLocalData', JSON.stringify(data));
+                db.collection("syndic_data").doc("main").set(data).catch(e => console.log(e));
+            }
+
+            const tout = data.expenses.reduce((s, e) => s + e.amount, 0); 
+            document.getElementById('totalIncomes').innerText = `${tin.toLocaleString('en-US')} ${t('curr')}`; 
+            document.getElementById('totalExpenses').innerText = `${tout.toLocaleString('en-US')} ${t('curr')}`; 
+            document.getElementById('boxBalance').innerText = `${(tin - tout).toLocaleString('en-US')} ${t('curr')}`; 
+        }
+        
+        function buildTableHTML(yId, limit, bldId = null) { const y = document.getElementById(yId).value; let headHTML = `<th>${t('apt_month')}</th>`; t('months').forEach(m => headHTML += `<th>${m}</th>`); let apts = data.apartments; if (bldId) apts = apts.filter(a => a.buildingId === bldId); if (limit && apts.length > limit) apts = apts.slice(-limit); if(apts.length === 0) return { headHTML, bodyHTML: `<tr><td colspan="13" style="padding:30px; color:#9ca3af;">${t('no_apts')}</td></tr>` }; let bodyHTML = apts.map(a => { let b = data.buildings.find(bx => bx.id === a.buildingId); let r = `<tr><td><span style="color:#6b7280; font-size:12px;">${b ? `[${b.name}] - ` : ""}</span><br>${a.name}</td>`; for(let m = 1; m <= 12; m++) { const amt = data.payments[`${a.id}_${y}_${m}`]; r += amt > 0 ? `<td><span class="badge badge-paid">${t('paid')} ${amt}</span></td>` : `<td><span class="badge badge-unpaid">${t('unpaid')}</span></td>`; } return r + `</tr>`; }).join(''); return { headHTML, bodyHTML }; }
         function renderDashboardTable() { const { headHTML, bodyHTML } = buildTableHTML('dashboardYear', 10, null); document.getElementById('dashboardTableHead').innerHTML = headHTML; document.getElementById('dashboardTableBody').innerHTML = bodyHTML; }
         
         function renderFullBuildings() { document.getElementById('fullBuildingsGrid').innerHTML = data.buildings.map(b => `<div class="item-card" onclick="openFullTableBuilding(${b.id}, '${b.name}')"><div class="icon">🏢</div><div class="name">${b.name}</div></div>`).join(''); }
@@ -614,7 +591,6 @@
         function renderFullTable() { if(!currentFullBuildingId) return; const { headHTML, bodyHTML } = buildTableHTML('fullYear', null, currentFullBuildingId); document.getElementById('fullTableHead').innerHTML = headHTML; document.getElementById('fullTableBody').innerHTML = bodyHTML; }
 
         function initApp() { document.getElementById('expenseDate').valueAsDate = new Date(); applyLanguage(); refreshUI(); }
-
     </script>
 </body>
 </html>
