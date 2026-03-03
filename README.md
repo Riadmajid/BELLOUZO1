@@ -214,7 +214,7 @@
                 <div class="header-action" style="padding: 20px; background: white; border-radius: 15px; margin-bottom: 20px;">
                     <div class="form-group" style="margin: 0;">
                         <input type="text" id="newBldName" data-i18n-placeholder="ph_bld_name" placeholder="مثال: العمارة أ...">
-                        <button class="btn" onclick="addBuilding()" data-i18n="btn_add_bld">+ إضافة عمارة</button>
+                        <button class="btn" onclick="addBuilding()" data-i18n="btn_add_bld">+ إضافة العمارة</button>
                     </div>
                 </div>
                 <div class="grid-cards" id="buildingsGrid"></div>
@@ -312,7 +312,7 @@
             </div>
         </div>
 
-        <!-- 🔴 PAGE 5: COMMUNICATION (تعديلات الإعلانات) -->
+        <!-- PAGE 5: COMMUNICATION -->
         <div id="communication" class="page">
             <div class="comm-grid">
                 
@@ -323,7 +323,6 @@
                         <input type="text" id="announceTitle" data-i18n-placeholder="ph_announce_title" placeholder="عنوان الإعلان...">
                         <textarea id="announceMsg" data-i18n-placeholder="ph_announce_msg" placeholder="محتوى الإعلان..."></textarea>
                         
-                        <!-- 🔴 إضافة صورة الإعلان -->
                         <div class="file-input-box" style="margin-bottom: 5px; padding: 10px;">
                             <label style="font-size: 14px; font-weight: bold; color: var(--primary); display:block; margin-bottom:5px; text-align:start;" data-i18n="lbl_ann_image">صورة مرفقة (اختياري):</label>
                             <input type="file" id="announceImage" accept="image/*" style="width:100%;">
@@ -350,23 +349,40 @@
 
     <!-- MODALS -->
     
-    <!-- 🔴 نافذة تفاصيل الإعلان (الجديدة) -->
+    <!-- 🔴 نافذة تفاصيل الإعلان والتعليقات -->
     <div id="announcementModal" class="modal-overlay">
         <div class="modal-content" style="max-width: 95%; width: 500px; max-height: 90vh; overflow-y: auto; padding: 20px; text-align: right;" dir="rtl">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px solid #f3f4f6; padding-bottom: 10px;">
                 <h3 id="annModalTitle" style="margin: 0; color: var(--primary);"></h3>
                 <button class="btn btn-danger" style="padding: 5px 10px;" onclick="closeAnnouncementModal()">✖</button>
             </div>
+            
             <span id="annModalDate" style="font-size: 12px; color: #94a3b8; margin-bottom: 15px; display: block;"></span>
             <p id="annModalMsg" style="color: #475569; font-size: 15px; line-height: 1.6; white-space: pre-wrap; margin-bottom: 20px;"></p>
             <div id="annModalImageContainer" style="margin-bottom: 20px; text-align: center;"></div>
-            <div style="display: flex; gap: 10px;">
+            
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
                 <button class="btn btn-danger" style="width: 100%;" id="btnDelAnn" onclick="">🗑️ مسح الإعلان</button>
             </div>
+
+            <!-- 🔴 قسم التعليقات -->
+            <div style="border-top: 2px solid #f3f4f6; padding-top: 15px; text-align: start;">
+                <h4 style="margin: 0 0 10px 0; color: var(--primary);" data-i18n="title_comments">💬 التعليقات</h4>
+                
+                <!-- لائحة التعليقات -->
+                <div id="annModalCommentsList" style="max-height: 200px; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px;"></div>
+                
+                <!-- كتابة تعليق جديد -->
+                <div class="form-group" style="margin: 0; flex-direction: column; gap: 8px; align-items: stretch;">
+                    <input type="text" id="annCommentName" data-i18n-placeholder="ph_chat_name" placeholder="الاسم">
+                    <textarea id="annCommentText" data-i18n-placeholder="ph_comment" placeholder="اكتب تعليقك..." style="min-height: 60px; resize: none;"></textarea>
+                    <button class="btn btn-success" id="btnAddCommentBtn" data-i18n="btn_add_comment">إرسال التعليق 🚀</button>
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <!-- نافذة صورة المصروف -->
     <div id="receiptModal" class="modal-overlay">
         <div class="modal-content" style="max-width: 95%; width: 500px; max-height: 90vh; overflow-y: auto; padding: 20px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px solid #f3f4f6; padding-bottom: 10px;">
@@ -472,7 +488,10 @@
                 modal_rename_title: "تغيير الاسم", ph_rename: "الاسم الجديد...", msg_del_default: "هل أنت متأكد من المسح؟", msg_del_bld: "تحذير: مسح العمارة سيمسح جميع شققها نهائياً!",
                 btn_show_resident: "👁️ إظهار معلومات الساكن (سري)", title_resident_info: "👤 معلومات الساكن", ph_res_name: "اسم الساكن...", ph_res_phone: "رقم الهاتف...", btn_hide: "🙈 إخفاء", alert_res_saved: "تم الحفظ بنجاح!", btn_edit: "✏️ تعديل", btn_cancel_edit: "إلغاء", lbl_res_name: "الاسم:", lbl_res_phone: "الهاتف:", title_edit_resident: "✏️ إدخال / تعديل معلومات الساكن",
                 lbl_receipt: "صورة التوصيل (اختياري):", th_receipt: "التوصيل", btn_view_receipt: "📄 التوصيل", no_receipt: "بدون صورة", uploading: "جاري حفظ الصورة...", 
-                lbl_ann_image: "صورة مرفقة (اختياري):", btn_details: "👁️ التفاصيل", btn_del_ann: "🗑️ مسح الإعلان"
+                lbl_ann_image: "صورة مرفقة (اختياري):", btn_details: "👁️ التفاصيل", btn_del_ann: "🗑️ مسح الإعلان",
+                
+                // كلمات التعليقات الجديدة
+                title_comments: "💬 التعليقات", ph_comment: "اكتب تعليقك...", btn_add_comment: "إرسال التعليق 🚀", no_comments: "لا توجد تعليقات بعد."
             },
             fr: {
                 app_title: "🏢 Gestion Syndic", nav_dashboard: "Tableau de bord", nav_apartments: "Immeubles & Appts", nav_expenses: "Dépenses", nav_comm: "Annonces & Chat", 
@@ -488,7 +507,9 @@
                 modal_rename_title: "Renommer", ph_rename: "Nouveau nom...", msg_del_default: "Voulez-vous vraiment supprimer ?", msg_del_bld: "Attention : Supprimer l'immeuble supprimera tous ses appts !",
                 btn_show_resident: "👁️ Afficher infos (Privé)", title_resident_info: "👤 Infos résident", ph_res_name: "Nom...", ph_res_phone: "Téléphone...", btn_hide: "🙈 Cacher", alert_res_saved: "Enregistré !", btn_edit: "✏️ Modifier", btn_cancel_edit: "Annuler", lbl_res_name: "Nom :", lbl_res_phone: "Tél :", title_edit_resident: "✏️ Éditer infos",
                 lbl_receipt: "Reçu (Optionnel) :", th_receipt: "Reçu", btn_view_receipt: "📄 Reçu", no_receipt: "Aucun", uploading: "Enregistrement...",
-                lbl_ann_image: "Image (Optionnel) :", btn_details: "👁️ Détails", btn_del_ann: "🗑️ Supprimer l'annonce"
+                lbl_ann_image: "Image (Optionnel) :", btn_details: "👁️ Détails", btn_del_ann: "🗑️ Supprimer l'annonce",
+                
+                title_comments: "💬 Commentaires", ph_comment: "Écrivez un commentaire...", btn_add_comment: "Envoyer 🚀", no_comments: "Aucun commentaire pour l'instant."
             },
             en: {
                 app_title: "🏢 Syndic Manager", nav_dashboard: "Dashboard", nav_apartments: "Buildings & Appts", nav_expenses: "Expenses", nav_comm: "Announcements & Chat", 
@@ -504,7 +525,9 @@
                 modal_rename_title: "Change Name", ph_rename: "New name...", msg_del_default: "Are you sure you want to delete?", msg_del_bld: "Warning: Deleting the building will delete all its apps!",
                 btn_show_resident: "👁️ Show Resident (Private)", title_resident_info: "👤 Resident Info", ph_res_name: "Name...", ph_res_phone: "Phone...", btn_hide: "🙈 Hide", alert_res_saved: "Saved successfully!", btn_edit: "✏️ Edit", btn_cancel_edit: "Cancel", lbl_res_name: "Name:", lbl_res_phone: "Phone:", title_edit_resident: "✏️ Edit Info",
                 lbl_receipt: "Receipt (Optional):", th_receipt: "Receipt", btn_view_receipt: "📄 Receipt", no_receipt: "None", uploading: "Saving...",
-                lbl_ann_image: "Image (Optional):", btn_details: "👁️ Details", btn_del_ann: "🗑️ Delete Announcement"
+                lbl_ann_image: "Image (Optional):", btn_details: "👁️ Details", btn_del_ann: "🗑️ Delete Announcement",
+                
+                title_comments: "💬 Comments", ph_comment: "Write a comment...", btn_add_comment: "Send 🚀", no_comments: "No comments yet."
             }
         };
 
@@ -655,7 +678,7 @@
                 
                 const dateStr = new Date().toLocaleString(currentLang === 'ar' ? 'ar-MA' : 'fr-FR', { dateStyle: 'medium', timeStyle: 'short' }); 
                 const annId = Date.now(); 
-                let newAnn = { id: annId, title, msg, date: dateStr, hasImage: false };
+                let newAnn = { id: annId, title, msg, date: dateStr, hasImage: false, comments:[] }; // 🔴 زدنا لائحة التعليقات
                 
                 if (fileInput.files.length > 0 && fileInput.files[0].type.startsWith('image/')) {
                     document.getElementById('loadingText').innerText = t('uploading') || "جاري حفظ الصورة..."; 
@@ -682,7 +705,6 @@
             renderAnnouncements();
         }
 
-        // 🔴 عرض الإعلانات بدون بوطونة المسح باينة
         function renderAnnouncements() { 
             const list = document.getElementById('announcementsList'); 
             if (data.announcements.length === 0) { list.innerHTML = `<p style="text-align:center; color:#9ca3af;">لا توجد إعلانات حالياً.</p>`; return; } 
@@ -696,7 +718,7 @@
             `).join(''); 
         }
 
-        // 🔴 عرض تفاصيل الإعلان فالـ Modal
+        // 🔴 عرض تفاصيل الإعلان والتعليقات
         function viewAnnouncement(id) {
             const ann = data.announcements.find(a => a.id === id);
             if(!ann) return;
@@ -728,11 +750,63 @@
                 });
             } else { imgContainer.innerHTML = ''; }
 
+            // 🔴 إعداد التعليقات
+            renderComments(id);
+            document.getElementById('btnAddCommentBtn').onclick = function() { addComment(id); };
+
             document.getElementById('announcementModal').style.display = 'flex';
         }
 
         function closeAnnouncementModal() {
             document.getElementById('announcementModal').style.display = 'none';
+        }
+
+        // 🔴 دوال التعليقات الجديدة
+        function renderComments(annId) {
+            const ann = data.announcements.find(a => a.id === annId);
+            if (!ann) return;
+            const list = document.getElementById('annModalCommentsList');
+            if (!ann.comments || ann.comments.length === 0) {
+                list.innerHTML = `<p style="text-align:center; color:#9ca3af; font-size:13px;" data-i18n="no_comments">${t('no_comments')}</p>`;
+                return;
+            }
+            list.innerHTML = ann.comments.map(c => `
+                <div style="background: #f1f5f9; padding: 10px 15px; border-radius: 12px; position: relative;">
+                    <button style="position: absolute; top: 5px; ${currentLang==='ar'?'left:5px':'right:5px'}; background: none; border: none; color: var(--danger); font-size: 12px; cursor: pointer; opacity: 0.6;" onclick="deleteComment(${annId}, ${c.id})" title="مسح التعليق">✖</button>
+                    <span style="font-weight: bold; font-size: 13px; color: var(--secondary);">${c.name}</span>
+                    <span style="font-size: 10px; color: #9ca3af; margin: 0 10px;">${c.date}</span>
+                    <p style="font-size: 14px; margin: 5px 0 0 0; color: var(--dark); line-height: 1.4;">${c.text}</p>
+                </div>
+            `).join('');
+        }
+
+        function addComment(annId) {
+            const ann = data.announcements.find(a => a.id === annId);
+            if (!ann) return;
+            
+            const nameInput = document.getElementById('annCommentName').value.trim();
+            const textInput = document.getElementById('annCommentText').value.trim();
+            if (!textInput) return; // ما يصيفطش تعليق خاوي
+            
+            const name = nameInput || (currentLang === 'ar' ? "سكان العمارة" : "Résident");
+            const dateStr = new Date().toLocaleString(currentLang === 'ar' ? 'ar-MA' : 'fr-FR', { dateStyle: 'short', timeStyle: 'short' });
+            
+            if (!ann.comments) ann.comments =[];
+            ann.comments.push({ id: Date.now(), name: name, text: textInput, date: dateStr });
+            
+            saveData();
+            document.getElementById('annCommentText').value = ""; 
+            renderComments(annId);
+        }
+
+        function deleteComment(annId, commentId) {
+            requireAuth(() => {
+                const ann = data.announcements.find(a => a.id === annId);
+                if (!ann || !ann.comments) return;
+                ann.comments = ann.comments.filter(c => c.id !== commentId);
+                saveData();
+                renderComments(annId);
+            });
         }
 
         function sendChatMessage() { const nameInput = document.getElementById('chatName').value.trim(), msgInput = document.getElementById('chatMsg').value.trim(); if (!msgInput) return; const name = nameInput || (currentLang === 'ar' ? "سكان العمارة" : "Résident"); const timeStr = new Date().toLocaleTimeString(currentLang === 'ar' ? 'ar-MA' : 'fr-FR', { hour: '2-digit', minute:'2-digit' }); data.chat.push({ id: Date.now(), name, msg: msgInput, time: timeStr }); if(data.chat.length > 100) data.chat.shift(); saveData(); document.getElementById('chatMsg').value = ""; renderChat(); }
@@ -767,7 +841,7 @@
         
         function renderPaymentStats() { const m = document.getElementById('statsMonth').value; const y = document.getElementById('statsYear').value; if (!m || !y) return; let html = ""; data.buildings.forEach(b => { const bldApts = data.apartments.filter(a => a.buildingId === b.id); const totalApts = bldApts.length; if(totalApts === 0) return; let paidCount = 0; bldApts.forEach(a => { const amt = data.payments[`${a.id}_${y}_${m}`]; if (amt && amt > 0) paidCount++; }); let color = paidCount === totalApts ? 'var(--success)' : (paidCount > 0 ? 'var(--warning)' : 'var(--danger)'); html += `<div class="item-card" style="border-bottom: 4px solid ${color}; padding: 15px 10px;"><div class="icon" style="font-size:30px;">🏢</div><div class="name" style="margin-top:5px;">${b.name}</div><div style="font-size: 20px; font-weight: 800; color: ${color}; margin-top: 5px;">${paidCount} / ${totalApts}</div><div style="font-size: 13px; color: #6b7280; margin-top: 3px; font-weight:bold;">${t('txt_paid_month')} ${t('months')[m-1]}</div></div>`; }); if(html === "") html = `<p style="text-align:center; width:100%; color:#9ca3af; grid-column: 1 / -1; font-weight:bold;">${t('no_apts')}</p>`; document.getElementById('paymentStatsGrid').innerHTML = html; }
 
-        function buildTableHTML(yId, limit, bldId = null) { const y = document.getElementById(yId).value; let headHTML = `<th>${t('apt_month')}</th>`; t('months').forEach(m => headHTML += `<th>${m}</th>`); let apts =[...data.apartments]; if (bldId) apts = apts.filter(a => a.buildingId === bldId); if (limit) { let paidApts = apts.filter(a => a.lastPaidTime).sort((a,b) => b.lastPaidTime - a.lastPaidTime); let nonPaid = apts.filter(a => !a.lastPaidTime); apts = [...paidApts, ...nonPaid].slice(0, limit); } if(apts.length === 0) return { headHTML, bodyHTML: `<tr><td colspan="13" style="padding:30px; color:#9ca3af;">${t('no_apts')}</td></tr>` }; let bodyHTML = apts.map(a => { let b = data.buildings.find(bx => bx.id === a.buildingId); let r = `<tr><td><span style="color:#6b7280; font-size:12px;">${b ? `[${b.name}] - ` : ""}</span><br>${a.name}</td>`; for(let m = 1; m <= 12; m++) { const amt = data.payments[`${a.id}_${y}_${m}`]; r += amt > 0 ? `<td><span class="badge badge-paid">${t('paid')} ${amt}</span></td>` : `<td><span class="badge badge-unpaid">${t('unpaid')}</span></td>`; } return r + `</tr>`; }).join(''); return { headHTML, bodyHTML }; }
+        function buildTableHTML(yId, limit, bldId = null) { const y = document.getElementById(yId).value; let headHTML = `<th>${t('apt_month')}</th>`; t('months').forEach(m => headHTML += `<th>${m}</th>`); let apts =[...data.apartments]; if (bldId) apts = apts.filter(a => a.buildingId === bldId); if (limit) { let paidApts = apts.filter(a => a.lastPaidTime).sort((a,b) => b.lastPaidTime - a.lastPaidTime); let nonPaid = apts.filter(a => !a.lastPaidTime); apts =[...paidApts, ...nonPaid].slice(0, limit); } if(apts.length === 0) return { headHTML, bodyHTML: `<tr><td colspan="13" style="padding:30px; color:#9ca3af;">${t('no_apts')}</td></tr>` }; let bodyHTML = apts.map(a => { let b = data.buildings.find(bx => bx.id === a.buildingId); let r = `<tr><td><span style="color:#6b7280; font-size:12px;">${b ? `[${b.name}] - ` : ""}</span><br>${a.name}</td>`; for(let m = 1; m <= 12; m++) { const amt = data.payments[`${a.id}_${y}_${m}`]; r += amt > 0 ? `<td><span class="badge badge-paid">${t('paid')} ${amt}</span></td>` : `<td><span class="badge badge-unpaid">${t('unpaid')}</span></td>`; } return r + `</tr>`; }).join(''); return { headHTML, bodyHTML }; }
         function renderDashboardTable() { const { headHTML, bodyHTML } = buildTableHTML('dashboardYear', 3, null); document.getElementById('dashboardTableHead').innerHTML = headHTML; document.getElementById('dashboardTableBody').innerHTML = bodyHTML; }
         
         function renderFullBuildings() { document.getElementById('fullBuildingsGrid').innerHTML = data.buildings.map(b => `<div class="item-card" onclick="openFullTableBuilding(${b.id}, '${b.name}')"><div class="icon">🏢</div><div class="name">${b.name}</div></div>`).join(''); }
