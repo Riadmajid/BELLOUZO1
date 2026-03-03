@@ -9,64 +9,38 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
     <style>
-        :root {
-            --primary: #1e3a8a; --secondary: #3b82f6; --success: #10b981; 
-            --danger: #ef4444; --warning: #f59e0b; --light: #f3f4f6; 
-            --dark: #1f2937; --white: #ffffff;
-        }
-
+        :root { --primary: #1e3a8a; --secondary: #3b82f6; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; --light: #f3f4f6; --dark: #1f2937; --white: #ffffff; }
         * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
-        
-        html, body { 
-            margin: 0; padding: 0; 
-            width: 100%; max-width: 100vw; 
-            overflow-x: hidden; 
-            background-color: var(--light); color: var(--dark); 
-        }
-        
-        /* Navbar */
+        html, body { margin: 0; padding: 0; width: 100%; max-width: 100vw; overflow-x: hidden; background-color: var(--light); color: var(--dark); }
         .navbar { width: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); padding: 15px 20px; color: white; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); flex-wrap: wrap; gap: 10px; }
         .navbar-brand { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
         .navbar h2 { margin: 0; font-weight: 800; font-size: 22px; }
-        
-        .nav-links { display: flex; gap: 5px; width: 100%; max-width: 100%; }
+        .nav-links { display: flex; gap: 5px; width: 100%; max-width: 100%; overflow-x: auto; padding-bottom: 5px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+        .nav-links::-webkit-scrollbar { display: none; }
         .nav-links button { background: rgba(255, 255, 255, 0.1); border: none; color: white; font-size: 15px; font-weight: 700; cursor: pointer; padding: 8px 12px; border-radius: 8px; margin: 0; transition: 0.3s; white-space: nowrap; flex-shrink: 0; }
         .nav-links button:hover, .nav-links button.active { background-color: white; color: var(--primary); }
-        
-        select.lang-select { background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.5); padding: 8px 12px; border-radius: 8px; font-weight: bold; font-family: 'Tajawal', sans-serif; outline: none; cursor: pointer; }
+        select.lang-select { background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.5); padding: 8px 12px; border-radius: 8px; font-weight: bold; outline: none; cursor: pointer; }
         select.lang-select option { color: var(--dark); background: white; }
-
-        /* Auth Buttons */
         .auth-controls { display: flex; gap: 10px; }
-        .btn-icon { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.5); border-radius: 8px; padding: 8px 15px; color: white; cursor: pointer; font-weight: bold; font-family: 'Tajawal', sans-serif; transition: 0.3s; display: flex; align-items: center; gap: 5px; }
+        .btn-icon { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.5); border-radius: 8px; padding: 8px 15px; color: white; cursor: pointer; font-weight: bold; transition: 0.3s; }
         .btn-icon:hover { background: white; color: var(--primary); }
         .btn-icon.unlocked { background: #10b981; border-color: #10b981; }
-
-        /* Container & Pages */
         .container { width: 100%; max-width: 1300px; margin: 0 auto; padding: 20px; }
         .page { display: none; animation: fadeIn 0.4s; width: 100%; }
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        /* Stats Grid */
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; width: 100%; }
-        .stat-card { background: var(--white); padding: 25px 20px; border-radius: 15px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); text-align: center; border-bottom: 5px solid transparent; }
+        .stat-card { background: var(--white); padding: 25px 20px; border-radius: 15px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); text-align: center; border-bottom: 5px solid transparent; position: relative; }
         .stat-card.incomes { border-color: var(--success); }
         .stat-card.expenses { border-color: var(--danger); }
-        .stat-card.balance { border-color: var(--secondary); }
+        .stat-card.balance { border-color: var(--secondary); background-color: #f0f9ff; }
         .stat-icon { font-size: 35px; margin-bottom: 10px; line-height: 1; }
         .stat-card h3 { margin: 0 0 10px 0; color: #6b7280; font-size: 16px; font-weight: 700; }
         .stat-card .amount { font-size: 24px; font-weight: 800; }
-        .text-success { color: var(--success); }
-        .text-danger { color: var(--danger); }
-        .text-primary { color: var(--secondary); }
-
-        /* Actions & Selects */
+        .text-success { color: var(--success); } .text-danger { color: var(--danger); } .text-primary { color: var(--secondary); }
         .header-action { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: white; padding: 15px 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); flex-wrap: wrap; gap: 15px; width: 100%; }
         .header-action h3 { margin: 0; font-size: 18px; color: var(--primary); }
         select.modern-select { padding: 10px 15px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 15px; font-weight: bold; color: var(--dark); outline: none; cursor: pointer; }
-
-        /* Table */
         .table-wrapper { width: 100%; max-width: 100%; background: white; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); overflow-x: auto; -webkit-overflow-scrolling: touch; display: block; }
         table { width: 100%; border-collapse: collapse; min-width: 800px; }
         th, td { padding: 12px; text-align: center; border-bottom: 1px solid #f3f4f6; }
@@ -79,8 +53,6 @@
         .badge { padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 5px; white-space: nowrap; }
         .badge-paid { background-color: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
         .badge-unpaid { background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
-
-        /* Buttons & Inputs */
         .form-group { margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; width: 100%; }
         input[type="text"], input[type="number"], input[type="date"], input[type="password"], textarea { padding: 12px 15px; border: 1px solid #d1d5db; border-radius: 8px; flex: 1; font-size: 15px; outline: none; transition: 0.3s; min-width: 120px; width: 100%; }
         textarea { resize: vertical; min-height: 45px; }
@@ -89,32 +61,24 @@
         button.btn-danger { background-color: var(--danger); box-shadow: 0 4px 6px rgba(239,68,68,0.2); }
         button.btn-primary { background-color: var(--primary); box-shadow: 0 4px 6px rgba(30,58,138,0.2); }
         button.btn-warning { background-color: var(--warning); box-shadow: 0 4px 6px rgba(245,158,11,0.2); color: #fff; }
-
-        /* Grids & Cards */
         .grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; margin-top: 20px; width: 100%; }
         .item-card { background: white; padding: 25px 10px 15px 10px; text-align: center; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); cursor: pointer; border: 2px solid transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; position: relative; }
         .item-card .icon { font-size: 35px; line-height: 1; }
         .item-card .name { font-size: 14px; font-weight: 800; color: var(--dark); }
         .card-actions { position: absolute; top: 5px; left: 5px; right: 5px; display: flex; justify-content: space-between; }
         .card-action-btn { background: none; border: none; font-size: 14px; cursor: pointer; opacity: 0.6; padding: 2px; }
-
         .months-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px; margin-top: 20px; width: 100%; }
         .month-card { padding: 15px 5px; text-align: center; border-radius: 10px; cursor: pointer; font-weight: 700; border: 2px solid #e5e7eb; background: white; display: flex; flex-direction: column; gap: 5px; font-size: 13px; }
         .month-card.paid { background-color: #ecfdf5; border-color: var(--success); color: var(--success); }
-        
-        .section-box { display: none; width: 100%; }
-        .section-box.active { display: block; }
-
-        /* Communication Page */
+        .section-box { display: none; width: 100%; } .section-box.active { display: block; }
         .comm-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; align-items: start; width: 100%; }
         .announcements-wrapper, .chat-wrapper { background: white; border-radius: 15px; padding: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); width: 100%; }
         .announce-list { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; max-height: 400px; overflow-y: auto; }
-        .announce-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 15px; position: relative; }
+        .announce-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 15px; position: relative; transition: 0.2s; cursor: pointer; }
+        .announce-item:hover { transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         .announce-item h4 { margin: 0 0 5px 0; color: var(--primary); font-size: 16px; }
         .announce-item p { margin: 0; color: #475569; font-size: 14px; line-height: 1.5; }
         .announce-item .date { font-size: 11px; color: #94a3b8; margin-bottom: 8px; display: block; }
-        .announce-item .del-btn { position: absolute; top: 10px; cursor: pointer; color: var(--danger); font-size: 16px; background: none; border: none; padding: 5px; }
-        html[dir="rtl"] .announce-item .del-btn { left: 10px; } html[dir="ltr"] .announce-item .del-btn { right: 10px; }
         
         .chat-box { min-height: 300px; max-height: 400px; background: #f1f5f9; border-radius: 10px; padding: 15px; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px; }
         .chat-msg { background: white; padding: 10px 15px; border-radius: 12px; width: fit-content; max-width: 90%; position: relative; word-break: break-word; }
@@ -124,35 +88,33 @@
         html[dir="rtl"] .chat-msg .time { text-align: left; }
         .del-chat-btn { position: absolute; top: 5px; cursor: pointer; color: var(--danger); font-size: 12px; background: none; border: none; padding: 5px; opacity: 0.6; }
         html[dir="rtl"] .del-chat-btn { left: 5px; } html[dir="ltr"] .del-chat-btn { right: 5px; }
-
-        /* Modals & Loaders */
         .modal-overlay { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(17,24,39,0.7); align-items: center; justify-content: center; padding: 10px; }
         .modal-content { background-color: white; padding: 25px; border-radius: 20px; width: 100%; max-width: 400px; text-align: center; }
         .modal-content h3 { margin-top: 0; font-size: 20px; }
         .modal-content input { width: 100%; margin: 15px 0; padding: 12px; font-size: 16px; border-radius: 8px; }
         .modal-buttons { display: flex; gap: 10px; flex-direction: column; }
         .modal-buttons button { width: 100%; }
-
         #loadingScreen { position: fixed; top:0; left:0; width: 100vw; height: 100vh; background: var(--light); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .spinner { border: 5px solid #e5e7eb; border-top: 5px solid var(--primary); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* 📱 RESPONSIVE */
         @media (max-width: 768px) {
             .navbar { padding: 15px 10px; flex-direction: column; align-items: stretch; }
             .navbar-brand { justify-content: space-between; margin-bottom: 10px; width: 100%; }
-            .nav-links { overflow-x: auto; padding-bottom: 5px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
-            .nav-links::-webkit-scrollbar { display: none; }
-            .nav-links button { flex-shrink: 0; }
             .container { padding: 15px 10px; }
             .header-action { flex-direction: column; align-items: flex-start; }
             .header-action > div, .header-action select { width: 100%; }
-            .form-group { flex-direction: column; align-items: stretch; }
-            .form-group input, .form-group button, .form-group select { width: 100%; }
             .stats-grid { grid-template-columns: 1fr; }
             .grid-cards { grid-template-columns: repeat(auto-fill, minmax(46%, 1fr)); }
             .months-grid { grid-template-columns: repeat(auto-fill, minmax(30%, 1fr)); }
+            .big-inputs label { font-size: 16px; font-weight: bold; margin-bottom: 5px; color: var(--primary); }
+            .big-inputs input { padding: 15px; font-size: 16px; margin-bottom: 15px; width: 100%; }
+            .big-inputs button { padding: 15px; font-size: 16px; width: 100%; }
         }
+        .big-inputs { background: white; padding: 25px; border-radius: 15px; border: 1px solid #e5e7eb; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .big-inputs label { font-size: 15px; font-weight: bold; margin-bottom: 8px; color: var(--primary); display: block; text-align: start; }
+        .big-inputs input { padding: 15px; font-size: 16px; margin-bottom: 15px; width: 100%; box-sizing: border-box; }
+        .big-inputs .file-input-box { background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 8px; padding: 15px; text-align: center; margin-bottom: 20px; }
+        .big-inputs .file-input-box input { margin: 0; padding: 0; width: 100%; }
     </style>
 </head>
 <body>
@@ -186,13 +148,21 @@
     <div class="container">
         <!-- PAGE 1: DASHBOARD -->
         <div id="dashboard" class="page active">
+            
+            <div class="header-action" style="margin-bottom: 15px; padding: 10px 20px;">
+                <h3 style="margin: 0;" data-i18n="title_stats_filter">📅 إحصائيات الشهر:</h3>
+                <div style="display: flex; gap: 10px;">
+                    <select id="dashStatMonth" class="modern-select" onchange="updateDashboardStats()"></select>
+                    <select id="dashStatYear" class="modern-select" onchange="updateDashboardStats()"></select>
+                </div>
+            </div>
+
             <div class="stats-grid">
-                <div class="stat-card incomes"><div class="stat-icon">💰</div><h3 data-i18n="stat_incomes">مجموع المداخيل</h3><div class="amount text-success" id="totalIncomes">0</div></div>
-                <div class="stat-card expenses"><div class="stat-icon">📉</div><h3 data-i18n="stat_expenses">مجموع المصاريف</h3><div class="amount text-danger" id="totalExpenses">0</div></div>
-                <div class="stat-card balance"><div class="stat-icon">🏦</div><h3 data-i18n="stat_balance">صندوق السانديك</h3><div class="amount text-primary" id="boxBalance">0</div></div>
+                <div class="stat-card incomes"><div class="stat-icon">💰</div><h3 data-i18n="stat_incomes_month">مداخيل الشهر</h3><div class="amount text-success" id="totalIncomes">0</div></div>
+                <div class="stat-card expenses"><div class="stat-icon">📉</div><h3 data-i18n="stat_expenses_month">مصاريف الشهر</h3><div class="amount text-danger" id="totalExpenses">0</div></div>
+                <div class="stat-card balance"><div class="stat-icon">🏦</div><h3 data-i18n="stat_balance">صندوق السانديك (الإجمالي)</h3><div class="amount text-primary" id="boxBalance">0</div></div>
             </div>
             
-            <!-- 🔴 الطابلو ديال آخر 3 خلصو -->
             <div class="header-action">
                 <div>
                     <h3 style="margin: 0; margin-bottom: 8px;" data-i18n="dash_table_title">📋 آخر 3 شقق أدوا الواجب</h3>
@@ -204,7 +174,6 @@
                 <table id="dashboardTable"><thead><tr id="dashboardTableHead"></tr></thead><tbody id="dashboardTableBody"></tbody></table>
             </div>
 
-            <!-- 🔴 إحصائيات الأداء ديال كل عمارة بالشهر (الجديدة) -->
             <div class="header-action" style="margin-top: 30px; margin-bottom: 15px;">
                 <h3 style="margin: 0;" data-i18n="title_stats_month">📊 إحصائيات الأداء بالشهر</h3>
                 <div style="display: flex; gap: 10px;">
@@ -270,7 +239,6 @@
                     <button class="btn btn-danger" onclick="closeAptDetails()" data-i18n="btn_back_apts">🔙 رجوع</button>
                 </div>
 
-                <!-- معلومات الساكن -->
                 <div id="residentInfoBlock" style="background: #f8fafc; padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #e2e8f0;">
                     <div id="residentInfoHidden" style="text-align: center;">
                         <button class="btn btn-warning" onclick="showResidentInfo()" data-i18n="btn_show_resident">👁️ إظهار معلومات الساكن (سري)</button>
@@ -307,23 +275,30 @@
 
         <!-- PAGE 3: EXPENSES -->
         <div id="expenses" class="page">
-            <div class="header-action" style="flex-direction: column; align-items: stretch; gap: 15px;">
-                <h3 style="margin: 0;" data-i18n="title_new_exp">تسجيل مصروف جديد 💸</h3>
-                
-                <div class="form-group" style="margin: 0;">
-                    <input type="text" id="expenseDesc" data-i18n-placeholder="ph_exp_desc" placeholder="فاش تخسرو لفلوس؟">
-                    <input type="number" id="expenseAmount" data-i18n-placeholder="ph_amount" placeholder="المبلغ (درهم)">
-                    <input type="date" id="expenseDate">
+            <div class="big-inputs" style="margin-bottom: 30px;">
+                <h3 style="margin-top: 0; color: var(--primary); font-size: 20px;" data-i18n="title_new_exp">تسجيل مصروف جديد 💸</h3>
+                <label data-i18n="th_date">التاريخ:</label>
+                <input type="date" id="expenseDate">
+                <label data-i18n="lbl_desc">البيان (فاش تخسرو لفلوس؟):</label>
+                <input type="text" id="expenseDesc" data-i18n-placeholder="ph_exp_desc" placeholder="مثال: إصلاح المصعد...">
+                <label data-i18n="lbl_amount">المبلغ (درهم):</label>
+                <input type="number" id="expenseAmount" data-i18n-placeholder="ph_amount" placeholder="المبلغ...">
+                <label data-i18n="lbl_receipt">صورة التوصيل (اختياري):</label>
+                <div class="file-input-box">
+                    <input type="file" id="expenseReceipt" accept="image/*">
                 </div>
-                
-                <div class="form-group" style="margin: 0; background: #f8fafc; padding: 10px 15px; border-radius: 8px; border: 1px dashed #cbd5e1;">
-                    <label style="font-size: 14px; font-weight: bold; color: var(--primary); min-width: 150px;" data-i18n="lbl_receipt">صورة التوصيل (اختياري):</label>
-                    <input type="file" id="expenseReceipt" accept="image/*" style="border: none; padding: 0; flex: 2; min-width: 200px;">
-                    <button class="btn" style="flex: 1; min-width: 120px;" onclick="addExpense()" data-i18n="btn_add_exp">+ إضافة مصروف</button>
-                </div>
+                <button class="btn btn-primary" style="width: 100%; font-size: 18px; padding: 15px;" onclick="addExpense()" data-i18n="btn_add_exp">+ إضافة مصروف</button>
             </div>
             
-            <div class="table-wrapper" style="margin-top: 20px;">
+            <div class="header-action">
+                <h3 style="margin: 0;" data-i18n="title_exp_list">📋 لائحة المصاريف</h3>
+                <div style="display: flex; gap: 10px;">
+                    <select id="expListMonth" class="modern-select" onchange="renderExpenses()"></select>
+                    <select id="expListYear" class="modern-select" onchange="renderExpenses()"></select>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
                 <table>
                     <thead><tr>
                         <th data-i18n="th_date">التاريخ</th>
@@ -337,18 +312,29 @@
             </div>
         </div>
 
-        <!-- PAGE 5: COMMUNICATION -->
+        <!-- 🔴 PAGE 5: COMMUNICATION (تعديلات الإعلانات) -->
         <div id="communication" class="page">
             <div class="comm-grid">
+                
                 <div class="announcements-wrapper">
                     <h3 style="margin-top: 0; color: var(--primary); font-size: 20px;" data-i18n="title_announcements">📢 إعلانات العمارة</h3>
+                    
                     <div class="form-group" style="flex-direction: column; align-items: stretch; gap: 10px;">
                         <input type="text" id="announceTitle" data-i18n-placeholder="ph_announce_title" placeholder="عنوان الإعلان...">
                         <textarea id="announceMsg" data-i18n-placeholder="ph_announce_msg" placeholder="محتوى الإعلان..."></textarea>
+                        
+                        <!-- 🔴 إضافة صورة الإعلان -->
+                        <div class="file-input-box" style="margin-bottom: 5px; padding: 10px;">
+                            <label style="font-size: 14px; font-weight: bold; color: var(--primary); display:block; margin-bottom:5px; text-align:start;" data-i18n="lbl_ann_image">صورة مرفقة (اختياري):</label>
+                            <input type="file" id="announceImage" accept="image/*" style="width:100%;">
+                        </div>
+
                         <button class="btn" onclick="addAnnouncement()" data-i18n="btn_add_announce">نشر الإعلان ✔️</button>
                     </div>
+                    
                     <div class="announce-list" id="announcementsList"></div>
                 </div>
+
                 <div class="chat-wrapper">
                     <h3 style="margin-top: 0; color: var(--primary); font-size: 20px;" data-i18n="title_chat">💬 دردشة السكان</h3>
                     <div class="chat-box" id="chatBox"></div>
@@ -364,6 +350,23 @@
 
     <!-- MODALS -->
     
+    <!-- 🔴 نافذة تفاصيل الإعلان (الجديدة) -->
+    <div id="announcementModal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 95%; width: 500px; max-height: 90vh; overflow-y: auto; padding: 20px; text-align: right;" dir="rtl">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px solid #f3f4f6; padding-bottom: 10px;">
+                <h3 id="annModalTitle" style="margin: 0; color: var(--primary);"></h3>
+                <button class="btn btn-danger" style="padding: 5px 10px;" onclick="closeAnnouncementModal()">✖</button>
+            </div>
+            <span id="annModalDate" style="font-size: 12px; color: #94a3b8; margin-bottom: 15px; display: block;"></span>
+            <p id="annModalMsg" style="color: #475569; font-size: 15px; line-height: 1.6; white-space: pre-wrap; margin-bottom: 20px;"></p>
+            <div id="annModalImageContainer" style="margin-bottom: 20px; text-align: center;"></div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn btn-danger" style="width: 100%;" id="btnDelAnn" onclick="">🗑️ مسح الإعلان</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة صورة المصروف -->
     <div id="receiptModal" class="modal-overlay">
         <div class="modal-content" style="max-width: 95%; width: 500px; max-height: 90vh; overflow-y: auto; padding: 20px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px solid #f3f4f6; padding-bottom: 10px;">
@@ -456,118 +459,110 @@
         const dict = {
             ar: {
                 app_title: "🏢 تسيير السانديك", nav_dashboard: "الرئيسية", nav_apartments: "العمارات والشقق", nav_expenses: "المصاريف", nav_comm: "الإعلانات والدردشة",
-                stat_incomes: "مجموع المداخيل", stat_expenses: "مجموع المصاريف", stat_balance: "صندوق السانديك", 
-                dash_table_title: "📋 آخر 3 شقق أدوا الواجب", title_stats_month: "📊 إحصائيات الأداء بالشهر", txt_paid_month: "أدوا شهر",
+                stat_incomes_month: "مداخيل الشهر", stat_expenses_month: "مصاريف الشهر", stat_balance: "صندوق السانديك (الإجمالي)", 
+                title_stats_filter: "📅 إحصائيات الشهر:", dash_table_title: "📋 آخر 3 شقق أدوا الواجب", title_stats_month: "📊 إحصائيات الأداء بالشهر", txt_paid_month: "أدوا شهر",
                 btn_view_all: "📄 عرض تفاصيل جميع الشقق", full_table_title: "الجدول الكامل لجميع الشقق 🏢", btn_back_dash: "🔙 رجوع", 
                 ph_bld_name: "مثال: العمارة A...", btn_add_bld: "+ إضافة عمارة", btn_back_blds: "🔙 رجوع للعمارات", alert_bld: "المرجو كتابة اسم العمارة", ph_apt_name: "مثال: شقة 1...", btn_add_apt: "+ إضافة شقة", btn_back_apts: "🔙 رجوع",
-                lbl_year: "اختر السنة:", title_new_exp: "تسجيل مصروف جديد 💸", ph_exp_desc: "فاش تخسرو لفلوس؟", ph_amount: "المبلغ", btn_add_exp: "+ إضافة مصروف", th_date: "التاريخ", th_desc: "البيان (السبب)", th_amount: "المبلغ", th_action: "إجراء",
+                lbl_year: "اختر السنة:", title_new_exp: "تسجيل مصروف جديد 💸", lbl_desc: "البيان (فاش تخسرو لفلوس؟):", lbl_amount: "المبلغ (درهم):", ph_exp_desc: "مثال: إصلاح المصعد...", ph_amount: "المبلغ...", btn_add_exp: "+ إضافة مصروف", th_date: "التاريخ", th_desc: "البيان", th_amount: "المبلغ", th_action: "إجراء", title_exp_list: "📋 لائحة المصاريف",
                 title_announcements: "📢 إعلانات العمارة", ph_announce_title: "عنوان الإعلان...", ph_announce_msg: "محتوى الإعلان...", btn_add_announce: "نشر الإعلان ✔️", title_chat: "💬 دردشة السكان", ph_chat_name: "الاسم", ph_chat_msg: "اكتب رسالتك هنا...", btn_send_chat: "إرسال 🚀",
                 btn_save: "✔️ حفظ", btn_clear: "✖️ مسح", btn_cancel: "إلغاء", modal_del_title: "تأكيد المسح", btn_yes_del: "نعم، امسح", btn_undo: "تراجع", curr: "د.م", no_apts: "لا توجد معلومات لعرضها حالياً.", paid: "✔️", unpaid: "✖️ غير مؤدى", apt_month: "الشقة / الشهر", year_word: "سنة", btn_delete: "مسح 🗑️",
-                alert_apt: "المرجو كتابة اسم أو رقم الشقة", alert_amt: "مبلغ غير صحيح!", alert_fill: "المرجو ملء جميع المعلومات.", months:["يناير", "فبراير", "مارس", "أبريل", "ماي", "يونيو", "يوليوز", "غشت", "شتنبر", "أكتوبر", "نونبر", "دجنبر"], pay_title: "أداء",
+                alert_apt: "المرجو كتابة اسم أو رقم الشقة", alert_amt: "مبلغ غير صحيح!", alert_fill: "المرجو ملء جميع المعلومات.", months:["يناير", "فبراير", "مارس", "أبريل", "ماي", "يونيو", "يوليوز", "غشت", "شتنبر", "أكتوبر", "نونبر", "دجنبر"], pay_title: "أداء", opt_all_months: "جميع الأشهر",
                 btn_locked: "مقفل", btn_unlocked: "مفتوح", auth_title: "أدخل كلمة المرور", auth_desc: "المرجو إدخال كلمة المرور لتأكيد التعديلات.", ph_pwd: "كلمة المرور...", btn_confirm: "تأكيد ✔️",
                 change_pwd_title: "تغيير كلمة المرور", ph_old_pwd: "كلمة المرور الحالية", ph_new_pwd: "كلمة المرور الجديدة", alert_wrong_pwd: "كلمة المرور غير صحيحة!", alert_pwd_changed: "تم تغيير كلمة المرور بنجاح!", alert_pwd_req: "المرجو إدخال كلمة مرور صالحة.",
                 modal_rename_title: "تغيير الاسم", ph_rename: "الاسم الجديد...", msg_del_default: "هل أنت متأكد من المسح؟", msg_del_bld: "تحذير: مسح العمارة سيمسح جميع شققها نهائياً!",
-                btn_show_resident: "👁️ إظهار معلومات الساكن (سري)", title_resident_info: "👤 معلومات الساكن", ph_res_name: "اسم الساكن...", ph_res_phone: "رقم الهاتف...", btn_hide: "🙈 إخفاء", alert_res_saved: "تم الحفظ بنجاح!",
-                btn_edit: "✏️ تعديل", btn_cancel_edit: "إلغاء", lbl_res_name: "الاسم:", lbl_res_phone: "الهاتف:", title_edit_resident: "✏️ إدخال / تعديل معلومات الساكن",
-                lbl_receipt: "صورة التوصيل (اختياري):", th_receipt: "التوصيل", btn_view_receipt: "📄 عرض الصورة", no_receipt: "بدون صورة", uploading: "جاري حفظ الصورة..."
+                btn_show_resident: "👁️ إظهار معلومات الساكن (سري)", title_resident_info: "👤 معلومات الساكن", ph_res_name: "اسم الساكن...", ph_res_phone: "رقم الهاتف...", btn_hide: "🙈 إخفاء", alert_res_saved: "تم الحفظ بنجاح!", btn_edit: "✏️ تعديل", btn_cancel_edit: "إلغاء", lbl_res_name: "الاسم:", lbl_res_phone: "الهاتف:", title_edit_resident: "✏️ إدخال / تعديل معلومات الساكن",
+                lbl_receipt: "صورة التوصيل (اختياري):", th_receipt: "التوصيل", btn_view_receipt: "📄 التوصيل", no_receipt: "بدون صورة", uploading: "جاري حفظ الصورة...", 
+                lbl_ann_image: "صورة مرفقة (اختياري):", btn_details: "👁️ التفاصيل", btn_del_ann: "🗑️ مسح الإعلان"
             },
             fr: {
-                app_title: "🏢 Gestion Syndic", nav_dashboard: "Tableau de bord", nav_apartments: "Immeubles & Appts", nav_expenses: "Dépenses", nav_comm: "Annonces & Chat", stat_incomes: "Total Revenus", stat_expenses: "Total Dépenses", stat_balance: "Caisse Syndic", 
-                dash_table_title: "📋 3 Derniers Paiements", title_stats_month: "📊 Statistiques par mois", txt_paid_month: "Ont payé pour",
+                app_title: "🏢 Gestion Syndic", nav_dashboard: "Tableau de bord", nav_apartments: "Immeubles & Appts", nav_expenses: "Dépenses", nav_comm: "Annonces & Chat", 
+                stat_incomes_month: "Revenus (Mois)", stat_expenses_month: "Dépenses (Mois)", stat_balance: "Caisse Syndic (Total)", 
+                title_stats_filter: "📅 Filtre du mois :", dash_table_title: "📋 3 Derniers Paiements", title_stats_month: "📊 Stats Mensuelles", txt_paid_month: "Ont payé",
                 btn_view_all: "📄 Voir tous", full_table_title: "Tableau complet 🏢", btn_back_dash: "🔙 Retour", 
-                ph_bld_name: "Ex: Bâtiment A...", btn_add_bld: "+ Ajouter Immeuble", btn_back_blds: "🔙 Retour", alert_bld: "Entrez le nom de l'immeuble", ph_apt_name: "Ex: Appt 1...", btn_add_apt: "+ Ajouter Appt", btn_back_apts: "🔙 Retour", lbl_year: "Choisir l'année :", title_new_exp: "Nouvelle Dépense 💸", ph_exp_desc: "Description", ph_amount: "Montant", btn_add_exp: "+ Ajouter Dépense", th_date: "Date", th_desc: "Description", th_amount: "Montant", th_action: "Action",
-                title_announcements: "📢 Annonces Immeuble", ph_announce_title: "Titre...", ph_announce_msg: "Contenu...", btn_add_announce: "Publier ✔️", title_chat: "💬 Chat", ph_chat_name: "Nom", ph_chat_msg: "Écrivez un message...", btn_send_chat: "Envoyer 🚀", btn_save: "✔️ Enregistrer", btn_clear: "✖️ Effacer", btn_cancel: "Annuler", modal_del_title: "Confirmation", btn_yes_del: "Oui", btn_undo: "Annuler", curr: "MAD", no_apts: "Aucun élément à afficher.", paid: "✔️", unpaid: "✖️ Non payé", apt_month: "Appt / Mois", year_word: "Année", btn_delete: "Supprimer",
-                alert_apt: "Entrez le nom de l'appartement", alert_amt: "Montant invalide!", alert_fill: "Remplissez toutes les infos.", months:["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"], pay_title: "Paiement",
-                btn_locked: "Verrouillé", btn_unlocked: "Déverrouillé", auth_title: "Mot de passe requis", auth_desc: "Veuillez entrer le mot de passe.", ph_pwd: "Mot de passe...", btn_confirm: "Confirmer ✔️", change_pwd_title: "Changer mot de passe", ph_old_pwd: "Mot de passe actuel", ph_new_pwd: "Nouveau mot de passe", alert_wrong_pwd: "Mot de passe incorrect!", alert_pwd_changed: "Mot de passe changé!", alert_pwd_req: "Veuillez entrer un mot de passe.",
-                modal_rename_title: "Changer le nom", ph_rename: "Nouveau nom...", msg_del_default: "Voulez-vous vraiment supprimer ?", msg_del_bld: "Attention : Supprimer l'immeuble supprimera tous ses appartements !",
-                btn_show_resident: "👁️ Afficher infos (Privé)", title_resident_info: "👤 Infos du résident", ph_res_name: "Nom...", ph_res_phone: "Téléphone...", btn_hide: "🙈 Cacher", alert_res_saved: "Enregistré avec succès !",
-                btn_edit: "✏️ Modifier", btn_cancel_edit: "Annuler", lbl_res_name: "Nom :", lbl_res_phone: "Tél :", title_edit_resident: "✏️ Éditer infos",
-                lbl_receipt: "Reçu (Optionnel) :", th_receipt: "Reçu", btn_view_receipt: "📄 Voir l'image", no_receipt: "Aucun", uploading: "Enregistrement de l'image..."
+                ph_bld_name: "Ex: Bâtiment A...", btn_add_bld: "+ Ajouter Immeuble", btn_back_blds: "🔙 Retour", alert_bld: "Entrez le nom de l'immeuble", ph_apt_name: "Ex: Appt 1...", btn_add_apt: "+ Ajouter Appt", btn_back_apts: "🔙 Retour", 
+                lbl_year: "Année :", title_new_exp: "Nouvelle Dépense 💸", lbl_desc: "Description :", lbl_amount: "Montant :", ph_exp_desc: "Ex: Réparation...", ph_amount: "Montant...", btn_add_exp: "+ Ajouter Dépense", th_date: "Date", th_desc: "Description", th_amount: "Montant", th_action: "Action", title_exp_list: "📋 Liste des dépenses",
+                title_announcements: "📢 Annonces", ph_announce_title: "Titre...", ph_announce_msg: "Contenu...", btn_add_announce: "Publier ✔️", title_chat: "💬 Chat", ph_chat_name: "Nom", ph_chat_msg: "Message...", btn_send_chat: "Envoyer 🚀",
+                btn_save: "✔️ Enregistrer", btn_clear: "✖️ Effacer", btn_cancel: "Annuler", modal_del_title: "Confirmation", btn_yes_del: "Oui", btn_undo: "Annuler", curr: "MAD", no_apts: "Aucune donnée.", paid: "✔️", unpaid: "✖️", apt_month: "Appt / Mois", year_word: "Année", btn_delete: "Supprimer",
+                alert_apt: "Entrez le nom de l'appartement", alert_amt: "Montant invalide!", alert_fill: "Remplissez toutes les infos.", months:["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Aoû", "Sep", "Oct", "Nov", "Déc"], pay_title: "Paiement", opt_all_months: "Tous les mois",
+                btn_locked: "Verrouillé", btn_unlocked: "Déverrouillé", auth_title: "Mot de passe", auth_desc: "Veuillez entrer le mot de passe.", ph_pwd: "Mot de passe...", btn_confirm: "Confirmer ✔️", change_pwd_title: "Changer MDP", ph_old_pwd: "Ancien MDP", ph_new_pwd: "Nouveau MDP", alert_wrong_pwd: "MDP incorrect!", alert_pwd_changed: "MDP changé!", alert_pwd_req: "Entrez un MDP.",
+                modal_rename_title: "Renommer", ph_rename: "Nouveau nom...", msg_del_default: "Voulez-vous vraiment supprimer ?", msg_del_bld: "Attention : Supprimer l'immeuble supprimera tous ses appts !",
+                btn_show_resident: "👁️ Afficher infos (Privé)", title_resident_info: "👤 Infos résident", ph_res_name: "Nom...", ph_res_phone: "Téléphone...", btn_hide: "🙈 Cacher", alert_res_saved: "Enregistré !", btn_edit: "✏️ Modifier", btn_cancel_edit: "Annuler", lbl_res_name: "Nom :", lbl_res_phone: "Tél :", title_edit_resident: "✏️ Éditer infos",
+                lbl_receipt: "Reçu (Optionnel) :", th_receipt: "Reçu", btn_view_receipt: "📄 Reçu", no_receipt: "Aucun", uploading: "Enregistrement...",
+                lbl_ann_image: "Image (Optionnel) :", btn_details: "👁️ Détails", btn_del_ann: "🗑️ Supprimer l'annonce"
             },
             en: {
-                app_title: "🏢 Syndic Manager", nav_dashboard: "Dashboard", nav_apartments: "Buildings & Appts", nav_expenses: "Expenses", nav_comm: "Announcements & Chat", stat_incomes: "Total Incomes", stat_expenses: "Total Expenses", stat_balance: "Balance", 
-                dash_table_title: "📋 Last 3 Payments", title_stats_month: "📊 Monthly Stats", txt_paid_month: "Paid for",
+                app_title: "🏢 Syndic Manager", nav_dashboard: "Dashboard", nav_apartments: "Buildings & Appts", nav_expenses: "Expenses", nav_comm: "Announcements & Chat", 
+                stat_incomes_month: "Incomes (Month)", stat_expenses_month: "Expenses (Month)", stat_balance: "Total Balance", 
+                title_stats_filter: "📅 Month Filter:", dash_table_title: "📋 Last 3 Payments", title_stats_month: "📊 Monthly Stats", txt_paid_month: "Paid",
                 btn_view_all: "📄 View all", full_table_title: "Full Table 🏢", btn_back_dash: "🔙 Back", 
-                ph_bld_name: "E.g.: Building A...", btn_add_bld: "+ Add Building", btn_back_blds: "🔙 Back", alert_bld: "Enter building name", ph_apt_name: "E.g.: Apt 1...", btn_add_apt: "+ Add Appt", btn_back_apts: "🔙 Back", lbl_year: "Select Year:", title_new_exp: "New Expense 💸", ph_exp_desc: "Description", ph_amount: "Amount", btn_add_exp: "+ Add Expense", th_date: "Date", th_desc: "Description", th_amount: "Amount", th_action: "Action",
-                title_announcements: "📢 Announcements", ph_announce_title: "Title...", ph_announce_msg: "Content...", btn_add_announce: "Publish ✔️", title_chat: "💬 Chat", ph_chat_name: "Name", ph_chat_msg: "Type message...", btn_send_chat: "Send 🚀", btn_save: "✔️ Save", btn_clear: "✖️ Clear", btn_cancel: "Cancel", modal_del_title: "Confirm Deletion", btn_yes_del: "Yes", btn_undo: "Undo", curr: "MAD", no_apts: "No data to display.", paid: "✔️", unpaid: "✖️ Unpaid", apt_month: "Apt / Month", year_word: "Year", btn_delete: "Delete",
-                alert_apt: "Enter apartment name", alert_amt: "Invalid amount!", alert_fill: "Fill all information.", months:["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], pay_title: "Payment",
-                btn_locked: "Locked", btn_unlocked: "Unlocked", auth_title: "Password Required", auth_desc: "Please enter the password.", ph_pwd: "Password...", btn_confirm: "Confirm ✔️", change_pwd_title: "Change Password", ph_old_pwd: "Current Password", ph_new_pwd: "New Password", alert_wrong_pwd: "Incorrect password!", alert_pwd_changed: "Password changed!", alert_pwd_req: "Enter a valid password.",
-                modal_rename_title: "Change Name", ph_rename: "New name...", msg_del_default: "Are you sure you want to delete?", msg_del_bld: "Warning: Deleting the building will delete all its apartments!",
-                btn_show_resident: "👁️ Show Resident (Private)", title_resident_info: "👤 Resident Info", ph_res_name: "Name...", ph_res_phone: "Phone...", btn_hide: "🙈 Hide", alert_res_saved: "Saved successfully!",
-                btn_edit: "✏️ Edit", btn_cancel_edit: "Cancel", lbl_res_name: "Name:", lbl_res_phone: "Phone:", title_edit_resident: "✏️ Edit Resident",
-                lbl_receipt: "Receipt (Optional):", th_receipt: "Receipt", btn_view_receipt: "📄 View Image", no_receipt: "None", uploading: "Saving image..."
+                ph_bld_name: "E.g.: Building A...", btn_add_bld: "+ Add Building", btn_back_blds: "🔙 Back", alert_bld: "Enter building name", ph_apt_name: "E.g.: Apt 1...", btn_add_apt: "+ Add Appt", btn_back_apts: "🔙 Back", 
+                lbl_year: "Year:", title_new_exp: "New Expense 💸", lbl_desc: "Description:", lbl_amount: "Amount:", ph_exp_desc: "E.g.: Repair...", ph_amount: "Amount...", btn_add_exp: "+ Add Expense", th_date: "Date", th_desc: "Description", th_amount: "Amount", th_action: "Action", title_exp_list: "📋 Expenses List",
+                title_announcements: "📢 Announcements", ph_announce_title: "Title...", ph_announce_msg: "Content...", btn_add_announce: "Publish ✔️", title_chat: "💬 Chat", ph_chat_name: "Name", ph_chat_msg: "Message...", btn_send_chat: "Send 🚀",
+                btn_save: "✔️ Save", btn_clear: "✖️ Clear", btn_cancel: "Cancel", modal_del_title: "Confirm Deletion", btn_yes_del: "Yes", btn_undo: "Undo", curr: "MAD", no_apts: "No data.", paid: "✔️", unpaid: "✖️", apt_month: "Apt / Month", year_word: "Year", btn_delete: "Delete",
+                alert_apt: "Enter apartment name", alert_amt: "Invalid amount!", alert_fill: "Fill all information.", months:["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], pay_title: "Payment", opt_all_months: "All months",
+                btn_locked: "Locked", btn_unlocked: "Unlocked", auth_title: "Password", auth_desc: "Please enter the password.", ph_pwd: "Password...", btn_confirm: "Confirm ✔️", change_pwd_title: "Change PWD", ph_old_pwd: "Old PWD", ph_new_pwd: "New PWD", alert_wrong_pwd: "Incorrect password!", alert_pwd_changed: "Password changed!", alert_pwd_req: "Enter a valid password.",
+                modal_rename_title: "Change Name", ph_rename: "New name...", msg_del_default: "Are you sure you want to delete?", msg_del_bld: "Warning: Deleting the building will delete all its apps!",
+                btn_show_resident: "👁️ Show Resident (Private)", title_resident_info: "👤 Resident Info", ph_res_name: "Name...", ph_res_phone: "Phone...", btn_hide: "🙈 Hide", alert_res_saved: "Saved successfully!", btn_edit: "✏️ Edit", btn_cancel_edit: "Cancel", lbl_res_name: "Name:", lbl_res_phone: "Phone:", title_edit_resident: "✏️ Edit Info",
+                lbl_receipt: "Receipt (Optional):", th_receipt: "Receipt", btn_view_receipt: "📄 Receipt", no_receipt: "None", uploading: "Saving...",
+                lbl_ann_image: "Image (Optional):", btn_details: "👁️ Details", btn_del_ann: "🗑️ Delete Announcement"
             }
         };
 
         let currentLang = localStorage.getItem('syndicLang') || 'ar';
-        let data = JSON.parse(localStorage.getItem('syndicLocalData')) || { buildings:[], apartments:[], payments: {}, expenses:[], announcements:[], chat:[] };
+        let data = JSON.parse(localStorage.getItem('syndicLocalData')) || { buildings:[], apartments:[], payments: {}, expenses:[], announcements:[], chat:[], password: '0000' };
         let isDataLoaded = false, isAuthenticated = false, pendingCallback = null; 
         let currentSelectedBuildingId = null, currentSelectedAptId = null, selectedMonthForPay = null, selectedYearForPay = null;
-        let currentFullBuildingId = null; 
-        let itemToDeleteId = null, itemToDeleteType = null; 
-        let itemToRenameId = null, itemToRenameType = null;
+        let currentFullBuildingId = null, itemToDeleteId = null, itemToDeleteType = null, itemToRenameId = null, itemToRenameType = null;
 
         db.collection("syndic_data").doc("main").onSnapshot((doc) => {
-            if (doc.exists) {
-                const fetchedData = doc.data();
-                data.buildings = fetchedData.buildings ||[]; data.apartments = fetchedData.apartments ||[]; data.payments = fetchedData.payments || {}; data.expenses = fetchedData.expenses ||[]; data.announcements = fetchedData.announcements ||[]; data.chat = fetchedData.chat ||[];
+            if (doc.exists) { 
+                const fetchedData = doc.data(); 
+                data.buildings = fetchedData.buildings ||[]; data.apartments = fetchedData.apartments ||[]; 
+                data.payments = fetchedData.payments || {}; data.expenses = fetchedData.expenses ||[]; 
+                data.announcements = fetchedData.announcements ||[]; data.chat = fetchedData.chat ||[]; 
+                data.password = fetchedData.password || '0000'; 
                 localStorage.setItem('syndicLocalData', JSON.stringify(data)); 
             } else { db.collection("syndic_data").doc("main").set(data).catch(e => console.log(e)); }
             if (!isDataLoaded) { isDataLoaded = true; document.getElementById('loadingScreen').style.display = 'none'; initApp(); } else { refreshUI(); }
         }, (error) => {
-            console.error(error);
-            if (!isDataLoaded) { isDataLoaded = true; document.getElementById('loadingScreen').style.display = 'none'; alert("⚠️ لا يمكن الاتصال بقاعدة البيانات. التطبيق يعمل Offline."); initApp(); }
+            console.error(error); if (!isDataLoaded) { isDataLoaded = true; document.getElementById('loadingScreen').style.display = 'none'; alert("⚠️ لا يمكن الاتصال بقاعدة البيانات. التطبيق يعمل Offline."); initApp(); }
         });
 
         setTimeout(() => { if(!isDataLoaded) { isDataLoaded = true; document.getElementById('loadingScreen').style.display = 'none'; initApp(); } }, 3000);
 
-        function saveData() { 
-            localStorage.setItem('syndicLocalData', JSON.stringify(data));
-            db.collection("syndic_data").doc("main").set(data).catch(e => console.log(e));
-            updateDashboardStats(); 
-        }
-        function refreshUI() {
-            updateDashboardStats(); 
-            renderDashboardTable(); 
-            renderPaymentStats(); // 🔴 كيحط الإحصائيات دكل شهر
-            renderFullBuildings(); 
-            renderFullTable(); 
-            renderBuildings(); 
-            if(currentSelectedBuildingId) renderApartments(); 
-            if(currentSelectedAptId) renderMonths();
-            renderExpenses(); 
-            renderAnnouncements(); 
-            renderChat();
-        }
+        function saveData() { localStorage.setItem('syndicLocalData', JSON.stringify(data)); db.collection("syndic_data").doc("main").set(data).catch(e => console.log(e)); updateDashboardStats(); }
+        function refreshUI() { updateDashboardStats(); renderDashboardTable(); renderPaymentStats(); renderFullBuildings(); renderFullTable(); renderBuildings(); if(currentSelectedBuildingId) renderApartments(); if(currentSelectedAptId) renderMonths(); renderExpenses(); renderAnnouncements(); renderChat(); }
 
         function requireAuth(callback) { if(isAuthenticated) { callback(); } else { pendingCallback = callback; document.getElementById('authPwdInput').value = ""; document.getElementById('authModal').style.display = 'flex'; setTimeout(() => document.getElementById('authPwdInput').focus(), 100); } }
-        function verifyAuth() { const pwd = document.getElementById('authPwdInput').value, savedPwd = localStorage.getItem('syndicPassword') || '0000'; if (pwd === savedPwd) { isAuthenticated = true; updateAuthUI(); closeAuthModal(); if(pendingCallback) { pendingCallback(); pendingCallback = null; } } else { alert(t('alert_wrong_pwd')); } }
+        function verifyAuth() { const pwd = document.getElementById('authPwdInput').value; const savedPwd = data.password || '0000'; if (pwd === savedPwd) { isAuthenticated = true; updateAuthUI(); closeAuthModal(); if(pendingCallback) { pendingCallback(); pendingCallback = null; } } else { alert(t('alert_wrong_pwd')); } }
         function closeAuthModal() { document.getElementById('authModal').style.display = 'none'; pendingCallback = null; }
         function toggleAuth() { if(isAuthenticated) { isAuthenticated = false; updateAuthUI(); } else { requireAuth(() => {}); } }
         function updateAuthUI() { const btn = document.getElementById('btn-lock'); if(isAuthenticated) { btn.classList.add('unlocked'); btn.innerHTML = `🔓`; } else { btn.classList.remove('unlocked'); btn.innerHTML = `🔒`; } }
         function openChangePwdModal() { document.getElementById('oldPwdInput').value = ""; document.getElementById('newPwdInput').value = ""; document.getElementById('changePwdModal').style.display = 'flex'; setTimeout(() => document.getElementById('oldPwdInput').focus(), 100); }
         function closeChangePwdModal() { document.getElementById('changePwdModal').style.display = 'none'; }
-        function saveNewPassword() { const oldP = document.getElementById('oldPwdInput').value, newP = document.getElementById('newPwdInput').value, savedPwd = localStorage.getItem('syndicPassword') || '0000'; if(oldP !== savedPwd) return alert(t('alert_wrong_pwd')); if(!newP) return alert(t('alert_pwd_req')); localStorage.setItem('syndicPassword', newP); alert(t('alert_pwd_changed')); closeChangePwdModal(); }
+        function saveNewPassword() { const oldP = document.getElementById('oldPwdInput').value; const newP = document.getElementById('newPwdInput').value; const savedPwd = data.password || '0000'; if(oldP !== savedPwd) return alert(t('alert_wrong_pwd')); if(!newP) return alert(t('alert_pwd_req')); data.password = newP; saveData(); alert(t('alert_pwd_changed')); closeChangePwdModal(); }
 
         function changeLanguage() { currentLang = document.getElementById('langSelect').value; localStorage.setItem('syndicLang', currentLang); applyLanguage(); }
         function t(key) { return dict[currentLang][key]; }
         function applyLanguage() {
             document.getElementById('langSelect').value = currentLang; document.documentElement.lang = currentLang; document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
             document.querySelectorAll('[data-i18n]').forEach(el => el.innerHTML = t(el.getAttribute('data-i18n'))); document.querySelectorAll('[data-i18n-placeholder]').forEach(el => el.placeholder = t(el.getAttribute('data-i18n-placeholder')));
-            populateYears(); 
-            
-            // 🔴 إضافة الأشهر لقائمة الإحصائيات
-            let monthOptions = "";
-            const currentMonth = new Date().getMonth() + 1;
-            t('months').forEach((m, index) => {
-                monthOptions += `<option value="${index + 1}" ${index + 1 === currentMonth ? 'selected' : ''}>${m}</option>`;
-            });
-            document.getElementById('statsMonth').innerHTML = monthOptions;
-
-            updateAuthUI(); 
-            refreshUI();
+            populateSelects(); updateAuthUI(); refreshUI();
             if (currentSelectedBuildingId && !currentSelectedAptId) { document.getElementById('currentBldName').innerHTML = `🏢 ${data.buildings.find(b=>b.id===currentSelectedBuildingId).name}`; }
             if (currentSelectedAptId) { document.getElementById('currentAptName').innerHTML = `🏠 ${data.apartments.find(a=>a.id===currentSelectedAptId).name}`; renderMonths(); }
+            
+            document.getElementById('btnDelAnn').innerText = t('btn_del_ann');
+        }
+
+        function populateSelects() { 
+            const currentYear = new Date().getFullYear(); const currentMonth = new Date().getMonth() + 1;
+            let yearOpts = ""; for (let y = currentYear - 2; y <= currentYear + 5; y++) { yearOpts += `<option value="${y}" ${y === currentYear ? 'selected' : ''}>${t('year_word')} ${y}</option>`; } 
+            let monthOpts = ""; t('months').forEach((m, i) => { monthOpts += `<option value="${i + 1}" ${i + 1 === currentMonth ? 'selected' : ''}>${m}</option>`; });
+            let filterMonthOpts = `<option value="all">${t('opt_all_months')}</option>` + monthOpts.replace(/selected/g, '');
+            filterMonthOpts = filterMonthOpts.replace(`value="${currentMonth}"`, `value="${currentMonth}" selected`);
+            document.getElementById('dashboardYear').innerHTML = yearOpts; document.getElementById('paymentYear').innerHTML = yearOpts; document.getElementById('fullYear').innerHTML = yearOpts; 
+            document.getElementById('statsYear').innerHTML = yearOpts; document.getElementById('dashStatYear').innerHTML = yearOpts; document.getElementById('expListYear').innerHTML = yearOpts;
+            document.getElementById('statsMonth').innerHTML = monthOpts; document.getElementById('dashStatMonth').innerHTML = filterMonthOpts; document.getElementById('expListMonth').innerHTML = filterMonthOpts; 
         }
 
         function showSection(sectionId) { document.querySelectorAll('.section-box').forEach(s => s.classList.remove('active')); document.getElementById(sectionId).classList.add('active'); }
@@ -575,65 +570,24 @@
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active')); document.getElementById(pageId).classList.add('active'); const navBtn = document.getElementById('btn-' + pageId); if(navBtn) navBtn.classList.add('active');
             if(pageId === 'dashboard') { renderDashboardTable(); updateDashboardStats(); renderPaymentStats(); } else if (pageId === 'apartments') { currentSelectedBuildingId = null; currentSelectedAptId = null; showSection('bldListSection'); renderBuildings(); } else if (pageId === 'expenses') { renderExpenses(); } else if (pageId === 'full-payments') { closeFullTableBuilding(); renderFullBuildings(); } else if (pageId === 'communication') { renderAnnouncements(); renderChat(); }
         }
-        
-        function populateYears() { 
-            const currentYear = new Date().getFullYear(); 
-            let yearOptions = ""; 
-            for (let y = currentYear - 2; y <= currentYear + 5; y++) { 
-                yearOptions += `<option value="${y}" ${y === currentYear ? 'selected' : ''}>${t('year_word')} ${y}</option>`; 
-            } 
-            document.getElementById('dashboardYear').innerHTML = yearOptions; 
-            document.getElementById('paymentYear').innerHTML = yearOptions; 
-            document.getElementById('fullYear').innerHTML = yearOptions; 
-            document.getElementById('statsYear').innerHTML = yearOptions; 
-        }
 
-        function openDeleteModal(id, type) {
-            requireAuth(() => {
-                itemToDeleteId = id; itemToDeleteType = type;
-                const msgEl = document.getElementById('deleteMsgText');
-                msgEl.innerText = (type === 'building') ? t('msg_del_bld') : t('msg_del_default');
-                msgEl.style.color = (type === 'building') ? "var(--danger)" : "#4b5563";
-                document.getElementById('deleteModal').style.display = 'flex';
-            });
-        }
+        function openDeleteModal(id, type) { requireAuth(() => { itemToDeleteId = id; itemToDeleteType = type; document.getElementById('deleteMsgText').innerText = (type === 'building') ? t('msg_del_bld') : t('msg_del_default'); document.getElementById('deleteMsgText').style.color = (type === 'building') ? "var(--danger)" : "#4b5563"; document.getElementById('deleteModal').style.display = 'flex'; }); }
         function closeDeleteModal() { document.getElementById('deleteModal').style.display = 'none'; itemToDeleteId = null; itemToDeleteType = null; }
         
         function confirmDelete() {
             if (itemToDeleteId !== null) {
-                if (itemToDeleteType === 'expense') { 
-                    db.collection("syndic_receipts").doc(itemToDeleteId.toString()).delete().catch(e=>console.log(e));
-                    data.expenses = data.expenses.filter(e => e.id !== itemToDeleteId); 
-                    renderExpenses(); 
-                } 
-                else if (itemToDeleteType === 'announcement') { data.announcements = data.announcements.filter(a => a.id !== itemToDeleteId); renderAnnouncements(); } 
+                if (itemToDeleteType === 'expense') { db.collection("syndic_receipts").doc(itemToDeleteId.toString()).delete().catch(e=>console.log(e)); data.expenses = data.expenses.filter(e => e.id !== itemToDeleteId); renderExpenses(); } 
+                else if (itemToDeleteType === 'announcement') { db.collection("syndic_announcements_images").doc(itemToDeleteId.toString()).delete().catch(e=>console.log(e)); data.announcements = data.announcements.filter(a => a.id !== itemToDeleteId); renderAnnouncements(); } 
                 else if (itemToDeleteType === 'chat') { data.chat = data.chat.filter(c => c.id !== itemToDeleteId); renderChat(); }
-                else if (itemToDeleteType === 'building') { 
-                    const aptsToDelete = data.apartments.filter(a => a.buildingId === itemToDeleteId);
-                    aptsToDelete.forEach(apt => {
-                        for(let key in data.payments) { if(key.startsWith(apt.id + "_")) delete data.payments[key]; }
-                    });
-                    data.apartments = data.apartments.filter(a => a.buildingId !== itemToDeleteId);
-                    data.buildings = data.buildings.filter(b => b.id !== itemToDeleteId); 
-                    renderBuildings(); 
-                }
-                else if (itemToDeleteType === 'apartment') { 
-                    for(let key in data.payments) { if(key.startsWith(itemToDeleteId + "_")) delete data.payments[key]; }
-                    data.apartments = data.apartments.filter(a => a.id !== itemToDeleteId); 
-                    renderApartments(); 
-                }
+                else if (itemToDeleteType === 'building') { const aptsToDelete = data.apartments.filter(a => a.buildingId === itemToDeleteId); aptsToDelete.forEach(apt => { for(let key in data.payments) { if(key.startsWith(apt.id + "_")) delete data.payments[key]; } }); data.apartments = data.apartments.filter(a => a.buildingId !== itemToDeleteId); data.buildings = data.buildings.filter(b => b.id !== itemToDeleteId); renderBuildings(); }
+                else if (itemToDeleteType === 'apartment') { for(let key in data.payments) { if(key.startsWith(itemToDeleteId + "_")) delete data.payments[key]; } data.apartments = data.apartments.filter(a => a.id !== itemToDeleteId); renderApartments(); }
                 saveData(); closeDeleteModal();
             }
         }
 
         function openRenameModal(id, type, currentName) { requireAuth(() => { itemToRenameId = id; itemToRenameType = type; document.getElementById('renameInput').value = currentName; document.getElementById('renameModal').style.display = 'flex'; setTimeout(() => document.getElementById('renameInput').focus(), 100); }); }
         function closeRenameModal() { document.getElementById('renameModal').style.display = 'none'; itemToRenameId = null; itemToRenameType = null; }
-        function saveRename() {
-            const newName = document.getElementById('renameInput').value.trim(); if(!newName) return;
-            if (itemToRenameType === 'building') { const b = data.buildings.find(b => b.id === itemToRenameId); if(b) b.name = newName; renderBuildings(); } 
-            else if (itemToRenameType === 'apartment') { const a = data.apartments.find(a => a.id === itemToRenameId); if(a) a.name = newName; renderApartments(); }
-            saveData(); closeRenameModal();
-        }
+        function saveRename() { const newName = document.getElementById('renameInput').value.trim(); if(!newName) return; if (itemToRenameType === 'building') { const b = data.buildings.find(b => b.id === itemToRenameId); if(b) b.name = newName; renderBuildings(); } else if (itemToRenameType === 'apartment') { const a = data.apartments.find(a => a.id === itemToRenameId); if(a) a.name = newName; renderApartments(); } saveData(); closeRenameModal(); }
 
         function addBuilding() { requireAuth(() => { const n = document.getElementById('newBldName').value.trim(); if(!n) return alert(t('alert_bld')); data.buildings.push({ id: Date.now(), name: n }); saveData(); document.getElementById('newBldName').value = ""; renderBuildings(); }); }
         function renderBuildings() { document.getElementById('buildingsGrid').innerHTML = data.buildings.map(b => `<div class="item-card" onclick="openBuilding(${b.id}, '${b.name}')"><div class="card-actions"><button class="card-action-btn" style="color:var(--primary);" onclick="event.stopPropagation(); openRenameModal(${b.id}, 'building', '${b.name}')" title="تعديل">✏️</button><button class="card-action-btn" style="color:var(--danger);" onclick="event.stopPropagation(); openDeleteModal(${b.id}, 'building')" title="مسح">🗑️</button></div><div class="icon">🏢</div><div class="name">${b.name}</div></div>`).join(''); }
@@ -645,80 +599,29 @@
         function openAptDetails(id, name) { currentSelectedAptId = id; document.getElementById('currentAptName').innerHTML = `🏠 ${name}`; hideResidentInfo(); showSection('aptDetailsSection'); renderMonths(); }
         function closeAptDetails() { currentSelectedAptId = null; showSection('aptListSection'); renderApartments(); }
 
-        function showResidentInfo() {
-            requireAuth(() => {
-                const apt = data.apartments.find(a => a.id === currentSelectedAptId);
-                const hasInfo = apt.residentName || apt.residentPhone;
-                document.getElementById('residentInfoHidden').style.display = 'none';
-                if (hasInfo) {
-                    document.getElementById('resNameText').innerText = apt.residentName || "---";
-                    document.getElementById('resPhoneText').innerText = apt.residentPhone || "---";
-                    document.getElementById('residentInfoView').style.display = 'flex';
-                    document.getElementById('residentInfoEdit').style.display = 'none';
-                } else { editResidentInfo(); }
-            });
-        }
-        function editResidentInfo() {
-            const apt = data.apartments.find(a => a.id === currentSelectedAptId);
-            document.getElementById('resNameInput').value = apt.residentName || ""; document.getElementById('resPhoneInput').value = apt.residentPhone || "";
-            document.getElementById('residentInfoHidden').style.display = 'none'; document.getElementById('residentInfoView').style.display = 'none'; document.getElementById('residentInfoEdit').style.display = 'flex';
-        }
-        function saveResidentInfo() {
-            const apt = data.apartments.find(a => a.id === currentSelectedAptId);
-            if (apt) { apt.residentName = document.getElementById('resNameInput').value.trim(); apt.residentPhone = document.getElementById('resPhoneInput').value.trim(); saveData(); showResidentInfo(); }
-        }
-        function cancelEditResident() {
-            const apt = data.apartments.find(a => a.id === currentSelectedAptId);
-            if (apt.residentName || apt.residentPhone) { showResidentInfo(); } else { hideResidentInfo(); }
-        }
-        function hideResidentInfo() {
-            document.getElementById('residentInfoView').style.display = 'none'; document.getElementById('residentInfoEdit').style.display = 'none'; document.getElementById('residentInfoHidden').style.display = 'block';
-        }
+        function showResidentInfo() { requireAuth(() => { const apt = data.apartments.find(a => a.id === currentSelectedAptId); const hasInfo = apt.residentName || apt.residentPhone; document.getElementById('residentInfoHidden').style.display = 'none'; if (hasInfo) { document.getElementById('resNameText').innerText = apt.residentName || "---"; document.getElementById('resPhoneText').innerText = apt.residentPhone || "---"; document.getElementById('residentInfoView').style.display = 'flex'; document.getElementById('residentInfoEdit').style.display = 'none'; } else { editResidentInfo(); } }); }
+        function editResidentInfo() { const apt = data.apartments.find(a => a.id === currentSelectedAptId); document.getElementById('resNameInput').value = apt.residentName || ""; document.getElementById('resPhoneInput').value = apt.residentPhone || ""; document.getElementById('residentInfoHidden').style.display = 'none'; document.getElementById('residentInfoView').style.display = 'none'; document.getElementById('residentInfoEdit').style.display = 'flex'; }
+        function saveResidentInfo() { const apt = data.apartments.find(a => a.id === currentSelectedAptId); if (apt) { apt.residentName = document.getElementById('resNameInput').value.trim(); apt.residentPhone = document.getElementById('resPhoneInput').value.trim(); saveData(); showResidentInfo(); } }
+        function cancelEditResident() { const apt = data.apartments.find(a => a.id === currentSelectedAptId); if (apt.residentName || apt.residentPhone) { showResidentInfo(); } else { hideResidentInfo(); } }
+        function hideResidentInfo() { document.getElementById('residentInfoView').style.display = 'none'; document.getElementById('residentInfoEdit').style.display = 'none'; document.getElementById('residentInfoHidden').style.display = 'block'; }
 
         function renderMonths() { if(!currentSelectedAptId) return; const y = document.getElementById('paymentYear').value; let html = ""; for(let m = 1; m <= 12; m++) { const amt = data.payments[`${currentSelectedAptId}_${y}_${m}`] || 0; const isP = amt > 0; html += `<div class="${isP ? 'month-card paid' : 'month-card'}" onclick="openPaymentModal(${m}, '${y}')">${t('months')[m-1]}<br><span style="${!isP?'color:#ef4444;font-size:12px;':''}">${isP ? amt + ' ' + t('curr') : t('unpaid').replace('✖️ ', '')}</span></div>`; } document.getElementById('monthsGrid').innerHTML = html; }
         
-        // 🔴 منين كتسجل الخلاص، كنحتافظو بالوقت باش تبان هي اللولة فالطابلو الرئيسي
-        function savePayment() { 
-            const amt = parseFloat(document.getElementById('modalAmountInput').value); 
-            if (isNaN(amt) || amt <= 0) return alert(t('alert_amt')); 
-            data.payments[`${currentSelectedAptId}_${selectedYearForPay}_${selectedMonthForPay}`] = amt; 
-            
-            const apt = data.apartments.find(a => a.id === currentSelectedAptId);
-            if(apt) apt.lastPaidTime = Date.now(); // 🔴 زدنا هادي باش نعرفو وقتاش خلص
-            
-            saveData(); renderMonths(); closePaymentModal(); 
-        }
-        
+        function savePayment() { const amt = parseFloat(document.getElementById('modalAmountInput').value); if (isNaN(amt) || amt <= 0) return alert(t('alert_amt')); data.payments[`${currentSelectedAptId}_${selectedYearForPay}_${selectedMonthForPay}`] = amt; const apt = data.apartments.find(a => a.id === currentSelectedAptId); if(apt) apt.lastPaidTime = Date.now(); saveData(); renderMonths(); closePaymentModal(); }
         function openPaymentModal(m, y) { requireAuth(() => { selectedMonthForPay = m; selectedYearForPay = y; document.getElementById('modalTitle').innerText = `${t('pay_title')} ${t('months')[m-1]} - ${y}`; document.getElementById('modalAmountInput').value = data.payments[`${currentSelectedAptId}_${y}_${m}`] || ""; document.getElementById('paymentModal').style.display = 'flex'; setTimeout(() => document.getElementById('modalAmountInput').focus(), 100); }); }
         function closePaymentModal() { document.getElementById('paymentModal').style.display = 'none'; }
         function clearPayment() { delete data.payments[`${currentSelectedAptId}_${selectedYearForPay}_${selectedMonthForPay}`]; saveData(); renderMonths(); closePaymentModal(); }
 
-        function compressImage(file, callback) {
-            const reader = new FileReader(); reader.readAsDataURL(file);
-            reader.onload = function(event) {
-                const img = new Image(); img.src = event.target.result;
-                img.onload = function() {
-                    const canvas = document.createElement('canvas'); const MAX_WIDTH = 800; const MAX_HEIGHT = 800;
-                    let width = img.width; let height = img.height;
-                    if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } } else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } }
-                    canvas.width = width; canvas.height = height; const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height);
-                    const dataUrl = canvas.toDataURL('image/jpeg', 0.6); callback(dataUrl);
-                }
-            }
-        }
+        function compressImage(file, callback) { const reader = new FileReader(); reader.readAsDataURL(file); reader.onload = function(event) { const img = new Image(); img.src = event.target.result; img.onload = function() { const canvas = document.createElement('canvas'); const MAX_WIDTH = 800; const MAX_HEIGHT = 800; let width = img.width; let height = img.height; if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } } else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } } canvas.width = width; canvas.height = height; const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height); const dataUrl = canvas.toDataURL('image/jpeg', 0.6); callback(dataUrl); } } }
 
         function addExpense() { 
             requireAuth(() => { 
                 const d = document.getElementById('expenseDesc').value; const a = parseFloat(document.getElementById('expenseAmount').value); const dt = document.getElementById('expenseDate').value; const fileInput = document.getElementById('expenseReceipt');
                 if(!d || isNaN(a) || a <= 0 || !dt) return alert(t('alert_fill')); 
                 const expId = Date.now(); let newExp = { id: expId, desc: d, amount: a, date: dt, hasReceipt: false };
-
                 if (fileInput.files.length > 0 && fileInput.files[0].type.startsWith('image/')) {
                     document.getElementById('loadingText').innerText = t('uploading') || "جاري حفظ الصورة..."; document.getElementById('loadingScreen').style.display = 'flex';
-                    compressImage(fileInput.files[0], (base64Img) => {
-                        db.collection("syndic_receipts").doc(expId.toString()).set({ image: base64Img }).then(() => { newExp.hasReceipt = true; data.expenses.push(newExp); finishAddExpense();
-                        }).catch(err => { console.error(err); alert("حدث خطأ أثناء حفظ التوصيل. سيتم حفظ المصروف بدون صورة."); data.expenses.push(newExp); finishAddExpense(); });
-                    });
+                    compressImage(fileInput.files[0], (base64Img) => { db.collection("syndic_receipts").doc(expId.toString()).set({ image: base64Img }).then(() => { newExp.hasReceipt = true; data.expenses.push(newExp); finishAddExpense(); }).catch(err => { console.error(err); alert("حدث خطأ أثناء حفظ التوصيل."); data.expenses.push(newExp); finishAddExpense(); }); });
                 } else { data.expenses.push(newExp); finishAddExpense(); }
             }); 
         }
@@ -726,7 +629,10 @@
         function finishAddExpense() { saveData(); document.getElementById('expenseDesc').value = ""; document.getElementById('expenseAmount').value = ""; document.getElementById('expenseReceipt').value = ""; document.getElementById('loadingScreen').style.display = 'none'; document.getElementById('loadingText').innerText = "جاري الاتصال بقاعدة البيانات..."; renderExpenses(); }
 
         function renderExpenses() { 
-            document.getElementById('expensesTableBody').innerHTML =[...data.expenses].sort((a,b) => new Date(b.date) - new Date(a.date)).map(e => {
+            const m = document.getElementById('expListMonth') ? document.getElementById('expListMonth').value : 'all';
+            const y = document.getElementById('expListYear') ? document.getElementById('expListYear').value : new Date().getFullYear();
+            let filteredOut = data.expenses.filter(e => { let d = new Date(e.date); if (m === 'all') { return d.getFullYear() == y; } else { return d.getFullYear() == y && (d.getMonth() + 1) == m; } });
+            document.getElementById('expensesTableBody').innerHTML = filteredOut.sort((a,b) => new Date(b.date) - new Date(a.date)).map(e => {
                 let receiptBtn = e.hasReceipt ? `<button class="btn btn-primary" style="padding: 5px 10px; font-size: 12px;" onclick="viewReceipt(${e.id})">${t('btn_view_receipt')}</button>` : `<span style="color:#9ca3af; font-size:12px;">${t('no_receipt')}</span>`;
                 return `<tr><td style="font-weight:bold; color:#4b5563;">${e.date}</td><td style="text-align:${currentLang==='ar'?'right':'left'}; font-weight:600;">${e.desc}</td><td class="text-danger" style="font-weight:800; font-size:16px;">${e.amount} ${t('curr')}</td><td>${receiptBtn}</td><td><button class="btn btn-danger" style="padding: 8px 12px; font-size:12px;" onclick="openDeleteModal(${e.id}, 'expense')">${t('btn_delete')}</button></td></tr>`;
             }).join(''); 
@@ -734,91 +640,134 @@
 
         function viewReceipt(expId) {
             document.getElementById('receiptImageContainer').innerHTML = `<div class="spinner"></div>`; document.getElementById('receiptModal').style.display = 'flex';
-            db.collection("syndic_receipts").doc(expId.toString()).get().then(doc => {
-                if (doc.exists) { document.getElementById('receiptImageContainer').innerHTML = `<img src="${doc.data().image}" style="width:100%; border-radius:10px; border: 1px solid #e2e8f0; margin-bottom: 15px;"><a href="${doc.data().image}" download="Reçu_${expId}.jpg" class="btn btn-success" style="text-decoration:none; display:inline-block;">⬇️ تحميل التوصيل</a>`; } 
-                else { document.getElementById('receiptImageContainer').innerHTML = `<p style="color:var(--danger); font-weight:bold;">⚠️ لم يتم العثور على التوصيل.</p>`; }
-            }).catch(err => { document.getElementById('receiptImageContainer').innerHTML = `<p style="color:var(--danger); font-weight:bold;">⚠️ حدث خطأ في الاتصال بالانترنت.</p>`; });
+            db.collection("syndic_receipts").doc(expId.toString()).get().then(doc => { if (doc.exists) { document.getElementById('receiptImageContainer').innerHTML = `<img src="${doc.data().image}" style="width:100%; border-radius:10px; border: 1px solid #e2e8f0; margin-bottom: 15px;"><a href="${doc.data().image}" download="Reçu_${expId}.jpg" class="btn btn-success" style="text-decoration:none; display:inline-block;">⬇️ تحميل التوصيل</a>`; } else { document.getElementById('receiptImageContainer').innerHTML = `<p style="color:var(--danger); font-weight:bold;">⚠️ لم يتم العثور على التوصيل.</p>`; } }).catch(err => { document.getElementById('receiptImageContainer').innerHTML = `<p style="color:var(--danger); font-weight:bold;">⚠️ حدث خطأ في الاتصال بالانترنت.</p>`; });
         }
         function closeReceiptModal() { document.getElementById('receiptModal').style.display = 'none'; }
 
-        function addAnnouncement() { requireAuth(() => { const title = document.getElementById('announceTitle').value.trim(), msg = document.getElementById('announceMsg').value.trim(); if (!title || !msg) return alert(t('alert_fill')); const dateStr = new Date().toLocaleString(currentLang === 'ar' ? 'ar-MA' : 'fr-FR', { dateStyle: 'medium', timeStyle: 'short' }); data.announcements.unshift({ id: Date.now(), title, msg, date: dateStr }); saveData(); document.getElementById('announceTitle').value = ""; document.getElementById('announceMsg').value = ""; renderAnnouncements(); }); }
-        function renderAnnouncements() { const list = document.getElementById('announcementsList'); if (data.announcements.length === 0) { list.innerHTML = `<p style="text-align:center; color:#9ca3af;">لا توجد إعلانات حالياً.</p>`; return; } list.innerHTML = data.announcements.map(ann => `<div class="announce-item"><button class="del-btn" onclick="openDeleteModal(${ann.id}, 'announcement')">✖</button><h4>${ann.title}</h4><span class="date">🕒 ${ann.date}</span><p>${ann.msg.replace(/\n/g, '<br>')}</p></div>`).join(''); }
+        // 🔴 الإعلانات الجديدة (إضافة مع صورة)
+        function addAnnouncement() { 
+            requireAuth(() => { 
+                const title = document.getElementById('announceTitle').value.trim(); 
+                const msg = document.getElementById('announceMsg').value.trim(); 
+                const fileInput = document.getElementById('announceImage');
+                
+                if (!title || !msg) return alert(t('alert_fill')); 
+                
+                const dateStr = new Date().toLocaleString(currentLang === 'ar' ? 'ar-MA' : 'fr-FR', { dateStyle: 'medium', timeStyle: 'short' }); 
+                const annId = Date.now(); 
+                let newAnn = { id: annId, title, msg, date: dateStr, hasImage: false };
+                
+                if (fileInput.files.length > 0 && fileInput.files[0].type.startsWith('image/')) {
+                    document.getElementById('loadingText').innerText = t('uploading') || "جاري حفظ الصورة..."; 
+                    document.getElementById('loadingScreen').style.display = 'flex';
+                    compressImage(fileInput.files[0], (base64Img) => { 
+                        db.collection("syndic_announcements_images").doc(annId.toString()).set({ image: base64Img })
+                        .then(() => { newAnn.hasImage = true; data.announcements.unshift(newAnn); finishAddAnnouncement(); })
+                        .catch(err => { console.error(err); alert("حدث خطأ في حفظ الصورة."); data.announcements.unshift(newAnn); finishAddAnnouncement(); }); 
+                    });
+                } else {
+                    data.announcements.unshift(newAnn); 
+                    finishAddAnnouncement();
+                }
+            }); 
+        }
+
+        function finishAddAnnouncement() {
+            saveData(); 
+            document.getElementById('announceTitle').value = ""; 
+            document.getElementById('announceMsg').value = ""; 
+            document.getElementById('announceImage').value = "";
+            document.getElementById('loadingScreen').style.display = 'none'; 
+            document.getElementById('loadingText').innerText = "جاري الاتصال بقاعدة البيانات..."; 
+            renderAnnouncements();
+        }
+
+        // 🔴 عرض الإعلانات بدون بوطونة المسح باينة
+        function renderAnnouncements() { 
+            const list = document.getElementById('announcementsList'); 
+            if (data.announcements.length === 0) { list.innerHTML = `<p style="text-align:center; color:#9ca3af;">لا توجد إعلانات حالياً.</p>`; return; } 
+            list.innerHTML = data.announcements.map(ann => `
+                <div class="announce-item" onclick="viewAnnouncement(${ann.id})">
+                    <h4>${ann.title} ${ann.hasImage ? '🖼️' : ''}</h4>
+                    <span class="date">🕒 ${ann.date}</span>
+                    <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${ann.msg}</p>
+                    <span style="color: var(--secondary); font-size: 13px; font-weight: bold; margin-top: 8px; display: inline-block;">${t('btn_details')}</span>
+                </div>
+            `).join(''); 
+        }
+
+        // 🔴 عرض تفاصيل الإعلان فالـ Modal
+        function viewAnnouncement(id) {
+            const ann = data.announcements.find(a => a.id === id);
+            if(!ann) return;
+            
+            const modalContent = document.querySelector('#announcementModal .modal-content');
+            modalContent.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            modalContent.style.textAlign = currentLang === 'ar' ? 'right' : 'left';
+
+            document.getElementById('annModalTitle').innerText = ann.title;
+            document.getElementById('annModalDate').innerText = `🕒 ${ann.date}`;
+            document.getElementById('annModalMsg').innerText = ann.msg;
+            
+            document.getElementById('btnDelAnn').onclick = function() { 
+                closeAnnouncementModal(); 
+                openDeleteModal(id, 'announcement'); 
+            };
+
+            const imgContainer = document.getElementById('annModalImageContainer');
+            if (ann.hasImage) {
+                imgContainer.innerHTML = `<div class="spinner" style="margin: 0 auto;"></div>`;
+                db.collection("syndic_announcements_images").doc(id.toString()).get().then(doc => {
+                    if (doc.exists) {
+                        imgContainer.innerHTML = `<img src="${doc.data().image}" style="width:100%; border-radius:10px; border: 1px solid #e2e8f0;">`;
+                    } else {
+                        imgContainer.innerHTML = `<p style="color:var(--danger); font-size: 12px;">⚠️ لم يتم العثور على الصورة.</p>`;
+                    }
+                }).catch(e => {
+                    imgContainer.innerHTML = `<p style="color:var(--danger); font-size: 12px;">⚠️ خطأ في تحميل الصورة.</p>`;
+                });
+            } else { imgContainer.innerHTML = ''; }
+
+            document.getElementById('announcementModal').style.display = 'flex';
+        }
+
+        function closeAnnouncementModal() {
+            document.getElementById('announcementModal').style.display = 'none';
+        }
 
         function sendChatMessage() { const nameInput = document.getElementById('chatName').value.trim(), msgInput = document.getElementById('chatMsg').value.trim(); if (!msgInput) return; const name = nameInput || (currentLang === 'ar' ? "سكان العمارة" : "Résident"); const timeStr = new Date().toLocaleTimeString(currentLang === 'ar' ? 'ar-MA' : 'fr-FR', { hour: '2-digit', minute:'2-digit' }); data.chat.push({ id: Date.now(), name, msg: msgInput, time: timeStr }); if(data.chat.length > 100) data.chat.shift(); saveData(); document.getElementById('chatMsg').value = ""; renderChat(); }
         function handleChatKeyPress(e) { if(e.key === 'Enter') sendChatMessage(); }
         function renderChat() { const box = document.getElementById('chatBox'); if (data.chat.length === 0) { box.innerHTML = `<p style="text-align:center; color:#9ca3af; margin-top:auto; margin-bottom:auto;">ابدأ الدردشة الآن...</p>`; return; } box.innerHTML = data.chat.map(c => `<div class="chat-msg"><button class="del-chat-btn" onclick="openDeleteModal(${c.id}, 'chat')" title="مسح الرسالة">✖</button><span class="sender">${c.name}</span><p class="text">${c.msg}</p><span class="time">${c.time}</span></div>`).join(''); box.scrollTop = box.scrollHeight; }
 
         function updateDashboardStats() { 
-            const validAptIds = new Set(data.apartments.map(a => a.id.toString())); let tin = 0; let needsCleanup = false;
-            for(let key in data.payments) { const aptId = key.split('_')[0]; if(validAptIds.has(aptId)) { tin += data.payments[key]; } else { delete data.payments[key]; needsCleanup = true; } }
-            if (needsCleanup) { localStorage.setItem('syndicLocalData', JSON.stringify(data)); db.collection("syndic_data").doc("main").set(data).catch(e => console.log(e)); }
-            const tout = data.expenses.reduce((s, e) => s + e.amount, 0); 
-            document.getElementById('totalIncomes').innerText = `${tin.toLocaleString('en-US')} ${t('curr')}`; 
-            document.getElementById('totalExpenses').innerText = `${tout.toLocaleString('en-US')} ${t('curr')}`; 
-            document.getElementById('boxBalance').innerText = `${(tin - tout).toLocaleString('en-US')} ${t('curr')}`; 
-        }
-        
-        // 🔴 دالة رسم الإحصائيات دכל عمارة بالشهر 
-        function renderPaymentStats() {
-            const m = document.getElementById('statsMonth').value;
-            const y = document.getElementById('statsYear').value;
-            if (!m || !y) return;
+            const m = document.getElementById('dashStatMonth') ? document.getElementById('dashStatMonth').value : 'all';
+            const y = document.getElementById('dashStatYear') ? document.getElementById('dashStatYear').value : new Date().getFullYear();
+            const validAptIds = new Set(data.apartments.map(a => a.id.toString())); 
+            let totalIn = 0; let totalOut = 0; let filteredIn = 0; let filteredOut = 0; let needsCleanup = false;
             
-            let html = "";
-            data.buildings.forEach(b => {
-                const bldApts = data.apartments.filter(a => a.buildingId === b.id);
-                const totalApts = bldApts.length;
-                if(totalApts === 0) return;
-                
-                let paidCount = 0;
-                bldApts.forEach(a => {
-                    const amt = data.payments[`${a.id}_${y}_${m}`];
-                    if (amt && amt > 0) paidCount++;
-                });
-                
-                let color = paidCount === totalApts ? 'var(--success)' : (paidCount > 0 ? 'var(--warning)' : 'var(--danger)');
-                
-                html += `
-                <div class="item-card" style="border-bottom: 4px solid ${color}; padding: 15px 10px;">
-                    <div class="icon" style="font-size:30px;">🏢</div>
-                    <div class="name" style="margin-top:5px;">${b.name}</div>
-                    <div style="font-size: 20px; font-weight: 800; color: ${color}; margin-top: 5px;">${paidCount} / ${totalApts}</div>
-                    <div style="font-size: 13px; color: #6b7280; margin-top: 3px; font-weight:bold;">${t('txt_paid_month')} ${t('months')[m-1]}</div>
-                </div>`;
-            });
-            
-            if(html === "") html = `<p style="text-align:center; width:100%; color:#9ca3af; grid-column: 1 / -1; font-weight:bold;">${t('no_apts')}</p>`;
-            document.getElementById('paymentStatsGrid').innerHTML = html;
-        }
-
-        function buildTableHTML(yId, limit, bldId = null) { 
-            const y = document.getElementById(yId).value; 
-            let headHTML = `<th>${t('apt_month')}</th>`; t('months').forEach(m => headHTML += `<th>${m}</th>`); 
-            
-            let apts =[...data.apartments]; 
-            if (bldId) apts = apts.filter(a => a.buildingId === bldId); 
-            
-            // 🔴 الترتيب باش يبانو آخر 3 شقق أدوا الواجب
-            if (limit) {
-                let paidApts = apts.filter(a => a.lastPaidTime).sort((a,b) => b.lastPaidTime - a.lastPaidTime);
-                let nonPaid = apts.filter(a => !a.lastPaidTime);
-                apts = [...paidApts, ...nonPaid].slice(0, limit);
+            for(let key in data.payments) { 
+                let[aptId, payYear, payMonth] = key.split('_');
+                if(validAptIds.has(aptId)) { 
+                    totalIn += data.payments[key]; 
+                    if(m === 'all') { if(payYear == y) filteredIn += data.payments[key]; } else { if(payYear == y && payMonth == m) filteredIn += data.payments[key]; }
+                } else { delete data.payments[key]; needsCleanup = true; } 
             }
+            if (needsCleanup) { localStorage.setItem('syndicLocalData', JSON.stringify(data)); db.collection("syndic_data").doc("main").set(data).catch(e => console.log(e)); }
             
-            if(apts.length === 0) return { headHTML, bodyHTML: `<tr><td colspan="13" style="padding:30px; color:#9ca3af;">${t('no_apts')}</td></tr>` }; 
+            data.expenses.forEach(e => { 
+                totalOut += e.amount;
+                let d = new Date(e.date);
+                if (m === 'all') { if(d.getFullYear() == y) filteredOut += e.amount; } else { if(d.getFullYear() == y && (d.getMonth() + 1) == m) filteredOut += e.amount; }
+            }); 
             
-            let bodyHTML = apts.map(a => { 
-                let b = data.buildings.find(bx => bx.id === a.buildingId); 
-                let r = `<tr><td><span style="color:#6b7280; font-size:12px;">${b ? `[${b.name}] - ` : ""}</span><br>${a.name}</td>`; 
-                for(let m = 1; m <= 12; m++) { 
-                    const amt = data.payments[`${a.id}_${y}_${m}`]; 
-                    r += amt > 0 ? `<td><span class="badge badge-paid">${t('paid')} ${amt}</span></td>` : `<td><span class="badge badge-unpaid">${t('unpaid')}</span></td>`; 
-                } 
-                return r + `</tr>`; 
-            }).join(''); 
-            return { headHTML, bodyHTML }; 
+            document.getElementById('totalIncomes').innerText = `${filteredIn.toLocaleString('en-US')} ${t('curr')}`; 
+            document.getElementById('totalExpenses').innerText = `${filteredOut.toLocaleString('en-US')} ${t('curr')}`; 
+            document.getElementById('boxBalance').innerText = `${(totalIn - totalOut).toLocaleString('en-US')} ${t('curr')}`; 
         }
         
+        function renderPaymentStats() { const m = document.getElementById('statsMonth').value; const y = document.getElementById('statsYear').value; if (!m || !y) return; let html = ""; data.buildings.forEach(b => { const bldApts = data.apartments.filter(a => a.buildingId === b.id); const totalApts = bldApts.length; if(totalApts === 0) return; let paidCount = 0; bldApts.forEach(a => { const amt = data.payments[`${a.id}_${y}_${m}`]; if (amt && amt > 0) paidCount++; }); let color = paidCount === totalApts ? 'var(--success)' : (paidCount > 0 ? 'var(--warning)' : 'var(--danger)'); html += `<div class="item-card" style="border-bottom: 4px solid ${color}; padding: 15px 10px;"><div class="icon" style="font-size:30px;">🏢</div><div class="name" style="margin-top:5px;">${b.name}</div><div style="font-size: 20px; font-weight: 800; color: ${color}; margin-top: 5px;">${paidCount} / ${totalApts}</div><div style="font-size: 13px; color: #6b7280; margin-top: 3px; font-weight:bold;">${t('txt_paid_month')} ${t('months')[m-1]}</div></div>`; }); if(html === "") html = `<p style="text-align:center; width:100%; color:#9ca3af; grid-column: 1 / -1; font-weight:bold;">${t('no_apts')}</p>`; document.getElementById('paymentStatsGrid').innerHTML = html; }
+
+        function buildTableHTML(yId, limit, bldId = null) { const y = document.getElementById(yId).value; let headHTML = `<th>${t('apt_month')}</th>`; t('months').forEach(m => headHTML += `<th>${m}</th>`); let apts =[...data.apartments]; if (bldId) apts = apts.filter(a => a.buildingId === bldId); if (limit) { let paidApts = apts.filter(a => a.lastPaidTime).sort((a,b) => b.lastPaidTime - a.lastPaidTime); let nonPaid = apts.filter(a => !a.lastPaidTime); apts = [...paidApts, ...nonPaid].slice(0, limit); } if(apts.length === 0) return { headHTML, bodyHTML: `<tr><td colspan="13" style="padding:30px; color:#9ca3af;">${t('no_apts')}</td></tr>` }; let bodyHTML = apts.map(a => { let b = data.buildings.find(bx => bx.id === a.buildingId); let r = `<tr><td><span style="color:#6b7280; font-size:12px;">${b ? `[${b.name}] - ` : ""}</span><br>${a.name}</td>`; for(let m = 1; m <= 12; m++) { const amt = data.payments[`${a.id}_${y}_${m}`]; r += amt > 0 ? `<td><span class="badge badge-paid">${t('paid')} ${amt}</span></td>` : `<td><span class="badge badge-unpaid">${t('unpaid')}</span></td>`; } return r + `</tr>`; }).join(''); return { headHTML, bodyHTML }; }
         function renderDashboardTable() { const { headHTML, bodyHTML } = buildTableHTML('dashboardYear', 3, null); document.getElementById('dashboardTableHead').innerHTML = headHTML; document.getElementById('dashboardTableBody').innerHTML = bodyHTML; }
         
         function renderFullBuildings() { document.getElementById('fullBuildingsGrid').innerHTML = data.buildings.map(b => `<div class="item-card" onclick="openFullTableBuilding(${b.id}, '${b.name}')"><div class="icon">🏢</div><div class="name">${b.name}</div></div>`).join(''); }
