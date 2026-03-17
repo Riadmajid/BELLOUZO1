@@ -12,6 +12,7 @@
     <!-- Firebase (v8) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
     <!-- Chart.js for visualization -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -62,6 +63,15 @@
             position: sticky;
             top: 0;
             z-index: 100;
+        }
+
+        .navbar-logo {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: white;
+            padding: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .navbar-brand {
@@ -882,18 +892,17 @@
         <h3 id="loadingText" style="margin-top: 20px; color: var(--primary);">Loading...</h3>
     </div>
 
-    <nav class="navbar">
+    <nav class="navbar" id="appNavbar" style="display: none;">
         <div class="navbar-brand">
-            <h2 data-i18n="app_title">🏢 تسيير السانديك</h2>
+            <img src="https://firebasestorage.googleapis.com/v0/b/syndic-54327.firebasestorage.app/o/app_icon.png?alt=media" class="navbar-logo" alt="Logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3062/3062334.png'">
+            <h2 data-i18n="app_title">🏢 ZAINEB 4 السانديك</h2>
             <div class="auth-controls">
                 <select id="langSelect" class="lang-select" onchange="changeLanguage()">
                     <option value="ar">العربية</option>
                     <option value="fr">Français</option>
                     <option value="en">English</option>
                 </select>
-                <button id="btn-lock" class="btn-icon" onclick="toggleAuth()">🔒</button>
-                <button id="btn-change-pwd" class="btn-icon" onclick="requireAuth(openChangePwdModal)"
-                    style="display: none;" title="Change Password">🔑</button>
+                <button id="btn-lock" class="btn-icon" onclick="handleLogout()" title="Logout">🚪</button>
                 <div id="sync-status"
                     style="width:12px; height:12px; border-radius:50%; background:gray; margin-left:10px;"
                     title="Firestore Connection"></div>
@@ -910,7 +919,44 @@
         </div>
     </nav>
 
-    <div class="container">
+    <!-- NEW: Login Screen -->
+    <div id="loginScreen" class="page" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 80vh;">
+        <div style="background: white; padding: 40px; border-radius: 20px; box-shadow: var(--card-shadow); width: 100%; max-width: 400px; text-align: center;">
+            <img src="https://firebasestorage.googleapis.com/v0/b/syndic-54327.firebasestorage.app/o/app_icon.png?alt=media" style="width: 100px; margin-bottom: 20px;" alt="Logo">
+            <h2 style="color: var(--primary); margin-bottom: 30px;">ZAINEB 4</h2>
+            <div class="input-group">
+                <label>البريد الإلكتروني / Email</label>
+                <input type="text" id="loginEmail" placeholder="example@mail.com">
+            </div>
+            <div class="input-group">
+                <label>كلمة المرور / Password</label>
+                <input type="password" id="loginPwd" placeholder="******">
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-size: 14px;">
+                <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                    <input type="checkbox" id="rememberMe" style="width: 16px; height: 16px;"> 
+                    <span>تذكرني (Remember Me)</span>
+                </label>
+                <a href="#" onclick="handleForgotPassword()" style="color: var(--secondary); text-decoration: none; font-weight: bold;">نسيت كلمة السر؟</a>
+            </div>
+
+            <button class="btn btn-primary" style="width: 100%;" onclick="handleLogin()">تسجيل الدخول</button>
+            <p id="loginError" style="color: var(--danger); margin-top: 15px; font-size: 14px; display: none;"></p>
+        </div>
+    </div>
+
+    <!-- NEW: Pending Approval Screen -->
+    <div id="pendingScreen" class="page" style="display: none; flex-direction: column; align-items: center; justify-content: center; height: 80vh; text-align: center; padding: 20px;">
+        <div style="background: white; padding: 40px; border-radius: 20px; box-shadow: var(--card-shadow); max-width: 500px;">
+            <div style="font-size: 80px; margin-bottom: 20px;">⏳</div>
+            <h2 style="color: var(--primary);">الحساب قيد المراجعة</h2>
+            <p style="color: #6b7280; font-size: 18px; line-height: 1.6;">شكراً لتسجيلك. حسابك في حالة انتظار موافقة المسؤول (السانديك). يرجى العودة لاحقاً أو التواصل مع الإدارة.</p>
+            <button class="btn btn-danger" style="margin-top: 30px; width: 100%;" onclick="handleLogout()">تسجيل الخروج</button>
+        </div>
+    </div>
+
+    <div class="container" id="mainContainer" style="display: none;">
 
         <!-- PAGE 1: DASHBOARD -->
         <div id="dashboard" class="page active">
@@ -1011,7 +1057,7 @@
                     <div class="search-box">
                         <input type="text" id="bldSearch" placeholder="Search buildings..." oninput="renderBuildings()">
                     </div>
-                    <button class="btn btn-success" onclick="requireAuth(addBuilding)"
+                    <button class="btn btn-success btn-admin-only" onclick="requireAuth(addBuilding)"
                         data-i18n="add_building">${t('add_building')}</button>
                 </div>
                 <div id="buildingsGrid" class="grid-cards"></div>
@@ -1028,7 +1074,7 @@
                         <input type="text" id="aptSearch" placeholder="Search apartments..."
                             oninput="renderApartments()">
                     </div>
-                    <button class="btn btn-success" onclick="requireAuth(addApartment)"
+                    <button class="btn btn-success btn-admin-only" onclick="requireAuth(addApartment)"
                         data-i18n="add_apartment">${t('add_apartment')}</button>
                 </div>
                 <div id="apartmentsGrid" class="grid-cards"></div>
@@ -1051,7 +1097,7 @@
                                 style="color: var(--secondary);">---</span></p>
                         <p style="margin:0; font-size: 12px; color: #6b7280;" id="resPhoneLabel">No phone saved</p>
                     </div>
-                    <button class="btn" style="background: #f1f5f9; color: var(--primary);"
+                    <button class="btn btn-admin-only" style="background: #f1f5f9; color: var(--primary);"
                         onclick="requireAuth(openResidentModal)">✏️ Details</button>
                 </div>
 
@@ -1067,7 +1113,7 @@
                 <div style="display: flex; gap: 10px;">
                     <select id="expMonth" class="modern-select" onchange="renderExpenses()"></select>
                     <select id="expYear" class="modern-select" onchange="renderExpenses()"></select>
-                    <button class="btn btn-success" onclick="requireAuth(openAddExpenseModal)">+ Add</button>
+                    <button class="btn btn-success btn-admin-only" onclick="requireAuth(openAddExpenseModal)">+ Add</button>
                 </div>
             </div>
             <div class="table-wrapper">
@@ -1093,7 +1139,7 @@
                     style="background: white; padding: 20px; border-radius: 15px; box-shadow: var(--card-shadow);">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
                         <h3 style="margin:0;" data-i18n="title_announcements">Announcements</h3>
-                        <button class="btn btn-primary" onclick="requireAuth(openAddAnnounceModal)">+ New</button>
+                        <button class="btn btn-primary btn-admin-only" onclick="requireAuth(openAddAnnounceModal)">+ New</button>
                     </div>
                     <div id="announcementsList"
                         style="display: flex; flex-direction: column; gap: 12px; max-height: 500px; overflow-y: auto;">
@@ -1104,10 +1150,14 @@
                     style="background: white; padding: 20px; border-radius: 15px; box-shadow: var(--card-shadow);">
                     <h3 style="margin-bottom: 15px;" data-i18n="title_chat">Resident Chat</h3>
                     <div class="chat-box" id="chatContainer"></div>
-                    <div style="display: flex; gap: 8px;">
-                        <input type="text" id="chatPseudo" placeholder="Name" style="width: 80px;">
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <input type="text" id="chatPseudo" placeholder="Name" style="width: 100px;" value="Resident">
                         <input type="text" id="chatInput" placeholder="Write message..." style="flex:1;">
                         <button class="btn btn-primary" onclick="sendChat()">🚀</button>
+                    </div>
+                    <div style="margin-top: 10px; display: flex; align-items: center; gap: 8px; font-size: 13px;">
+                        <input type="checkbox" id="chatIsPrivate" style="width: 18px; height: 18px; cursor: pointer;">
+                        <label for="chatIsPrivate" style="color: var(--danger); font-weight: bold; cursor: pointer;">🔒 رسالة خاصة للمسؤول (Private to Admin)</label>
                     </div>
                 </div>
             </div>
@@ -1148,9 +1198,10 @@
         const db = firebase.firestore();
 
         // APP STATE
-        let data = { buildings: [], apartments: [], payments: {}, expenses: [], announcements: [], chat: [], password: '0000' };
+        let data = { buildings: [], apartments: [], payments: {}, expenses: [], announcements: [], chat: [] };
+        let userAccount = null;
         let currentLang = localStorage.getItem('syndicLang') || 'ar';
-        let isAuthenticated = false;
+        let isAuthenticated = false; // Means user is logged in AND is admin
         let isLoaded = false;
         let activeBldId = null;
         let activeAptId = null;
@@ -1208,77 +1259,62 @@
         // UI HELPERS
         function t(key) { return i18n[currentLang][key] || key; }
         function closeModal() { document.getElementById('universalModal').style.display = 'none'; }
+        
         function requireAuth(callback) {
-            if (isAuthenticated) return callback();
-            let modal = document.getElementById('modalBody');
-            modal.innerHTML = `
-                <h3 style="margin-top:0;">🔒 Admin Access</h3>
-                <input type="password" id="authPwd" placeholder="Enter password (0000)" style="margin: 15px 0;">
-                <button class="btn btn-primary" style="width:100%" onclick="verifyAuth(${callback.name})">Confirm</button>
-            `;
-            window.verifyAuth = (cbName) => {
-                let p = document.getElementById('authPwd').value;
-                if (p === data.password) {
-                    isAuthenticated = true;
-                    document.getElementById('btn-lock').classList.add('unlocked');
-                    let btnPwd = document.getElementById('btn-change-pwd');
-                    if (btnPwd) btnPwd.style.display = 'inline-block';
-                    closeModal();
-                    callback();
-                } else { alert("Wrong password!"); }
-            }
-            document.getElementById('universalModal').style.display = 'flex';
+            if (userAccount && userAccount.role === 'admin') return callback();
+            alert("🔒 هذه العملية متاحة للمسؤول (Admin) فقط.");
         }
-        function toggleAuth() {
-            if (isAuthenticated) {
-                isAuthenticated = false;
-                document.getElementById('btn-lock').classList.remove('unlocked');
-                let btnPwd = document.getElementById('btn-change-pwd');
-                if (btnPwd) btnPwd.style.display = 'none';
-            } else {
-                requireAuth(() => { });
+        
+        function isAdmin() {
+            return userAccount && userAccount.role === 'admin';
+        }
+        async function handleLogin() {
+            const email = document.getElementById('loginEmail').value;
+            const pwd = document.getElementById('loginPwd').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+            const errEl = document.getElementById('loginError');
+            
+            if (!email || !pwd) {
+                errEl.innerText = "يرجى ملء جميع الحقول";
+                errEl.style.display = 'block';
+                return;
+            }
+
+            try {
+                await firebase.auth().signInWithEmailAndPassword(email, pwd);
+                // Remember Me Logic
+                if (rememberMe) {
+                    localStorage.setItem('syndicRememberEmail', email);
+                } else {
+                    localStorage.removeItem('syndicRememberEmail');
+                }
+            } catch (err) {
+                errEl.innerText = "خطأ في الدخول: " + err.message;
+                errEl.style.display = 'block';
             }
         }
 
-        window.openChangePwdModal = () => {
-            let modal = document.getElementById('modalBody');
-            modal.innerHTML = `
-                <h3 style="margin-top:0;" data-i18n="change_pwd">${t('change_pwd')}</h3>
-                <div class="input-group">
-                    <label data-i18n="old_pwd">${t('old_pwd')}</label>
-                    <input type="password" id="chOldPwd">
-                </div>
-                <div class="input-group">
-                    <label data-i18n="new_pwd">${t('new_pwd')}</label>
-                    <input type="password" id="chNewPwd">
-                </div>
-                <div class="input-group">
-                    <label data-i18n="confirm_pwd">${t('confirm_pwd')}</label>
-                    <input type="password" id="chConfPwd">
-                </div>
-                <button class="btn btn-primary" style="width:100%" onclick="saveNewPassword()" data-i18n="btn_save">${t('btn_save') || 'Save'}</button>
-            `;
-            window.saveNewPassword = () => {
-                let oldP = document.getElementById('chOldPwd').value;
-                let newP = document.getElementById('chNewPwd').value;
-                let confP = document.getElementById('chConfPwd').value;
-
-                if (oldP !== data.password) {
-                    alert(t('old_pwd_wrong'));
-                    return;
+        async function handleForgotPassword() {
+            const email = document.getElementById('loginEmail').value;
+            if (!email) {
+                alert("يرجى إدخال البريد الإلكتروني أولاً لإرسال رابط استعادة كلمة السر.");
+                return;
+            }
+            if (confirm(`هل تريد إرسال رابط استعادة كلمة السر إلى ${email}؟`)) {
+                try {
+                    await firebase.auth().sendPasswordResetEmail(email);
+                    alert("تم إرسال رابط استعادة كلمة السر. يرجى التحقق من بريدك الإلكتروني.");
+                } catch (err) {
+                    alert("خطأ: " + err.message);
                 }
-                if (newP !== confP || newP.length === 0) {
-                    alert(t('pwd_mismatch'));
-                    return;
-                }
+            }
+        }
 
-                data.password = newP;
-                saveData();
-                alert(t('pwd_success'));
-                closeModal();
-            };
-            document.getElementById('universalModal').style.display = 'flex';
-        };
+        function handleLogout() {
+            firebase.auth().signOut().then(() => {
+                location.reload();
+            });
+        }
 
         // NAVIGATION
         function changePage(page) {
@@ -1329,46 +1365,124 @@
             if (toast) toast.style.display = 'none';
         }
 
-        // DATABASE SYNC
-        db.collection("syndic_data").doc("zaineb4").onSnapshot(doc => {
-            const statusIndicator = document.getElementById('sync-status');
-            if (statusIndicator) {
-                statusIndicator.style.background = '#10b981'; // Green
-                statusIndicator.title = "Connected to Firebase";
-            }
-
-            if (doc.exists) {
-                const oldChatCount = lastChatCount;
-                data = Object.assign(data, doc.data());
-
-                // Check for new chat messages
-                if (isLoaded && data.chat && data.chat.length > oldChatCount && oldChatCount > 0) {
-                    const isOnCommPage = document.getElementById('communication').classList.contains('active');
-                    if (!isOnCommPage) {
-                        const newMsg = data.chat[data.chat.length - 1];
-                        showChatNotification(newMsg.name, newMsg.msg);
+        // NEW: Auth Listener
+        firebase.auth().onAuthStateChanged(user => {
+            console.log("Auth state changed, user:", user ? user.email : "none");
+            if (user) {
+                // Fetch user doc - FIXED: .doc() instead of .document()
+                db.collection("users").doc(user.uid).onSnapshot(doc => {
+                    console.log("User doc snapshot received, exists:", doc.exists);
+                    if (doc.exists) {
+                        userAccount = doc.data();
+                        console.log("User role:", userAccount.role, "Approved:", userAccount.approved);
+                        updateUIShowHide();
+                        if (userAccount.approved) {
+                            startDataSync();
+                        }
+                    } else {
+                        console.log("User doc missing, creating one...");
+                        // Create initial user doc if missing
+                        const newAcc = { uid: user.uid, email: user.email, role: 'resident', approved: false };
+                        db.collection("users").doc(user.uid).set(newAcc);
                     }
-                }
-                lastChatCount = data.chat ? data.chat.length : 0;
-
-                if (!isLoaded) { isLoaded = true; document.getElementById('loadingScreen').style.display = 'none'; init(); lastChatCount = data.chat ? data.chat.length : 0; }
-                refreshCurrentView();
-            } else { db.collection("syndic_data").doc("zaineb4").set(data); }
-        }, err => {
-            console.error("Snapshot error:", err);
-            const statusIndicator = document.getElementById('sync-status');
-            if (statusIndicator) {
-                statusIndicator.style.background = '#ef4444'; // Red
-                statusIndicator.title = "Error: " + err.message;
-                // Also show a temporary alert for visibility
-                if (!isLoaded) {
-                    document.getElementById('loadingText').innerText = "خطأ في الاتصال: " + err.message;
-                    document.getElementById('loadingText').style.color = "red";
+                }, err => {
+                    console.error("User doc listener error:", err);
+                });
+            } else {
+                userAccount = null;
+                updateUIShowHide();
+                
+                // NEW: Populate remembered email
+                const savedEmail = localStorage.getItem('syndicRememberEmail');
+                if (savedEmail) {
+                    const emailInput = document.getElementById('loginEmail');
+                    if (emailInput && !emailInput.value) {
+                        emailInput.value = savedEmail;
+                        document.getElementById('rememberMe').checked = true;
+                    }
                 }
             }
         });
 
-        function saveData() { db.collection("syndic_data").doc("zaineb4").set(data).catch(e => console.error(e)); }
+        function updateUIShowHide() {
+            const login = document.getElementById('loginScreen');
+            const pending = document.getElementById('pendingScreen');
+            const main = document.getElementById('mainContainer');
+            const navbar = document.getElementById('appNavbar');
+            const loading = document.getElementById('loadingScreen');
+
+            loading.style.display = 'none';
+
+            if (!userAccount) {
+                login.style.display = 'flex';
+                pending.style.display = 'none';
+                main.style.display = 'none';
+                navbar.style.display = 'none';
+            } else if (!userAccount.approved) {
+                login.style.display = 'none';
+                pending.style.display = 'flex';
+                main.style.display = 'none';
+                navbar.style.display = 'none';
+            } else {
+                login.style.display = 'none';
+                pending.style.display = 'none';
+                main.style.display = 'block';
+                navbar.style.display = 'flex';
+                
+                // NEW: Toggle visibility of admin buttons in headers
+                document.querySelectorAll('.btn-admin-only').forEach(btn => {
+                    btn.style.display = isAdmin() ? 'inline-block' : 'none';
+                });
+            }
+        }
+
+        let mainSyncListener = null;
+
+        function startDataSync() {
+            if (mainSyncListener) return;
+
+            mainSyncListener = db.collection("syndic_data").doc("zaineb4").onSnapshot(doc => {
+                const statusIndicator = document.getElementById('sync-status');
+                if (statusIndicator) {
+                    statusIndicator.style.background = '#10b981';
+                    statusIndicator.title = "Connected to Firebase";
+                }
+
+                if (doc.exists) {
+                    const oldChatCount = lastChatCount;
+                    data = Object.assign(data, doc.data());
+
+                    if (isLoaded && data.chat && data.chat.length > oldChatCount && oldChatCount > 0) {
+                        const isOnCommPage = document.getElementById('communication').classList.contains('active');
+                        if (!isOnCommPage) {
+                            const newMsg = data.chat[data.chat.length - 1];
+                            showChatNotification(newMsg.name, newMsg.msg);
+                        }
+                    }
+                    lastChatCount = data.chat ? data.chat.length : 0;
+
+                    if (!isLoaded) { 
+                        isLoaded = true; 
+                        init(); 
+                    }
+                    refreshCurrentView();
+                } else { 
+                    if (userAccount && userAccount.role === 'admin') {
+                        db.collection("syndic_data").doc("zaineb4").set(data); 
+                    }
+                }
+            }, err => {
+                console.error("Snapshot error:", err);
+            });
+        }
+
+        function saveData() { 
+            if (userAccount && userAccount.role === 'admin') {
+                db.collection("syndic_data").doc("zaineb4").set(data).catch(e => console.error(e)); 
+            } else {
+                console.warn("Unauthorized write attempt");
+            }
+        }
 
         function init() {
             const now = new Date();
@@ -1554,12 +1668,14 @@
         function renderBuildings() {
             const query = document.getElementById('bldSearch').value.toLowerCase();
             const grid = document.getElementById('buildingsGrid');
+            const adminMode = isAdmin();
             grid.innerHTML = data.buildings.filter(b => b.name.toLowerCase().includes(query)).map(b => `
                 <div class="item-card" onclick="openBuilding(${b.id})">
+                    ${adminMode ? `
                     <div class="card-actions">
                         <button class="card-action-btn" onclick="event.stopPropagation(); requireAuth(() => renameItem(${b.id}, 'bld'))">✏️</button>
                         <button class="card-action-btn" onclick="event.stopPropagation(); requireAuth(() => deleteItem(${b.id}, 'bld'))">🗑️</button>
-                    </div>
+                    </div>` : ''}
                     <div class="icon">🏢</div>
                     <div class="name">${b.name}</div>
                 </div>
@@ -1584,12 +1700,14 @@
         function renderApartments() {
             const query = document.getElementById('aptSearch').value.toLowerCase();
             const grid = document.getElementById('apartmentsGrid');
+            const adminMode = isAdmin();
             grid.innerHTML = data.apartments.filter(a => a.buildingId === activeBldId && a.name.toLowerCase().includes(query)).map(a => `
                 <div class="item-card" onclick="openAptDetails(${a.id})">
+                    ${adminMode ? `
                     <div class="card-actions">
                         <button class="card-action-btn" onclick="event.stopPropagation(); requireAuth(() => renameItem(${a.id}, 'apt'))">✏️</button>
                         <button class="card-action-btn" onclick="event.stopPropagation(); requireAuth(() => deleteItem(${a.id}, 'apt'))">🗑️</button>
-                    </div>
+                    </div>` : ''}
                     <div class="icon">🏠</div>
                     <div class="name">${a.name}</div>
                 </div>
@@ -1620,7 +1738,7 @@
                 const month = i + 1;
                 const paid = data.payments[`${activeAptId}_${year}_${month}`] || 0;
                 return `
-                    <div class="item-card ${paid ? 'paid-bg' : ''}" style="height: auto; padding: 15px;" onclick="requireAuth(() => openPayModal(${activeAptId}, ${year}, ${month}, ${paid}))">
+                    <div class="item-card ${paid ? 'paid-bg' : ''}" style="height: auto; padding: 15px;" onclick="${isAdmin() ? `requireAuth(() => openPayModal(${activeAptId}, ${year}, ${month}, ${paid}))` : ''}">
                         <div style="font-weight:700;">${m}</div>
                         <div style="color: ${paid ? 'var(--success)' : 'var(--danger)'}; font-size: 13px;">${paid ? paid + ' ' + t('curr') : t('unpaid')}</div>
                     </div>
@@ -1822,6 +1940,7 @@
             const m = document.getElementById('expMonth').value;
             const y = document.getElementById('expYear').value;
             const body = document.getElementById('expensesTableBody');
+            const adminMode = isAdmin();
 
             let filtered = data.expenses.filter(e => {
                 let d = new Date(e.date);
@@ -1949,12 +2068,12 @@
                 });
         };
 
-        // COMMUNICATION & CHAT
         function renderAnnouncements() {
             const list = document.getElementById('announcementsList');
+            const adminMode = isAdmin();
             list.innerHTML = data.announcements.map(ann => `
                 <div class="announce-item" style="background: #f8fafc; padding: 15px; border-radius: 10px; border: 1px solid #e2e8f0; position:relative;" onclick="openAnnounceDetail(${ann.id})">
-                    <button onclick="event.stopPropagation(); requireAuth(() => deleteAnnouncement(${ann.id}))" style="position:absolute; top:5px; left:5px; border:none; background:none; cursor:pointer; opacity:0.5;">🗑️</button>
+                    ${adminMode ? `<button onclick="event.stopPropagation(); requireAuth(() => deleteAnnouncement(${ann.id}))" style="position:absolute; top:5px; left:5px; border:none; background:none; cursor:pointer; opacity:0.5;">🗑️</button>` : ''}
                     <h4 style="margin:0; color: var(--primary);">${ann.title}</h4>
                     <p style="margin:5px 0 10px 0; font-size:14px; color: #4b5563; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">${ann.msg}</p>
                     <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -1994,7 +2113,7 @@
                                         <span class="comment-date">${c.date}</span>
                                     </div>
                                     <div class="comment-text">${c.text}</div>
-                                    <button class="comment-delete-btn" style="${isAuthenticated ? 'display:block' : ''}" onclick="deleteComment(${annId}, ${c.id})">🗑️ Delete</button>
+                                    <button class="comment-delete-btn" style="${isAdmin() ? 'display:block' : ''}" onclick="deleteComment(${annId}, ${c.id})">🗑️ Delete</button>
                                 </div>
                             `).join('') || `<p style="color:#94a3b8; font-size:14px; text-align:center;">${t('no_comments')}</p>`}
                         </div>
@@ -2146,27 +2265,52 @@
         function sendChat() {
             const p = document.getElementById('chatPseudo').value.trim() || 'Resident';
             const m = document.getElementById('chatInput').value.trim();
+            const isPrivate = document.getElementById('chatIsPrivate').checked;
+            
             if (!m) return;
-            data.chat.push({ id: Date.now(), name: p, msg: m, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) });
-            if (data.chat.length > 50) data.chat.shift();
+            
+            const message = { 
+                id: Date.now(), 
+                name: p, 
+                msg: m, 
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                isPrivate: isPrivate,
+                senderUid: userAccount ? userAccount.uid : ''
+            };
+            
+            data.chat.push(message);
+            if (data.chat.length > 100) data.chat.shift();
+            
             saveData();
             document.getElementById('chatInput').value = '';
+            document.getElementById('chatIsPrivate').checked = false;
             renderChat();
         }
 
         function renderChat() {
             const c = document.getElementById('chatContainer');
-            c.innerHTML = data.chat.map(m => `
-                <div class="chat-msg" style="margin-bottom: 20px; position: relative;">
+            const currentUserUid = userAccount ? userAccount.uid : '';
+            const isAdmin = userAccount ? userAccount.role === 'admin' : false;
+
+            const filteredChat = data.chat.filter(m => {
+                if (!m.isPrivate) return true;
+                return m.senderUid === currentUserUid || isAdmin;
+            });
+
+            c.innerHTML = filteredChat.map(m => `
+                <div class="chat-msg" style="margin-bottom: 20px; position: relative; ${m.isPrivate ? 'border: 2px solid #ef4444; background: #fff5f5;' : ''}">
                     <button class="delete-btn" onclick="requireAuth(() => deleteChatMessage(${m.id}))">🗑️</button>
-                    <span class="sender">${m.name}</span>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span class="sender">${m.name}</span>
+                        ${m.isPrivate ? '<span style="color: #ef4444; font-size: 11px; font-weight: 800; background: white; padding: 2px 6px; border-radius: 4px; display: flex; align-items: center; gap: 2px;">🔒 Private</span>' : ''}
+                    </div>
                     <p class="text">${m.msg}</p>
                     <span class="time">${m.time}</span>
-
+                    
                     <div class="chat-actions" style="display: flex; gap: 15px; margin-top: 5px; font-size: 13px;">
                         <span style="cursor: pointer; color: var(--primary); font-weight: bold; display: flex; align-items: center; gap: 4px;" onclick="likeChatMessage(${m.id})">👍 ${m.likes || 0}</span>
                         <span style="cursor: pointer; color: #64748b; display: flex; align-items: center; gap: 4px;" onclick="dislikeChatMessage(${m.id})">👎 ${m.dislikes || 0}</span>
-                        <span style="cursor: pointer; color: var(--secondary); font-weight: bold; display: flex; align-items: center; gap: 4px;" onclick="openChatReplyModal(${m.id})">💬 ${t('btn_reply')}</span>
+                        ${!m.isPrivate ? `<span style="cursor: pointer; color: var(--secondary); font-weight: bold; display: flex; align-items: center; gap: 4px;" onclick="openChatReplyModal(${m.id})">💬 ${t('btn_reply')}</span>` : ''}
                     </div>
 
                     ${(m.replies || []).length > 0 ? `
