@@ -71,7 +71,7 @@
             border-radius: 50%;
             background: white;
             padding: 4px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .navbar-brand {
@@ -399,6 +399,36 @@
             border: 1px solid #fecaca;
         }
 
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .payment-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 24px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 800;
+            margin: 0 auto;
+        }
+        .payment-badge.paid {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .payment-badge.unpaid {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
         /* Item Cards (Buildings/Apts) */
         .grid-cards {
             display: grid;
@@ -501,6 +531,26 @@
         .btn-warning {
             background-color: var(--warning);
             color: white;
+        }
+
+        .payment-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 24px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 800;
+            margin: 0 auto;
+        }
+        .payment-badge.paid {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .payment-badge.unpaid {
+            background-color: #fee2e2;
+            color: #991b1b;
         }
 
         .btn:hover {
@@ -894,7 +944,9 @@
 
     <nav class="navbar" id="appNavbar" style="display: none;">
         <div class="navbar-brand">
-            <img src="https://firebasestorage.googleapis.com/v0/b/syndic-54327.firebasestorage.app/o/app_icon.png?alt=media" class="navbar-logo" alt="Logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3062/3062334.png'">
+            <img src="https://firebasestorage.googleapis.com/v0/b/syndic-54327.firebasestorage.app/o/app_icon.png?alt=media"
+                class="navbar-logo" alt="Logo"
+                onerror="this.src='https://cdn-icons-png.flaticon.com/512/3062/3062334.png'">
             <h2 data-i18n="app_title">🏢 ZAINEB 4 السانديك</h2>
             <div class="auth-controls">
                 <select id="langSelect" class="lang-select" onchange="changeLanguage()">
@@ -916,43 +968,77 @@
                 <button onclick="changePage('communication')" data-i18n="nav_comm">الإعلانات والدردشة</button>
                 <span id="chatBadge" class="chat-badge">!</span>
             </span>
+            <button onclick="changePage('full-payments')" data-i18n="full_table_title">📋 الجدول السنوي</button>
+            <button id="navUsersLink" onclick="changePage('users')" data-i18n="nav_users" style="display: none;">المستخدمين</button>
         </div>
     </nav>
 
     <!-- NEW: Login Screen -->
-    <div id="loginScreen" class="page" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 80vh;">
-        <div style="background: white; padding: 40px; border-radius: 20px; box-shadow: var(--card-shadow); width: 100%; max-width: 400px; text-align: center;">
-            <img src="https://firebasestorage.googleapis.com/v0/b/syndic-54327.firebasestorage.app/o/app_icon.png?alt=media" style="width: 100px; margin-bottom: 20px;" alt="Logo">
-            <h2 style="color: var(--primary); margin-bottom: 30px;">ZAINEB 4</h2>
-            <div class="input-group">
-                <label>البريد الإلكتروني / Email</label>
-                <input type="text" id="loginEmail" placeholder="example@mail.com">
-            </div>
-            <div class="input-group">
-                <label>كلمة المرور / Password</label>
-                <input type="password" id="loginPwd" placeholder="******">
-            </div>
-            
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-size: 14px;">
-                <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
-                    <input type="checkbox" id="rememberMe" style="width: 16px; height: 16px;"> 
-                    <span>تذكرني (Remember Me)</span>
-                </label>
-                <a href="#" onclick="handleForgotPassword()" style="color: var(--secondary); text-decoration: none; font-weight: bold;">نسيت كلمة السر؟</a>
-            </div>
+    <div id="loginScreen" class="page"
+        style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 80vh;">
+        <div
+            style="background: white; padding: 40px; border-radius: 20px; box-shadow: var(--card-shadow); width: 100%; max-width: 400px; text-align: center;">
+            <img src="https://firebasestorage.googleapis.com/v0/b/syndic-54327.firebasestorage.app/o/app_icon.png?alt=media"
+                style="width: 100px; margin-bottom: 20px;" alt="Logo">
+            <h2 id="authTitle" style="color: var(--primary); margin-bottom: 30px;" data-i18n="title_login">ZAINEB 4</h2>
 
-            <button class="btn btn-primary" style="width: 100%;" onclick="handleLogin()">تسجيل الدخول</button>
-            <p id="loginError" style="color: var(--danger); margin-top: 15px; font-size: 14px; display: none;"></p>
+            <div id="loginFields">
+                <div class="input-group">
+                    <label data-i18n="lbl_email">البريد الإلكتروني / Email</label>
+                    <input type="text" id="loginEmail" placeholder="example@mail.com">
+                </div>
+                <div class="input-group">
+                    <label data-i18n="lbl_password">كلمة المرور / Password</label>
+                    <input type="password" id="loginPwd" placeholder="******">
+                </div>
+
+                <!-- Registration Specific Fields -->
+                <div id="regFields" style="display: none;">
+                    <div class="input-group">
+                        <label data-i18n="lbl_name">الاسم الكامل / Name</label>
+                        <input type="text" id="regName" placeholder="Full Name">
+                    </div>
+                    <div class="input-group">
+                        <label data-i18n="lbl_building">العمارة / Building</label>
+                        <input type="text" id="regBuilding" placeholder="Building A">
+                    </div>
+                    <div class="input-group">
+                        <label data-i18n="lbl_apartment">رقم الشقة / Apartment</label>
+                        <input type="text" id="regApartment" placeholder="Apt 1">
+                    </div>
+                </div>
+
+                <div id="loginOptions"
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-size: 14px;">
+                    <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                        <input type="checkbox" id="rememberMe" style="width: 16px; height: 16px;">
+                        <span data-i18n="lbl_remember_me">تذكرني (Remember Me)</span>
+                    </label>
+                    <a href="#" onclick="handleForgotPassword()"
+                        style="color: var(--secondary); text-decoration: none; font-weight: bold;" data-i18n="btn_forgot_pwd">نسيت كلمة السر؟</a>
+                </div>
+
+                <button id="authBtn" class="btn btn-primary" style="width: 100%;" onclick="handleAuth()" data-i18n="btn_login">تسجيل الدخول</button>
+                <div style="margin-top: 20px;">
+                    <a href="#" id="authToggle" onclick="toggleAuthMode()"
+                        style="color: var(--primary); text-decoration: none; font-weight: bold;" data-i18n="btn_register_mode">ليس لديك حساب؟ إنشاء حساب</a>
+                </div>
+                <p id="loginError" style="color: var(--danger); margin-top: 15px; font-size: 14px; display: none;"></p>
+            </div>
         </div>
     </div>
 
     <!-- NEW: Pending Approval Screen -->
-    <div id="pendingScreen" class="page" style="display: none; flex-direction: column; align-items: center; justify-content: center; height: 80vh; text-align: center; padding: 20px;">
-        <div style="background: white; padding: 40px; border-radius: 20px; box-shadow: var(--card-shadow); max-width: 500px;">
+    <div id="pendingScreen" class="page"
+        style="display: none; flex-direction: column; align-items: center; justify-content: center; height: 80vh; text-align: center; padding: 20px;">
+        <div
+            style="background: white; padding: 40px; border-radius: 20px; box-shadow: var(--card-shadow); max-width: 500px;">
             <div style="font-size: 80px; margin-bottom: 20px;">⏳</div>
             <h2 style="color: var(--primary);">الحساب قيد المراجعة</h2>
-            <p style="color: #6b7280; font-size: 18px; line-height: 1.6;">شكراً لتسجيلك. حسابك في حالة انتظار موافقة المسؤول (السانديك). يرجى العودة لاحقاً أو التواصل مع الإدارة.</p>
-            <button class="btn btn-danger" style="margin-top: 30px; width: 100%;" onclick="handleLogout()">تسجيل الخروج</button>
+            <p style="color: #6b7280; font-size: 18px; line-height: 1.6;">شكراً لتسجيلك. حسابك في حالة انتظار موافقة
+                المسؤول (السانديك). يرجى العودة لاحقاً أو التواصل مع الإدارة.</p>
+            <button class="btn btn-danger" style="margin-top: 30px; width: 100%;" onclick="handleLogout()">تسجيل
+                الخروج</button>
         </div>
     </div>
 
@@ -1038,7 +1124,7 @@
                         style="background:#e5e7eb; color: #4b5563;">❌</button>
                 </div>
                 <div class="table-wrapper">
-                    <table id="mainFullTable">
+                    <table id="mainFullTable" style="min-width: 900px; margin-top: 0;">
                         <thead>
                             <tr id="fullTableHead"></tr>
                         </thead>
@@ -1113,7 +1199,8 @@
                 <div style="display: flex; gap: 10px;">
                     <select id="expMonth" class="modern-select" onchange="renderExpenses()"></select>
                     <select id="expYear" class="modern-select" onchange="renderExpenses()"></select>
-                    <button class="btn btn-success btn-admin-only" onclick="requireAuth(openAddExpenseModal)">+ Add</button>
+                    <button class="btn btn-success btn-admin-only" onclick="requireAuth(openAddExpenseModal)">+
+                        Add</button>
                 </div>
             </div>
             <div class="table-wrapper">
@@ -1139,7 +1226,8 @@
                     style="background: white; padding: 20px; border-radius: 15px; box-shadow: var(--card-shadow);">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
                         <h3 style="margin:0;" data-i18n="title_announcements">Announcements</h3>
-                        <button class="btn btn-primary btn-admin-only" onclick="requireAuth(openAddAnnounceModal)">+ New</button>
+                        <button class="btn btn-primary btn-admin-only" onclick="requireAuth(openAddAnnounceModal)">+
+                            New</button>
                     </div>
                     <div id="announcementsList"
                         style="display: flex; flex-direction: column; gap: 12px; max-height: 500px; overflow-y: auto;">
@@ -1151,18 +1239,26 @@
                     <h3 style="margin-bottom: 15px;" data-i18n="title_chat">Resident Chat</h3>
                     <div class="chat-box" id="chatContainer"></div>
                     <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                        <input type="text" id="chatPseudo" placeholder="Name" style="width: 100px;" value="Resident">
                         <input type="text" id="chatInput" placeholder="Write message..." style="flex:1;">
                         <button class="btn btn-primary" onclick="sendChat()">🚀</button>
                     </div>
                     <div style="margin-top: 10px; display: flex; align-items: center; gap: 8px; font-size: 13px;">
                         <input type="checkbox" id="chatIsPrivate" style="width: 18px; height: 18px; cursor: pointer;">
-                        <label for="chatIsPrivate" style="color: var(--danger); font-weight: bold; cursor: pointer;">🔒 رسالة خاصة للمسؤول (Private to Admin)</label>
+                        <label for="chatIsPrivate" style="color: var(--danger); font-weight: bold; cursor: pointer;">🔒
+                            رسالة خاصة للمسؤول (Private to Admin)</label>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- PAGE 7: USERS MANAGEMENT -->
+        <div id="users" class="page">
+            <div class="header-action">
+                <h3 data-i18n="nav_users">المستخدمين</h3>
+                <button class="btn btn-secondary" onclick="changePage('dashboard')">← Dashboard</button>
+            </div>
+            <div id="usersList"></div>
+        </div>
     </div>
 
     <!-- Toast Notification -->
@@ -1199,12 +1295,14 @@
 
         // APP STATE
         let data = { buildings: [], apartments: [], payments: {}, expenses: [], announcements: [], chat: [] };
+        let allUsers = [];
         let userAccount = null;
         let currentLang = localStorage.getItem('syndicLang') || 'ar';
         let isAuthenticated = false; // Means user is logged in AND is admin
         let isLoaded = false;
         let activeBldId = null;
         let activeAptId = null;
+        let isRegisterMode = false;
         let charInstance = null;
         let lastChatCount = 0;
         let chatNotifSound = null;
@@ -1217,22 +1315,30 @@
 
         const i18n = {
             ar: {
-                app_title: "🏢 ZAINEB 4", nav_dashboard: "الرئيسية", nav_apartments: "العمارات", nav_expenses: "المصاريف", nav_comm: "التواصل",
+                app_title: "🏢 ZAINEB 4", nav_dashboard: "الرئيسية", nav_apartments: "العمارات", nav_expenses: "المصاريف", nav_comm: "التواصل", nav_users: "المستخدمين",
                 stat_incomes_month: "مداخيل (الشهر)", stat_expenses_month: "مصاريف (الشهر)", stat_balance: "الصندوق الصافي",
                 title_stats_filter: "📅 ملخص المالية :", dash_table_title: "📋 آخر 3 شقق أدوا الواجب", btn_view_all: "📄 الجميع",
-                unpaid: "غير مؤدى", paid: "مؤدى", months: ["يناير", "فبراير", "مارس", "أبريل", "ماي", "يونيو", "يوليوز", "غشت", "شتنبر", "أكتوبر", "نونبر", "دجنبر"],
+                opt_all_months: "جميع الشهور", txt_paid_month: "مؤدى في", no_apts: "لا توجد شقق",
+                th_apt: "الشقة / الشهر", th_last_pay: "آخر أداء", th_amt: "المبلغ", no_recent: "لا يوجد عمليات أخيرة",
+                unpaid: "غير مؤدى", paid: "مؤدى", months: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
                 th_date: "التاريخ", th_desc: "البيان", th_amount: "المبلغ", th_receipt: "التوصيل", curr: "DHM", year_word: "سنة",
                 title_announcements: "📢 الإعلانات", title_chat: "💬 الدردشة", full_table_title: "الجدول السنوي للأداء", add_expense: "إضافة مصروف",
                 add_building: "+ إضافة عمارة", add_apartment: "+ إضافة شقة",
                 change_pwd: "تغيير كلمة المرور", old_pwd: "كلمة المرور الحالية", new_pwd: "كلمة المرور الجديدة", confirm_pwd: "تأكيد كلمة المرور", pwd_success: "تم تغيير كلمة المرور بنجاح!", pwd_mismatch: "كلمات المرور غير متطابقة أو غير صالحة!", old_pwd_wrong: "كلمة المرور القديمة خاطئة!", btn_save: "حفظ",
                 title_comments: "💬 التعليقات", no_comments: "لا توجد تعليقات بعد.", ph_comment: "اكتب تعليقك هنا...", btn_details: "عرض التفاصيل ←",
                 btn_like: "إعجاب", btn_dislike: "لم يعجبني", btn_reply: "رد", title_add_reply: "إضافة رد",
-                title_new_ann: "إعلان جديد", lbl_ann_title: "العنوان", lbl_ann_msg: "نص الإعلان", lbl_ann_photo: "📸 إرفاق صورة (اختياري)", btn_publish: "نشر الإعلان", publishing: "جاري النشر...", title_ann_photo: "صورة الإعلان", btn_download: "تحميل الصورة ⬇️", err_load_photo: "❌ تعذر تحميل الصورة"
+                title_new_ann: "إعلان جديد", lbl_ann_title: "العنوان", lbl_ann_msg: "نص الإعلان", lbl_ann_photo: "📸 إرفاق صورة (اختياري)", btn_publish: "نشر الإعلان", publishing: "جاري النشر...", title_ann_photo: "صورة الإعلان", btn_download: "تحميل الصورة ⬇️", err_load_photo: "❌ تعذر تحميل الصورة",
+                lbl_email: "البريد الإلكتروني", lbl_password: "كلمة المرور", lbl_name: "الاسم الكامل", lbl_building: "العمارة", lbl_apartment: "رقم الشقة",
+                lbl_remember_me: "تذكرني", btn_forgot_pwd: "نسيت كلمة السر؟", btn_login: "تسجيل الدخول", btn_register: "إنشاء حساب",
+                btn_login_mode: "ليس لديك حساب؟ إنشاء حساب", btn_register_mode: "لديك حساب؟ تسجيل الدخول", title_register: "إنشاء حساب جديد", title_login: "تسجيل الدخول",
+                btn_approve: "موافقة", btn_make_admin: "إعطاء صلاحية مسؤل", btn_delete_user: "حذف"
             },
             fr: {
-                app_title: "🏢 ZAINEB 4", nav_dashboard: "Tableau de bord", nav_apartments: "Immeubles", nav_expenses: "Dépenses", nav_comm: "Comm.",
+                app_title: "🏢 ZAINEB 4", nav_dashboard: "Tableau de bord", nav_apartments: "Immeubles", nav_expenses: "Dépenses", nav_comm: "Comm.", nav_users: "Utilisateurs",
                 stat_incomes_month: "Incomes (Mois)", stat_expenses_month: "Dépenses (Mois)", stat_balance: "Caisse Net",
                 title_stats_filter: "📅 Résumé financier :", dash_table_title: "📋 Activités récentes", btn_view_all: "📄 Tous",
+                opt_all_months: "Tous les mois", txt_paid_month: "Payé en", no_apts: "Aucun appartement",
+                th_apt: "Appartement", th_last_pay: "Dernier paiement", th_amt: "Montant", no_recent: "Aucune activité récente",
                 unpaid: "Impayé", paid: "Payé", months: ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"],
                 th_date: "Date", th_desc: "Libellé", th_amount: "Montant", th_receipt: "Reçu", curr: "MAD", year_word: "Année",
                 title_announcements: "📢 Annonces", title_chat: "💬 Chat", full_table_title: "Tableau de paiement annuel", add_expense: "Ajouter Dépense",
@@ -1240,40 +1346,65 @@
                 change_pwd: "Changer le mot de passe", old_pwd: "Ancien mot de passe", new_pwd: "Nouveau mot de passe", confirm_pwd: "Confirmer le mot de passe", pwd_success: "Mot de passe modifié!", pwd_mismatch: "Les mots de passe ne correspondent pas!", old_pwd_wrong: "Ancien mot de passe incorrect!", btn_save: "Enregistrer",
                 title_comments: "💬 Commentaires", no_comments: "Pas encore de commentaires.", ph_comment: "Écrivez votre commentaire...", btn_details: "Voir détails ←",
                 btn_like: "J'aime", btn_dislike: "Je n'aime pas", btn_reply: "Répondre", title_add_reply: "Ajouter une réponse",
-                title_new_ann: "Nouvel Annonce", lbl_ann_title: "Titre", lbl_ann_msg: "Message", lbl_ann_photo: "📸 Joindre une image (optionnel)", btn_publish: "Publier", publishing: "Publication...", title_ann_photo: "Image de l'annonce", btn_download: "Télécharger ⬇️", err_load_photo: "❌ Échec du chargement"
+                title_new_ann: "Nouvel Annonce", lbl_ann_title: "Titre", lbl_ann_msg: "Message", lbl_ann_photo: "📸 Joindre une image (optionnel)", btn_publish: "Publier", publishing: "Publication...", title_ann_photo: "Image de l'annonce", btn_download: "Télécharger ⬇️", err_load_photo: "❌ Échec du chargement",
+                lbl_email: "Email", lbl_password: "Mot de passe", lbl_name: "Nom complet", lbl_building: "Bâtiment", lbl_apartment: "Appartement",
+                lbl_remember_me: "Se souvenir de moi", btn_forgot_pwd: "Mot de passe oublié?", btn_login: "Connexion", btn_register: "S'inscrire",
+                btn_login_mode: "Déjà un compte? Se connecter", btn_register_mode: "Pas de compte? S'inscrire", title_register: "Créer un compte", title_login: "Connexion",
+                title_users: "Gestion des utilisateurs", btn_approve: "Approuver", btn_make_admin: "Rendre Admin", btn_delete_user: "Supprimer"
             },
             en: {
-                app_title: "🏢 Syndic Manager", nav_dashboard: "Dashboard", nav_apartments: "Buildings", nav_expenses: "Expenses", nav_comm: "Comm.",
+                app_title: "🏢 Syndic", nav_dashboard: "Dashboard", nav_apartments: "Buildings", nav_expenses: "Expenses", nav_comm: "Comm.", nav_users: "Users",
                 stat_incomes_month: "Incomes (Month)", stat_expenses_month: "Expenses (Month)", stat_balance: "Net Balance",
                 title_stats_filter: "📅 Financial Summary :", dash_table_title: "📋 Recently", btn_view_all: "📄 View all",
+                opt_all_months: "All Months", txt_paid_month: "Paid in", no_apts: "No apartments found",
+                th_apt: "Apartment", th_last_pay: "Last Pay", th_amt: "Amount", no_recent: "No recent payments",
                 unpaid: "Unpaid", paid: "Paid", months: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
                 th_date: "Date", th_desc: "Description", th_amount: "Amount", th_receipt: "Receipt", curr: "MAD", year_word: "Year",
                 title_announcements: "📢 Announcements", title_chat: "💬 Chat", full_table_title: "Yearly Payment Table", add_expense: "Add Expense",
                 add_building: "+ Building", add_apartment: "+ Apartment",
                 change_pwd: "Change Password", old_pwd: "Old Password", new_pwd: "New Password", confirm_pwd: "Confirm Password", pwd_success: "Password changed successfully!", pwd_mismatch: "Passwords do not match or invalid!", old_pwd_wrong: "Incorrect old password!", btn_save: "Save",
                 btn_like: "Like", btn_dislike: "Dislike", btn_reply: "Reply", title_add_reply: "Add Reply",
-                title_new_ann: "New Announcement", lbl_ann_title: "Title", lbl_ann_msg: "Message", lbl_ann_photo: "📸 Attach image (optional)", btn_publish: "Publish", publishing: "Publishing...", title_ann_photo: "Announcement Image", btn_download: "Download ⬇️", err_load_photo: "❌ Load failed"
+                title_new_ann: "New Announcement", lbl_ann_title: "Title", lbl_ann_msg: "Message", lbl_ann_photo: "📸 Attach image (optional)", btn_publish: "Publish", publishing: "Publishing...", title_ann_photo: "Announcement Image", btn_download: "Download ⬇️", err_load_photo: "❌ Load failed",
+                lbl_email: "Email", lbl_password: "Password", lbl_name: "Full Name", lbl_building: "Building", lbl_apartment: "Apartment",
+                lbl_remember_me: "Remember Me", btn_forgot_pwd: "Forgot Password?", btn_login: "Login", btn_register: "Register",
+                btn_login_mode: "Already have an account? Login", btn_register_mode: "Don't have an account? Register", title_register: "Create New Account", title_login: "Secure Login",
+                btn_approve: "Approve", btn_make_admin: "Make Admin", btn_delete_user: "Delete"
             }
         };
 
         // UI HELPERS
         function t(key) { return i18n[currentLang][key] || key; }
         function closeModal() { document.getElementById('universalModal').style.display = 'none'; }
-        
+
         function requireAuth(callback) {
             if (userAccount && userAccount.role === 'admin') return callback();
             alert("🔒 هذه العملية متاحة للمسؤول (Admin) فقط.");
         }
-        
+
         function isAdmin() {
             return userAccount && userAccount.role === 'admin';
         }
+        function toggleAuthMode() {
+            isRegisterMode = !isRegisterMode;
+            document.getElementById('regFields').style.display = isRegisterMode ? 'block' : 'none';
+            document.getElementById('loginOptions').style.display = isRegisterMode ? 'none' : 'flex';
+            document.getElementById('authBtn').innerText = isRegisterMode ? (t('btn_register') || 'إنشاء حساب') : (t('btn_login') || 'تسجيل الدخول');
+            document.getElementById('authToggle').innerText = isRegisterMode ? (t('btn_register_mode')) : (t('btn_login_mode'));
+            document.getElementById('authTitle').innerText = isRegisterMode ? (t('title_register')) : "ZAINEB 4";
+            document.getElementById('loginError').style.display = 'none';
+        }
+
+        async function handleAuth() {
+            if (isRegisterMode) handleRegister();
+            else handleLogin();
+        }
+
         async function handleLogin() {
             const email = document.getElementById('loginEmail').value;
             const pwd = document.getElementById('loginPwd').value;
             const rememberMe = document.getElementById('rememberMe').checked;
             const errEl = document.getElementById('loginError');
-            
+
             if (!email || !pwd) {
                 errEl.innerText = "يرجى ملء جميع الحقول";
                 errEl.style.display = 'block';
@@ -1290,6 +1421,39 @@
                 }
             } catch (err) {
                 errEl.innerText = "خطأ في الدخول: " + err.message;
+                errEl.style.display = 'block';
+            }
+        }
+
+        async function handleRegister() {
+            const email = document.getElementById('loginEmail').value;
+            const pwd = document.getElementById('loginPwd').value;
+            const name = document.getElementById('regName').value;
+            const building = document.getElementById('regBuilding').value;
+            const apartment = document.getElementById('regApartment').value;
+            const errEl = document.getElementById('loginError');
+
+            if (!email || !pwd || !name || !building || !apartment) {
+                errEl.innerText = "يرجى ملء جميع الحقول";
+                errEl.style.display = 'block';
+                return;
+            }
+
+            try {
+                const cred = await firebase.auth().createUserWithEmailAndPassword(email, pwd);
+                const uid = cred.user.uid;
+                const newAcc = {
+                    uid: uid,
+                    email: email,
+                    role: 'resident',
+                    approved: false,
+                    name: name,
+                    building: building,
+                    apartment: apartment
+                };
+                await db.collection("users").doc(uid).set(newAcc);
+            } catch (err) {
+                errEl.innerText = "خطأ في التسجيل: " + err.message;
                 errEl.style.display = 'block';
             }
         }
@@ -1323,8 +1487,11 @@
             document.getElementById(page).classList.add('active');
 
             // Highlight nav button (if exists)
-            const index = ['dashboard', 'apartments', 'expenses', 'communication'].indexOf(page);
-            if (index !== -1) document.querySelectorAll('.nav-links button')[index].classList.add('active');
+            const index = ['dashboard', 'apartments', 'expenses', 'communication', 'full-payments', 'users'].indexOf(page);
+            if (index !== -1) {
+                const navBtns = document.querySelectorAll('.nav-links button');
+                if (navBtns[index]) navBtns[index].classList.add('active');
+            }
 
             // Clear chat badge when entering communication page
             if (page === 'communication') {
@@ -1338,6 +1505,7 @@
             if (page === 'expenses') renderExpenses();
             if (page === 'communication') { renderAnnouncements(); renderChat(); }
             if (page === 'full-payments') renderFullBuildings();
+            if (page === 'users') renderUsers();
         }
 
         // CHAT NOTIFICATION FUNCTIONS
@@ -1391,7 +1559,7 @@
             } else {
                 userAccount = null;
                 updateUIShowHide();
-                
+
                 // NEW: Populate remembered email
                 const savedEmail = localStorage.getItem('syndicRememberEmail');
                 if (savedEmail) {
@@ -1428,7 +1596,7 @@
                 pending.style.display = 'none';
                 main.style.display = 'block';
                 navbar.style.display = 'flex';
-                
+
                 // NEW: Toggle visibility of admin buttons in headers
                 document.querySelectorAll('.btn-admin-only').forEach(btn => {
                     btn.style.display = isAdmin() ? 'inline-block' : 'none';
@@ -1437,10 +1605,13 @@
         }
 
         let mainSyncListener = null;
+        let chatSyncListener = null;
+        let announcementSyncListener = null;
 
         function startDataSync() {
             if (mainSyncListener) return;
 
+            // Main Data (Buildings, Apartments, Expenses)
             mainSyncListener = db.collection("syndic_data").doc("zaineb4").onSnapshot(doc => {
                 const statusIndicator = document.getElementById('sync-status');
                 if (statusIndicator) {
@@ -1449,36 +1620,82 @@
                 }
 
                 if (doc.exists) {
-                    const oldChatCount = lastChatCount;
-                    data = Object.assign(data, doc.data());
+                    const docData = doc.data();
+                    data.buildings = docData.buildings || [];
+                    data.apartments = docData.apartments || [];
+                    data.expenses = docData.expenses || [];
+                    data.payments = docData.payments || {};
 
-                    if (isLoaded && data.chat && data.chat.length > oldChatCount && oldChatCount > 0) {
+                    // Ensure arrays and clean IDs
+                    ['buildings', 'apartments', 'expenses'].forEach(key => {
+                        if (data[key] && !Array.isArray(data[key])) data[key] = Object.values(data[key]);
+                        // Ensure all IDs are strings for consistency
+                        if (data[key]) data[key].forEach(item => { if (item.id) item.id = String(item.id); });
+                    });
+                    
+                    // Also fix buildingId in apartments
+                    data.apartments.forEach(a => { if (a.buildingId) a.buildingId = String(a.buildingId); });
+
+                    if (!isLoaded) {
+                        isLoaded = true;
+                        init();
+                    }
+                    refreshCurrentView();
+                } else {
+                    if (userAccount && userAccount.role === 'admin') {
+                        saveData();
+                    }
+                }
+            });
+
+            // Chat Sync (Dedicated Collection)
+            if (!chatSyncListener) {
+                chatSyncListener = db.collection("syndic_chat").orderBy("id").limitToLast(100).onSnapshot(snap => {
+                    const messages = snap.docs.map(doc => doc.data());
+                    const oldChatCount = data.chat.length;
+                    data.chat = messages;
+
+                    if (isLoaded && data.chat.length > oldChatCount && oldChatCount > 0) {
                         const isOnCommPage = document.getElementById('communication').classList.contains('active');
                         if (!isOnCommPage) {
                             const newMsg = data.chat[data.chat.length - 1];
-                            showChatNotification(newMsg.name, newMsg.msg);
+                            // Only notify for public or relevant private messages
+                            if (!newMsg.isPrivate || newMsg.senderUid === userAccount.uid || isAdmin()) {
+                                showChatNotification(newMsg.name, newMsg.msg);
+                            }
                         }
                     }
-                    lastChatCount = data.chat ? data.chat.length : 0;
+                    if (document.getElementById('communication').classList.contains('active')) renderChat();
+                });
+            }
 
-                    if (!isLoaded) { 
-                        isLoaded = true; 
-                        init(); 
-                    }
-                    refreshCurrentView();
-                } else { 
-                    if (userAccount && userAccount.role === 'admin') {
-                        db.collection("syndic_data").doc("zaineb4").set(data); 
-                    }
-                }
+            // Announcements Sync (Dedicated Collection)
+            if (!announcementSyncListener) {
+                announcementSyncListener = db.collection("syndic_announcements").orderBy("id", "desc").onSnapshot(snap => {
+                    data.announcements = snap.docs.map(doc => doc.data());
+                    if (document.getElementById('communication').classList.contains('active')) renderAnnouncements();
+                });
+            }
+
+            // Sync Users Collection (Admin only)
+            db.collection("users").onSnapshot(snap => {
+                console.log("Users snapshot received, count:", snap.size);
+                allUsers = snap.docs.map(doc => ({ uid: doc.id, ...doc.data() }));
+                if (document.getElementById('users').classList.contains('active')) renderUsers();
             }, err => {
-                console.error("Snapshot error:", err);
+                console.error("Users sync error:", err);
             });
         }
 
-        function saveData() { 
+        function saveData() {
             if (userAccount && userAccount.role === 'admin') {
-                db.collection("syndic_data").doc("zaineb4").set(data).catch(e => console.error(e)); 
+                const toSave = {
+                    buildings: data.buildings,
+                    apartments: data.apartments,
+                    expenses: data.expenses,
+                    payments: data.payments
+                };
+                db.collection("syndic_data").doc("zaineb4").set(toSave).catch(e => console.error(e));
             } else {
                 console.warn("Unauthorized write attempt");
             }
@@ -1507,6 +1724,10 @@
             if (document.getElementById('dashboard').classList.contains('active')) updateDashboard();
             if (document.getElementById('expenses').classList.contains('active')) renderExpenses();
             if (document.getElementById('communication').classList.contains('active')) { renderAnnouncements(); renderChat(); }
+            if (document.getElementById('full-payments').classList.contains('active')) {
+                if (window.activeFullBldId) renderFullTable();
+                else renderFullBuildings();
+            }
             if (activeBldId) renderApartments();
             if (activeAptId) renderAptPayments();
         }
@@ -1546,7 +1767,7 @@
             let bldStats = [];
 
             data.buildings.forEach(b => {
-                let apts = data.apartments.filter(a => a.buildingId === b.id);
+                let apts = data.apartments.filter(a => String(a.buildingId) === String(b.id));
                 if (apts.length === 0) return;
 
                 let paidCount = 0;
@@ -1622,28 +1843,37 @@
         function renderDashboardTable() {
             const head = document.getElementById('dashTableHead');
             const body = document.getElementById('dashTableBody');
-            head.innerHTML = `<th>Apartment</th><th>Last Payment</th><th>Amount</th>`;
+            head.innerHTML = `<th>${t('th_apt') || 'Apartment'}</th><th>${t('th_last_pay') || 'Last Payment'}</th><th>${t('th_amt') || 'Amount'}</th>`;
 
             let recent = [];
             data.apartments.forEach(apt => {
                 // Check if apartment has ANY payment in the payments object
-                const hasPayment = Object.keys(data.payments).some(key => key.startsWith(`${apt.id}_`));
-                if (apt.lastPaidTime && hasPayment) {
+                const aptPaymentsKeys = Object.keys(data.payments).filter(key => key.startsWith(`${apt.id}_`));
+                const hasPayment = aptPaymentsKeys.length > 0;
+                
+                if (hasPayment) {
+                    // Ensure apt.lastPaidTime is set if we found payments but it's missing
+                    if (!apt.lastPaidTime) {
+                        // Estimate last paid time (just something to make it sortable)
+                        apt.lastPaidTime = 1; 
+                    }
+                    recent.push(apt);
+                } else if (apt.lastPaidTime) {
                     recent.push(apt);
                 }
             });
 
-            recent.sort((a, b) => b.lastPaidTime - a.lastPaidTime);
+            recent.sort((a, b) => (b.lastPaidTime || 0) - (a.lastPaidTime || 0));
             const top3 = recent.slice(0, 3);
 
             if (top3.length === 0) {
-                body.innerHTML = `<tr><td colspan="3" style="padding: 20px; color: #94a3b8;">No recent payments entries</td></tr>`;
+                body.innerHTML = `<tr><td colspan="3" style="padding: 20px; color: #94a3b8;">${t('no_recent') || 'No recent payments entries'}</td></tr>`;
                 return;
             }
 
             body.innerHTML = top3.map(a => {
-                let bld = data.buildings.find(b => b.id === a.buildingId);
-                let latestDate = new Date(a.lastPaidTime);
+                let bld = data.buildings.find(b => String(b.id) === String(a.buildingId));
+                let latestDate = a.lastPaidTime && a.lastPaidTime > 1 ? new Date(a.lastPaidTime) : null;
                 let latestAmt = a.lastTotal || 0;
 
                 // Fallback: if amount is 0, try to find the actual value in payments
@@ -1652,14 +1882,15 @@
                         .filter(k => k.startsWith(`${a.id}_`))
                         .map(k => ({ key: k, val: data.payments[k] }));
                     if (aptPayments.length > 0) {
-                        // Just take the first one found or we could sort by date, 
-                        // but usually the most recent payment is what we want.
-                        // For simplicity in this display, any positive amount is better than 0.
+                        // Take the last one (most likely latest)
                         latestAmt = aptPayments[aptPayments.length - 1].val;
+                        
+                        // Also try to extract date if possible, but for now just use placeholder or current
+                        if (!latestDate) latestDate = new Date(); 
                     }
                 }
 
-                let latestDateString = latestDate.toLocaleDateString();
+                let latestDateString = latestDate ? latestDate.toLocaleDateString() : '---';
                 return `<tr><td><b>${a.name}</b><br><small>${bld?.name || ''}</small></td><td>${latestDateString}</td><td class="text-success" style="font-weight:800;">${latestAmt} ${t('curr')}</td></tr>`;
             }).join('');
         }
@@ -1670,11 +1901,11 @@
             const grid = document.getElementById('buildingsGrid');
             const adminMode = isAdmin();
             grid.innerHTML = data.buildings.filter(b => b.name.toLowerCase().includes(query)).map(b => `
-                <div class="item-card" onclick="openBuilding(${b.id})">
+                <div class="item-card" onclick="openBuilding('${b.id}')">
                     ${adminMode ? `
                     <div class="card-actions">
-                        <button class="card-action-btn" onclick="event.stopPropagation(); requireAuth(() => renameItem(${b.id}, 'bld'))">✏️</button>
-                        <button class="card-action-btn" onclick="event.stopPropagation(); requireAuth(() => deleteItem(${b.id}, 'bld'))">🗑️</button>
+                        <button class="card-action-btn" onclick="event.stopPropagation(); requireAuth(() => renameItem('${b.id}', 'bld'))">✏️</button>
+                        <button class="card-action-btn" onclick="event.stopPropagation(); requireAuth(() => deleteItem('${b.id}', 'bld'))">🗑️</button>
                     </div>` : ''}
                     <div class="icon">🏢</div>
                     <div class="name">${b.name}</div>
@@ -1683,8 +1914,8 @@
         }
 
         function openBuilding(id) {
-            activeBldId = id;
-            const b = data.buildings.find(b => b.id === id);
+            activeBldId = String(id);
+            const b = data.buildings.find(b => String(b.id) === String(id));
             document.getElementById('activeBldName').innerText = b?.name || '';
             document.getElementById('bldListScreen').style.display = 'none';
             document.getElementById('aptListScreen').style.display = 'block';
@@ -1701,12 +1932,12 @@
             const query = document.getElementById('aptSearch').value.toLowerCase();
             const grid = document.getElementById('apartmentsGrid');
             const adminMode = isAdmin();
-            grid.innerHTML = data.apartments.filter(a => a.buildingId === activeBldId && a.name.toLowerCase().includes(query)).map(a => `
-                <div class="item-card" onclick="openAptDetails(${a.id})">
+            grid.innerHTML = data.apartments.filter(a => String(a.buildingId) === String(activeBldId) && a.name.toLowerCase().includes(query)).map(a => `
+                <div class="item-card" onclick="openAptDetails('${a.id}')">
                     ${adminMode ? `
                     <div class="card-actions">
-                        <button class="card-action-btn" onclick="event.stopPropagation(); requireAuth(() => renameItem(${a.id}, 'apt'))">✏️</button>
-                        <button class="card-action-btn" onclick="event.stopPropagation(); requireAuth(() => deleteItem(${a.id}, 'apt'))">🗑️</button>
+                        <button class="card-action-btn" onclick="event.stopPropagation(); requireAuth(() => renameItem('${a.id}', 'apt'))">✏️</button>
+                        <button class="card-action-btn" onclick="event.stopPropagation(); requireAuth(() => deleteItem('${a.id}', 'apt'))">🗑️</button>
                     </div>` : ''}
                     <div class="icon">🏠</div>
                     <div class="name">${a.name}</div>
@@ -1715,8 +1946,8 @@
         }
 
         function openAptDetails(id) {
-            activeAptId = id;
-            const a = data.apartments.find(a => a.id === id);
+            activeAptId = String(id);
+            const a = data.apartments.find(a => String(a.id) === String(id));
             document.getElementById('activeAptName').innerText = a?.name || '';
             document.getElementById('resNameLabel').innerText = a?.residentName || 'None';
             document.getElementById('resPhoneLabel').innerText = a?.residentPhone || 'No phone';
@@ -1738,7 +1969,7 @@
                 const month = i + 1;
                 const paid = data.payments[`${activeAptId}_${year}_${month}`] || 0;
                 return `
-                    <div class="item-card ${paid ? 'paid-bg' : ''}" style="height: auto; padding: 15px;" onclick="${isAdmin() ? `requireAuth(() => openPayModal(${activeAptId}, ${year}, ${month}, ${paid}))` : ''}">
+                    <div class="item-card ${paid ? 'paid-bg' : ''}" style="height: auto; padding: 15px;" onclick="${isAdmin() ? `requireAuth(() => openPayModal('${activeAptId}', ${year}, ${month}, ${paid}))` : ''}">
                         <div style="font-weight:700;">${m}</div>
                         <div style="color: ${paid ? 'var(--success)' : 'var(--danger)'}; font-size: 13px;">${paid ? paid + ' ' + t('curr') : t('unpaid')}</div>
                     </div>
@@ -1748,35 +1979,88 @@
 
         // FULL TABLE
         function renderFullBuildings() {
-            document.getElementById('fullBldSelector').innerHTML = data.buildings.map(b => `
-                <div class="item-card" onclick="showFullTableForBld(${b.id})">
-                    <div class="icon">🏢</div><div class="name">${b.name}</div>
-                </div>
-            `).join('');
+            // Reset: hide table content, show building selector
+            const selector = document.getElementById('fullBldSelector');
+            const tableContent = document.getElementById('fullTableContent');
+            if (selector) selector.style.display = 'grid';
+            if (tableContent) tableContent.style.display = 'none';
+            window.activeFullBldId = null;
+
+            console.log('renderFullBuildings called. data.buildings:', JSON.stringify(data.buildings));
+            console.log('isLoaded:', isLoaded, '| userAccount:', userAccount ? userAccount.email : 'null');
+
+            if (!selector) {
+                console.error('fullBldSelector element NOT FOUND!');
+                return;
+            }
+
+            if (!isLoaded) {
+                selector.innerHTML = `<p style="color:#94a3b8; text-align:center; padding:30px; width:100%;">⏳ جاري تحميل البيانات...</p>`;
+                return;
+            }
+
+            selector.innerHTML = data.buildings.length === 0
+                ? `<div style="text-align:center; padding:40px; width:100%; color:#94a3b8;">
+                      <div style="font-size:40px; margin-bottom:10px;">🏢</div>
+                      <p>لا توجد عمارات مسجلة</p>
+                      <button class="btn btn-primary" onclick="renderFullBuildings()" style="margin-top:10px;">🔄 تحديث</button>
+                   </div>`
+                : data.buildings.map(b => `
+                    <div class="item-card" onclick="showFullTableForBld('${b.id}')">
+                        <div class="icon">🏢</div><div class="name">${b.name}</div>
+                    </div>
+                `).join('');
         }
 
+
         function showFullTableForBld(id) {
+            console.log("Selecting building ID:", id);
             document.getElementById('fullBldSelector').style.display = 'none';
             document.getElementById('fullTableContent').style.display = 'block';
-            const b = data.buildings.find(b => b.id === id);
-            document.getElementById('fullTableBldName').innerText = b?.name || '';
+            
+            const b = data.buildings.find(b => String(b.id) === String(id));
+            if (!b) {
+                console.error("Building not found for ID:", id);
+                console.log("Available buildings:", data.buildings);
+            }
+            document.getElementById('fullTableBldName').innerText = b?.name || 'Building Not Found';
             window.activeFullBldId = id;
             renderFullTable();
         }
 
         function renderFullTable() {
-            const y = document.getElementById('fullYear').value;
+            const ySelect = document.getElementById('fullYear');
+            const y = ySelect ? ySelect.value : new Date().getFullYear();
             const bldId = window.activeFullBldId;
-            const apts = data.apartments.filter(a => a.buildingId === bldId);
+            
+            console.log("Rendering Full Table - Year:", y, "Building ID:", bldId);
+            
+            // Defensively handle a.buildingId possibly being string or number
+            const apts = data.apartments.filter(a => String(a.buildingId) == String(bldId));
+            
             const head = document.getElementById('fullTableHead');
             const body = document.getElementById('fullTableBody');
 
-            head.innerHTML = `<th>Apartment</th>` + t('months').map(m => `<th>${m}</th>`).join('');
+            // Header matching screenshot: "الشقة / الشهر" then Jan, Feb...
+            head.innerHTML = `<th>${t('th_apt')}</th>` + t('months').map(m => `<th>${m}</th>`).join('');
+            
+            if (apts.length === 0) {
+                body.innerHTML = `<tr><td colspan="13" style="padding:40px; text-align:center; color:#94a3b8;">${t('no_apts') || 'No apartments found'}</td></tr>`;
+                return;
+            }
+
             body.innerHTML = apts.map(a => {
-                let row = `<tr><td>${a.name}</td>`;
+                let row = `<tr style="border-bottom: 8px solid #f1f5f9;"><td style="font-weight:700; color: #1e293b; padding: 15px; background: white;">${a.name}</td>`;
                 for (let m = 1; m <= 12; m++) {
-                    let amt = data.payments[`${a.id}_${y}_${m}`] || 0;
-                    row += `<td><span class="badge ${amt > 0 ? 'badge-paid' : 'badge-unpaid'}">${amt || 'X'}</span></td>`;
+                    const key = `${a.id}_${y}_${m}`;
+                    const amt = data.payments[key] || 0;
+                    const isPaid = amt > 0;
+                    
+                    row += `<td style="background: white; padding: 10px;">
+                        <div class="payment-badge ${isPaid ? 'paid' : 'unpaid'}">
+                            ${isPaid ? amt : 'x'}
+                        </div>
+                    </td>`;
                 }
                 return row + `</tr>`;
             }).join('');
@@ -1843,7 +2127,7 @@
         }
 
         function openResidentModal() {
-            const apt = data.apartments.find(a => a.id === activeAptId);
+            const apt = data.apartments.find(a => a.id == activeAptId);
             let modal = document.getElementById('modalBody');
             modal.innerHTML = `
                 <h3>Resident Details</h3>
@@ -2119,9 +2403,6 @@
                         </div>
 
                         <div class="comment-form">
-                            <div style="display:flex; gap:10px; margin-bottom:10px;">
-                                <input type="text" id="commName" placeholder="Name" style="flex:1" value="Resident">
-                            </div>
                             <div style="display:flex; gap:10px;">
                                 <textarea id="commText" placeholder="${t('ph_comment')}" style="flex:1; border-radius:8px; padding:10px; border:1px solid #cbd5e1;" rows="2"></textarea>
                                 <button class="btn btn-primary" onclick="addComment(${annId})">🚀</button>
@@ -2147,32 +2428,37 @@
         };
 
         window.addComment = (annId) => {
-            const name = document.getElementById('commName').value.trim() || 'Resident';
+            const displayName = isAdmin() ? "Admin" : (userAccount ? userAccount.name : "Resident");
             const text = document.getElementById('commText').value.trim();
             if (!text) return;
 
-            const ann = data.announcements.find(a => a.id == annId);
-            if (!ann) return;
-
-            if (!ann.comments) ann.comments = [];
-            ann.comments.push({
-                id: Date.now(),
-                name: name,
-                text: text,
-                date: new Date().toLocaleString([], { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })
+            const annRef = db.collection("syndic_announcements").doc(annId.toString());
+            db.runTransaction(async (transaction) => {
+                const doc = await transaction.get(annRef);
+                const currentComments = doc.data().comments || [];
+                const newComment = {
+                    id: Date.now(),
+                    name: displayName,
+                    text: text,
+                    date: new Date().toLocaleString([], { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })
+                };
+                transaction.update(annRef, { comments: [...currentComments, newComment] });
+            }).then(() => {
+                openAnnounceDetail(annId); // Refresh modal
             });
-
-            saveData();
-            openAnnounceDetail(annId); // Refresh modal
         };
 
         window.deleteComment = (annId, commId) => {
             requireAuth(() => {
-                const ann = data.announcements.find(a => a.id == annId);
-                if (!ann || !ann.comments) return;
-                ann.comments = ann.comments.filter(c => c.id !== commId);
-                saveData();
-                openAnnounceDetail(annId); // Refresh modal
+                const annRef = db.collection("syndic_announcements").doc(annId.toString());
+                db.runTransaction(async (transaction) => {
+                    const doc = await transaction.get(annRef);
+                    const currentComments = doc.data().comments || [];
+                    const filtered = currentComments.filter(c => c.id !== commId);
+                    transaction.update(annRef, { comments: filtered });
+                }).then(() => {
+                    openAnnounceDetail(annId); // Refresh modal
+                });
             });
         };
 
@@ -2211,20 +2497,27 @@
                         }
                     }
 
-                    data.announcements.push({ id: annId, title: titleVal, msg: msgVal, date: new Date().toLocaleDateString(), hasImage: hasImage });
-                    saveData();
-                    closeModal();
-                    renderAnnouncements();
+                    const newAnn = { 
+                        id: annId, 
+                        title: titleVal, 
+                        msg: msgVal, 
+                        date: new Date().toLocaleDateString(), 
+                        hasImage: hasImage,
+                        comments: []
+                    };
+                    
+                    db.collection("syndic_announcements").doc(annId.toString()).set(newAnn).then(() => {
+                        closeModal();
+                    });
                 }
             };
             document.getElementById('universalModal').style.display = 'flex';
         };
 
         window.deleteAnnouncement = (id) => {
-            data.announcements = data.announcements.filter(a => a.id !== id);
-            db.collection("syndic_announcements_images").doc(id.toString()).delete().catch(() => { });
-            saveData();
-            renderAnnouncements();
+            db.collection("syndic_announcements").doc(id.toString()).delete().then(() => {
+                db.collection("syndic_announcements_images").doc(id.toString()).delete().catch(() => { });
+            });
         };
 
         window.viewAnnounceImage = (annId) => {
@@ -2263,28 +2556,29 @@
         };
 
         function sendChat() {
-            const p = document.getElementById('chatPseudo').value.trim() || 'Resident';
             const m = document.getElementById('chatInput').value.trim();
             const isPrivate = document.getElementById('chatIsPrivate').checked;
-            
+
             if (!m) return;
-            
-            const message = { 
-                id: Date.now(), 
-                name: p, 
-                msg: m, 
+
+            const displayName = isAdmin() ? "Admin" : (userAccount ? userAccount.name : "Resident");
+            const messageId = Date.now();
+            const message = {
+                id: messageId,
+                name: displayName,
+                msg: m,
                 time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                 isPrivate: isPrivate,
-                senderUid: userAccount ? userAccount.uid : ''
+                senderUid: userAccount ? userAccount.uid : '',
+                likes: 0,
+                dislikes: 0,
+                replies: []
             };
-            
-            data.chat.push(message);
-            if (data.chat.length > 100) data.chat.shift();
-            
-            saveData();
-            document.getElementById('chatInput').value = '';
-            document.getElementById('chatIsPrivate').checked = false;
-            renderChat();
+
+            db.collection("syndic_chat").doc(messageId.toString()).set(message).then(() => {
+                document.getElementById('chatInput').value = '';
+                document.getElementById('chatIsPrivate').checked = false;
+            }).catch(e => alert(e.message));
         }
 
         function renderChat() {
@@ -2331,34 +2625,31 @@
         }
 
         function deleteChatMessage(id) {
-            data.chat = data.chat.filter(m => m.id !== id);
-            saveData();
-            renderChat();
+            db.collection("syndic_chat").doc(id.toString()).delete();
         }
 
         window.likeChatMessage = (id) => {
-            const m = data.chat.find(x => x.id == id);
-            if (m) {
-                m.likes = (m.likes || 0) + 1;
-                saveData();
-                renderChat();
-            }
+            const msgRef = db.collection("syndic_chat").doc(id.toString());
+            db.runTransaction(async (transaction) => {
+                const doc = await transaction.get(msgRef);
+                const currentLikes = doc.data().likes || 0;
+                transaction.update(msgRef, { likes: currentLikes + 1 });
+            });
         };
 
         window.dislikeChatMessage = (id) => {
-            const m = data.chat.find(x => x.id == id);
-            if (m) {
-                m.dislikes = (m.dislikes || 0) + 1;
-                saveData();
-                renderChat();
-            }
+            const msgRef = db.collection("syndic_chat").doc(id.toString());
+            db.runTransaction(async (transaction) => {
+                const doc = await transaction.get(msgRef);
+                const currentDislikes = doc.data().dislikes || 0;
+                transaction.update(msgRef, { dislikes: currentDislikes + 1 });
+            });
         };
 
         window.openChatReplyModal = (id) => {
             let modal = document.getElementById('modalBody');
             modal.innerHTML = `
                 <h3 style="color:var(--secondary);">${t('title_add_reply')}</h3>
-                <div class="input-group"><label>${t('ph_chat_name')}</label><input type="text" id="repName" value="Resident"></div>
                 <div class="input-group"><label>${t('btn_reply')}</label><textarea id="repText" rows="2" placeholder="..."></textarea></div>
                 <button class="btn btn-secondary" style="width:100%; margin-top:15px;" onclick="addChatReply(${id})">${t('btn_send_chat') || 'Send'}</button>
             `;
@@ -2366,42 +2657,104 @@
         };
 
         window.addChatReply = (msgId) => {
-            const name = document.getElementById('repName').value.trim() || 'Resident';
+            const displayName = isAdmin() ? "Admin" : (userAccount ? userAccount.name : "Resident");
             const text = document.getElementById('repText').value.trim();
             if (!text) return;
 
-            const m = data.chat.find(x => x.id == msgId);
-            if (m) {
-                if (!m.replies) m.replies = [];
-                m.replies.push({
+            const msgRef = db.collection("syndic_chat").doc(msgId.toString());
+            db.runTransaction(async (transaction) => {
+                const doc = await transaction.get(msgRef);
+                const currentReplies = doc.data().replies || [];
+                const newReply = {
                     id: Date.now(),
-                    name: name,
+                    name: displayName,
                     text: text,
                     date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                });
-                saveData();
+                };
+                transaction.update(msgRef, { replies: [...currentReplies, newReply] });
+            }).then(() => {
                 closeModal();
-                renderChat();
-            }
+            });
         };
 
         window.deleteChatReply = (msgId, repId) => {
             requireAuth(() => {
-                const m = data.chat.find(x => x.id == msgId);
-                if (m && m.replies) {
-                    m.replies = m.replies.filter(r => r.id !== repId);
-                    saveData();
-                    renderChat();
-                }
+                const msgRef = db.collection("syndic_chat").doc(msgId.toString());
+                db.runTransaction(async (transaction) => {
+                    const doc = await transaction.get(msgRef);
+                    const currentReplies = doc.data().replies || [];
+                    const filtered = currentReplies.filter(r => r.id !== repId);
+                    transaction.update(msgRef, { replies: filtered });
+                });
             });
         };
 
         // UTILS
         function changeLanguage() { currentLang = document.getElementById('langSelect').value; localStorage.setItem('syndicLang', currentLang); applyLanguage(); }
+        function renderUsers() {
+            const container = document.getElementById('usersList');
+            container.innerHTML = '';
+
+            const pending = allUsers.filter(u => !u.approved);
+            const approved = allUsers.filter(u => u.approved);
+
+            let html = '';
+            if (pending.length > 0) {
+                html += `<h3 style="color: var(--secondary); margin-bottom: 15px;">طلبات معلقة (${pending.length})</h3>`;
+                pending.forEach(u => html += createUserCard(u, true));
+            }
+            if (approved.length > 0) {
+                html += `<h3 style="color: var(--primary); margin-top: 30px; margin-bottom: 15px;">المستخدمون المعتمدون (${approved.length})</h3>`;
+                approved.forEach(u => html += createUserCard(u, false));
+            }
+            container.innerHTML = html || '<p>لا يوجد مستخدمون حاليا.</p>';
+        }
+
+        function createUserCard(u, isPending) {
+            const isAdm = u.role === 'admin';
+            return `
+                <div class="card" style="margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; padding: 15px;">
+                    <div>
+                        <div style="font-weight: bold; font-size: 16px;">${u.email}</div>
+                        <div style="color: var(--secondary); font-size: 14px;">${u.name || '---'} | ${u.building || '-'} | ${u.apartment || '-'}</div>
+                        <div style="font-size: 12px; color: ${isAdm ? 'var(--primary)' : 'gray'};">${isAdm ? 'مسؤول (Admin)' : 'ساكن (Resident)'}</div>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        ${isPending ? `<button class="btn btn-primary btn-sm" onclick="approveUser('${u.uid}')">${t('btn_approve')}</button>` : ''}
+                        ${(!isAdm && !isPending) ? `<button class="btn btn-secondary btn-sm" onclick="makeAdmin('${u.uid}')">${t('btn_make_admin')}</button>` : ''}
+                        <button class="btn btn-danger btn-sm" onclick="deleteUserRow('${u.uid}')">${t('btn_delete_user')}</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function approveUser(uid) {
+            if (confirm("هل أنت متأكد من الموافقة على هذا المستخدم؟")) {
+                await db.collection("users").doc(uid).update({ approved: true });
+            }
+        }
+        async function makeAdmin(uid) {
+            if (confirm("هل أنت متأكد من جعل هذا المستخدم مسؤولاً؟")) {
+                await db.collection("users").doc(uid).update({ role: 'admin' });
+            }
+        }
+        async function deleteUserRow(uid) {
+            if (confirm("هل أنت متأكد من حذف هذا المستخدم؟")) {
+                await db.collection("users").doc(uid).delete();
+            }
+        }
         function applyLanguage() {
-            document.querySelectorAll('[data-i18n]').forEach(el => el.innerText = t(el.getAttribute('data-i18n')));
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (key) el.innerText = t(key);
+            });
             document.documentElement.lang = currentLang;
             document.documentElement.dir = (currentLang === 'ar') ? 'rtl' : 'ltr';
+            
+            // Show/Hide Users link based on role
+            const navUsers = document.getElementById('navUsersLink');
+            if (navUsers) navUsers.style.display = isAdmin() ? 'inline-block' : 'none';
+            
             refreshCurrentView();
         }
         function renameItem(id, type) { /* Implement Rename logic */ }
